@@ -1,0 +1,14 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/HexGridScripts/GridGenerator.cs">
+    <Files>
+      <File FileName="Assets/HexGridScripts/GridGenerator.cs" Line="125" Column="22" />
+      <File FileName="Assets/HexGridScripts/HexGridModel.cs" Line="33" Column="41" />
+      <File FileName="Assets/HexGridScripts/TerrainAttribute.cs" Line="7" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
