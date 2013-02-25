@@ -6,7 +6,4 @@ using System;
 public class TerrainAttribute : MonoBehaviour
 {
 	
-	//this number is used to test reference serialisation
-	public int testNum;
-	
 }

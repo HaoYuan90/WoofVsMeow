@@ -44,10 +44,12 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\GridGeneratorTest.cs" />
      <Compile Include="Assets\HexGridScripts\GridGenerator.cs" />
+     <Compile Include="Assets\HexGridScripts\GridLogic.cs" />
      <Compile Include="Assets\HexGridScripts\HexGridModel.cs" />
+     <Compile Include="Assets\HexGridScripts\MaskManager.cs" />
      <Compile Include="Assets\HexGridScripts\TerrainAttribute.cs" />
+     <Compile Include="Assets\HexGridScripts\TestAttribute.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

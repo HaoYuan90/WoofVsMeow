@@ -3,39 +3,14 @@ using System.Collections;
 using System;
 
 [Serializable]
-public class HexGridModel : ScriptableObject{
+public class HexGridModel :MonoBehaviour{
 	
-	[SerializeField]
-	private GameObject m_grid;
-	[SerializeField]
-	private Vector2 m_center;
-	[SerializeField]
-	private float m_width;
-	[SerializeField]
-	private float m_height;
+	public Vector2 m_center;
+	public float m_width;
+	public float m_height;
 	
-	public GameObject grid
+	public void Initialise (Vector2 center, float width, float height)
 	{
-		get {return m_grid;}
-	}
-	/* scriptable object does not use constructors
-	public HexGridModel(GameObject grid, Vector2 center, float width, float height)
-	{
-		m_grid = grid;
-		m_center = center;
-		m_width = width;
-		m_height = height;
-	}
-	*/
-	
-	public void OnEnable() 
-	{ 
-		hideFlags = HideFlags.HideInInspector;
-	}
-	
-	public void Initialise (GameObject grid, Vector2 center, float width, float height)
-	{
-		m_grid = grid;
 		m_center = center;
 		m_width = width;
 		m_height = height;
