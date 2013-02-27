@@ -131,7 +131,7 @@ public class GridGenerator: MonoBehaviour
                 	hex.transform.parent = hexGridGroup.transform;
 					Vector2 grid2DPosition = new Vector2(hex.transform.position.x, hex.transform.position.z);
 					//initialise model
-					hex.GetComponent<HexGridModel>().Initialise(grid2DPosition,m_hexWidth,m_hexLength);
+					hex.GetComponent<HexGridModel>().Initialise(grid2DPosition,m_hexWidth,m_hexLength,x,y);
 					
 					//add mask objects to the grid as children
 					GameObject blueMask = (GameObject)Instantiate(m_hexBlueMaskPrefab);
