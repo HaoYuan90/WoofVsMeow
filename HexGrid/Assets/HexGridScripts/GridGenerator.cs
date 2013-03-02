@@ -119,11 +119,13 @@ public class GridGenerator: MonoBehaviour
         	GameObject hexGridGroup = new GameObject("HexGrids");
        		for (int y = 0; y < m_gridNumVer; y++)
        		{
+				//row
 				//alternating pattern
 				int gridsToDraw = (y%2==0)?m_gridNumHor:m_gridNumHor-1;
 				
             	for (int x = 0; x < gridsToDraw; x++)
             	{
+					//col
                 	GameObject hex = (GameObject)Instantiate(m_hexPrefab);
 					//get world coordinates of grid
                 	hex.transform.position = CalcWorldCoord(x,y);
@@ -131,7 +133,7 @@ public class GridGenerator: MonoBehaviour
                 	hex.transform.parent = hexGridGroup.transform;
 					Vector2 grid2DPosition = new Vector2(hex.transform.position.x, hex.transform.position.z);
 					//initialise model
-					hex.GetComponent<HexGridModel>().Initialise(grid2DPosition,m_hexWidth,m_hexLength,x,y);
+					hex.GetComponent<HexGridModel>().Initialise(grid2DPosition,m_hexWidth,m_hexLength,y,x); //x,y denoting col and row of grid
 					
 					//add mask objects to the grid as children
 					GameObject blueMask = (GameObject)Instantiate(m_hexBlueMaskPrefab);
