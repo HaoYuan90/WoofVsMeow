@@ -11,25 +11,14 @@ public class HexGridModel :MonoBehaviour{
 	public int m_row;
 	public int m_col;
 	
-	//graph algo related state variables
-	private int m_movementLeft; 
+	public float m_movementLeft;
 	/*NOTE: 
 	 * value 0 means movement stoped at this grid
 	 * value positive means movement continues from this grid
 	 * value -1 means this grid is not reached
-	*/
-	private float m_distToDest;
+	 */
+
 	public GameObject m_prevNode;
-	
-	public int movementLeft
-	{
-		get{return m_movementLeft;}
-	}
-	
-	public float distToDest
-	{
-		get{return m_distToDest;}
-	}
 	
 	public void Initialise (Vector2 center, float width, float height, int row, int col)
 	{
@@ -39,35 +28,28 @@ public class HexGridModel :MonoBehaviour{
 		m_row = row;
 		m_col = col;
 		
-		m_movementLeft = -1;
+		m_movementLeft = (float)-0.5;
 	}
 	
 	public void ResetGraphStateVars ()
 	{
-		m_movementLeft = -1;
-		m_distToDest = int.MaxValue;
+		m_movementLeft = (float)-0.5;
 		m_prevNode = null;
 	}
 	
-	//if this movementLeft is greater, replace 
-	//otherwise ignore
-	public void UpdateMovementLeft (int movementLeftPrev)
-	{
-		int movementLeftThis = movementLeftPrev-1; // -cost of the grid, to be implemented
-		m_movementLeft = (m_movementLeft < movementLeftThis) ? movementLeftThis: m_movementLeft;
-	}
-	
-	public void InitMovementLeft (int movementLeft)
-	{
+	public void SetMovementLeft (float movementLeft) {
 		m_movementLeft = movementLeft;
 	}
 	
-	public void InitDistToDest(GameObject destNode) 
-	{
-		Vector2 destCenter = destNode.GetComponent<HexGridModel>().m_center;
-		m_distToDest= Vector2.Distance(m_center,destCenter);
-	} 
-	
+	//update the movementLeft and prevNode only if it is larger than the current one
+	public void UpdateMovementLeft (GameObject prevNode) {
+		float newMovementLeft=prevNode.GetComponent<HexGridModel>().m_movementLeft-(float)1.0;
+		if (newMovementLeft > m_movementLeft && newMovementLeft >=0) {
+			m_movementLeft = newMovementLeft;
+			m_prevNode = prevNode;
+		}
+	}
+
 	//debugging purpose
 	public override string ToString()
 	{
