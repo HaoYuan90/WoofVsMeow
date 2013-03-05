@@ -15,10 +15,7 @@ using System;
 // it also initiates a list containing all the hexgrids for use by other modules
 public class GridGenerator: MonoBehaviour
 {
-	//when this is enabled, map will be destroyed and reinitialised everytime play is hit
-	public bool m_mapGenDebugMode = false;
 	//this will enable testing of preserved data and reference
-	public bool m_editorDebugMode = true;
 	[SerializeField]
 	private int m_hexGridRefTestNum;
 	
@@ -103,13 +100,11 @@ public class GridGenerator: MonoBehaviour
         return new Vector3(worldX, 0, worldZ);
     }
 
-    //Method to initialises and positions all the tiles
-    private void CreateGrid()
+    //Method to initialises and positions all the tiles based on initial position calculated
+    private void CreateGrids()
     {
 		//random seeder for testing
 		System.Random testIntGenerator = new System.Random();
-		if(m_mapGenDebugMode)
-			GameObject.DestroyImmediate(GameObject.Find("HexGrids"));
         //Game object which is the parent of all the hex tiles
 		if(GameObject.Find("HexGrids") == null)
 		{
@@ -144,14 +139,11 @@ public class GridGenerator: MonoBehaviour
 					hex.GetComponent<MaskManager>().InitMasks(redMask,greenMask,blueMask,outlineMask);
 					
 					//set the test bit in terrain component of hexmap to test reference
-					if(m_editorDebugMode)
-					{
-						int testInt = testIntGenerator.Next(0,m_gridNumHor);
-						//test case set to 1
-						if(testInt == 1)
-							m_hexGridRefTestNum ++;
-						(hex.GetComponent<TestAttribute>() as TestAttribute).testNum = testInt;
-					}
+					int testInt = testIntGenerator.Next(0,m_gridNumHor);
+					//test case set to 1
+					if(testInt == 1)
+						m_hexGridRefTestNum ++;
+					hex.GetComponent<TestAttribute>().testNum = testInt;
 					m_grids.Add(hex);
             	}
         	}
@@ -169,7 +161,8 @@ public class GridGenerator: MonoBehaviour
 		
 		if(!passedTest)
 			Debug.Log("Failed TestListSerielisation()");
-		
+		else
+			Debug.Log("Passed TestListSerielisation()");
 		/*
 		foreach(GameObject e in m_grids)
 		{
@@ -188,18 +181,40 @@ public class GridGenerator: MonoBehaviour
 		}
 		if(numTestInt!= m_hexGridRefTestNum)
 			Debug.Log ("Failed TestReferenceSerielisation()");
+		else 
+			Debug.Log ("Passed TestReferenceSerielisation()");
 	}
-
-    //The grid should be generated on game start
-    void Start()
-    {
-        GetGridSize();
+	
+	public void CreateGridMap()
+	{
+		GetGridSize();
 		CalcInitPos();
-        CreateGrid();
-		
-		if(m_editorDebugMode){
-			TestListSerielisation();
-			TestReferenceSerielisation();
+        CreateGrids();
+	}
+	
+	public void UpdateGridMap()
+	{
+		foreach(GameObject e in m_grids){
+			TnGAttribute temp = e.GetComponent<TnGAttribute>();
+			if(temp.m_terrainType == TerrainType.hill){
+				Vector3 scaling = new Vector3(1.0f,0.3f,1.0f);
+				e.transform.localScale = scaling;
+			}
+			else if(temp.m_terrainType == TerrainType.obstacle){
+				Vector3 scaling = new Vector3(1.0f,0.1f,1.0f);
+				e.transform.localScale = scaling;
+			}
+			else//plain
+			{
+				Vector3 scaling = new Vector3(1.0f,0.2f,1.0f);
+				e.transform.localScale = scaling;
+			}
 		}
-    }
+	}
+	
+	public void RunTests()
+	{
+		TestListSerielisation();
+		TestReferenceSerielisation();
+	}
 }

@@ -1,8 +1,11 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="../../../../Library/Mail Downloads/PriorityQueue.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/HexGridScripts/GridLogic.cs">
     <Files>
-      <File FileName="../../../../Library/Mail Downloads/PriorityQueue.cs" Line="17" Column="31" />
+      <File FileName="Assets/Scripts/HexGridScripts/GridLogic.cs" Line="328" Column="6" />
+      <File FileName="Assets/Scripts/HexGridScripts/GridGenerator.cs" Line="136" Column="6" />
+      <File FileName="Assets/Scripts/HexGridScripts/HexGridModel.cs" Line="41" Column="1" />
+      <File FileName="Assets/Scripts/HexGridScripts/TnGAttribute.cs" Line="19" Column="27" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -8,7 +8,6 @@ public class GeneralizedUnit : MonoBehaviour
 	private int control;
 	private int maxAP;
 	private int currAP;
-	private bool active; //a boolean indicating this object is selected
 	private int apMinus;
 	private GameObject controller; //A GameObject controller that oversees everything.
 	private PriorityQueue pq; //The PQ.
@@ -17,7 +16,6 @@ public class GeneralizedUnit : MonoBehaviour
 	// Use this for initialization
 	void Start () 
 	{
-		active = false;
 		controller = GameObject.Find("Controller");
 		pq = GameObject.Find("PQ2").GetComponent<PriorityQueue>();
 	}
@@ -35,7 +33,6 @@ public class GeneralizedUnit : MonoBehaviour
 		int tempAP = apMinus;
 		apMinus = 0;
 		currAP += ap;
-		active = false;
 		
 		pq.TurnElapsed(this.gameObject, -tempAP);
 		
@@ -85,7 +82,6 @@ public class GeneralizedUnit : MonoBehaviour
 	//apMinus which is then relayed back to the PQ.
 	public void Call()
 	{
-		active = true;
 		apMinus = currAP;
 		currAP = 0;
 		

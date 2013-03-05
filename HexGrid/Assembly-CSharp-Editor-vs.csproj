@@ -5,11 +5,11 @@
 	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 	<ProductVersion>10.0.20506</ProductVersion>
 	<SchemaVersion>2.0</SchemaVersion>
-	<ProjectGuid>{FC017B03-3764-389D-9D3B-4CA61A23A61A}</ProjectGuid>
+	<ProjectGuid>{54AD9FC5-F1EA-A692-C461-5CE85CF1F986}</ProjectGuid>
 	<OutputType>Library</OutputType>
 	<AppDesignerFolder>Properties</AppDesignerFolder>
 	<RootNamespace></RootNamespace>
-	<AssemblyName>Assembly-CSharp</AssemblyName>
+	<AssemblyName>Assembly-CSharp-Editor</AssemblyName>
 	<TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
 	<FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -44,17 +44,14 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\DunnoWhereToPutScripts\Controller.cs" />
-     <Compile Include="Assets\Scripts\DunnoWhereToPutScripts\GeneralizedUnit.cs" />
-     <Compile Include="Assets\Scripts\DunnoWhereToPutScripts\PriorityQueue.cs" />
-     <Compile Include="Assets\Scripts\DunnoWhereToPutScripts\TestCase1.cs" />
-     <Compile Include="Assets\Scripts\DunnoWhereToPutScripts\TestCase2.cs" />
-     <Compile Include="Assets\Scripts\HexGridScripts\GridGenerator.cs" />
-     <Compile Include="Assets\Scripts\HexGridScripts\GridLogic.cs" />
-     <Compile Include="Assets\Scripts\HexGridScripts\HexGridModel.cs" />
-     <Compile Include="Assets\Scripts\HexGridScripts\MaskManager.cs" />
-     <Compile Include="Assets\Scripts\HexGridScripts\TestAttribute.cs" />
-     <Compile Include="Assets\Scripts\HexGridScripts\TnGAttribute.cs" />
+     <Compile Include="Assets\Editor\GridEditorControl.cs" />
+ <Reference Include="\Applications\Unity\Unity.app\Contents\Frameworks\Managed\UnityEditor.Graphs">
+ <HintPath>\Applications\Unity\Unity.app\Contents\Frameworks\Managed\UnityEditor.Graphs.dll</HintPath>
+ </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Assembly-CSharp-vs.csproj">
+      <Project>{FC017B03-3764-389D-9D3B-4CA61A23A61A}</Project>      <Name>Assembly-CSharp-vs</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

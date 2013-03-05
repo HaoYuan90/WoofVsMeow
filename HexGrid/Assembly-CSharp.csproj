@@ -53,8 +53,8 @@
      <Compile Include="Assets\Scripts\HexGridScripts\GridLogic.cs" />
      <Compile Include="Assets\Scripts\HexGridScripts\HexGridModel.cs" />
      <Compile Include="Assets\Scripts\HexGridScripts\MaskManager.cs" />
-     <Compile Include="Assets\Scripts\HexGridScripts\TerrainAttribute.cs" />
      <Compile Include="Assets\Scripts\HexGridScripts\TestAttribute.cs" />
+     <Compile Include="Assets\Scripts\HexGridScripts\TnGAttribute.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -66,13 +66,18 @@ public class GridLogic : MonoBehaviour {
       	return (row>=0 && row<maxRow && col>=0 && col<maxCol);
 	}
 	
+	private bool CanPass(int row, int col)
+	{
+		return m_grids[row][col].GetComponent<HexGridModel>().CanPass("");
+	}
+	
 	private GameObject GetTopLeft(GameObject grid) 
 	{
 		int row = grid.GetComponent<HexGridModel>().m_row;
 		int col = grid.GetComponent<HexGridModel>().m_col;
 		col = (row%2 == 0)?col-1:col;
 		row = row-1;
-		if(IsInBound(row,col))
+		if(IsInBound(row,col) && CanPass(row,col))
 			return m_grids[row][col];
 		else
 			return null;
@@ -84,7 +89,7 @@ public class GridLogic : MonoBehaviour {
 		int col = grid.GetComponent<HexGridModel>().m_col;
 		col = (row%2 == 0)?col:col+1;
 		row = row-1;
-		if(IsInBound(row,col))
+		if(IsInBound(row,col) && CanPass(row,col))
 			return m_grids[row][col];
 		else
 			return null;
@@ -95,7 +100,7 @@ public class GridLogic : MonoBehaviour {
 		int row = grid.GetComponent<HexGridModel>().m_row;
 		int col = grid.GetComponent<HexGridModel>().m_col;
 		col = col-1;
-		if(IsInBound(row,col))
+		if(IsInBound(row,col) && CanPass(row,col))
 			return m_grids[row][col];
 		else
 			return null;
@@ -105,7 +110,7 @@ public class GridLogic : MonoBehaviour {
 		int row = grid.GetComponent<HexGridModel>().m_row;
 		int col = grid.GetComponent<HexGridModel>().m_col;
 		col = col+1;
-		if(IsInBound(row,col))
+		if(IsInBound(row,col) && CanPass(row,col))
 			return m_grids[row][col];
 		else
 			return null;
@@ -116,7 +121,7 @@ public class GridLogic : MonoBehaviour {
 		int col = grid.GetComponent<HexGridModel>().m_col;
 		col = (row%2 == 0)?col-1:col;
 		row = row+1;
-		if(IsInBound(row,col))
+		if(IsInBound(row,col) && CanPass(row,col))
 			return m_grids[row][col];
 		else
 			return null;
@@ -127,7 +132,7 @@ public class GridLogic : MonoBehaviour {
 		int col = grid.GetComponent<HexGridModel>().m_col;
 		col = (row%2 == 0)?col:col+1;
 		row = row+1;
-		if(IsInBound(row,col))
+		if(IsInBound(row,col) && CanPass(row,col))
 			return m_grids[row][col];
 		else
 			return null;

@@ -38,9 +38,11 @@ public class HexGridModel :MonoBehaviour{
 		m_height = height;
 		m_row = row;
 		m_col = col;
-		
+
 		m_movementLeft = -1;
 	}
+	
+	
 	
 	public void ResetGraphStateVars ()
 	{
@@ -67,6 +69,19 @@ public class HexGridModel :MonoBehaviour{
 		Vector2 destCenter = destNode.GetComponent<HexGridModel>().m_center;
 		m_distToDest= Vector2.Distance(m_center,destCenter);
 	} 
+	
+	public bool CanPass(String currentPlayerTag)
+	{
+		bool canPass = true;
+		TnGAttribute attri = GetComponent<TnGAttribute>();
+		if(attri.m_unit != null)
+		{
+			//compare tag
+		}
+		if(attri.m_terrainType == TerrainType.obstacle)
+			canPass = false;
+		return canPass;
+	}
 	
 	//debugging purpose
 	public override string ToString()
