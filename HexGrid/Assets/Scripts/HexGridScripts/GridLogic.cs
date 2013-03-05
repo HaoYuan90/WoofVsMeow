@@ -207,11 +207,8 @@ public class GridLogic : MonoBehaviour {
 			int movementLeft = currentNode.GetComponent<HexGridModel>().movementLeft;
 			if (!closedList.Contains(currentNode) && movementLeft >= 0) {
 				closedList.Add(currentNode);
-				int tempRow = currentNode.GetComponent<HexGridModel>().m_row;
-				int tempCol = currentNode.GetComponent<HexGridModel>().m_col;
 				//turn on this hexgrid
-				m_grids[tempRow][tempCol].GetComponent<MaskManager>().GreenMaskOn();
-				
+				currentNode.GetComponent<MaskManager>().GreenMaskOn();	
 				//if movement is 0, stop here
 				if(movementLeft > 0){
 					List<GameObject> currentNeighbours=GetNeighbours(currentNode);

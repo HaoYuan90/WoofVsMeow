@@ -12,6 +12,7 @@ public class HexGridModel :MonoBehaviour{
 	public int m_col;
 	
 	//graph algo related state variables
+	public int m_movementCost;
 	private int m_movementLeft; 
 	/*NOTE: 
 	 * value 0 means movement stoped at this grid
@@ -55,7 +56,7 @@ public class HexGridModel :MonoBehaviour{
 	//otherwise ignore
 	public void UpdateMovementLeft (int movementLeftPrev)
 	{
-		int movementLeftThis = movementLeftPrev-1; // -cost of the grid, to be implemented
+		int movementLeftThis = movementLeftPrev-m_movementCost; // -cost of the grid, to be implemented
 		m_movementLeft = (m_movementLeft < movementLeftThis) ? movementLeftThis: m_movementLeft;
 	}
 	

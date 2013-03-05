@@ -190,24 +190,31 @@ public class GridGenerator: MonoBehaviour
 		GetGridSize();
 		CalcInitPos();
         CreateGrids();
+		UpdateGridMap();
 	}
 	
+	//update y scaling as well as movement cost
 	public void UpdateGridMap()
 	{
+		//TODO: all constants are hard coded, this is bad
 		foreach(GameObject e in m_grids){
-			TnGAttribute temp = e.GetComponent<TnGAttribute>();
-			if(temp.m_terrainType == TerrainType.hill){
-				Vector3 scaling = new Vector3(1.0f,0.3f,1.0f);
+			TnGAttribute tempTnG = e.GetComponent<TnGAttribute>();
+			HexGridModel tempModel = e.GetComponent<HexGridModel>();
+			if(tempTnG.m_terrainType == TerrainType.hill){
+				Vector3 scaling = new Vector3(1.0f,0.35f,1.0f);
 				e.transform.localScale = scaling;
+				tempModel.m_movementCost = 2;
 			}
-			else if(temp.m_terrainType == TerrainType.obstacle){
+			else if(tempTnG.m_terrainType == TerrainType.obstacle){
 				Vector3 scaling = new Vector3(1.0f,0.1f,1.0f);
 				e.transform.localScale = scaling;
+				tempModel.m_movementCost = 0;
 			}
 			else//plain
 			{
 				Vector3 scaling = new Vector3(1.0f,0.2f,1.0f);
 				e.transform.localScale = scaling;
+				tempModel.m_movementCost = 1;
 			}
 		}
 	}
