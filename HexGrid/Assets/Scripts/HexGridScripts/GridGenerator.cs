@@ -224,4 +224,42 @@ public class GridGenerator: MonoBehaviour
 		TestListSerielisation();
 		TestReferenceSerielisation();
 	}
+	
+	public void Xmirror()
+	{
+		List<List<GameObject>> grids = GetGridData();
+		if(grids.Count%2 != 1)
+		{
+			Debug.LogWarning("The map is not symmetric about x axis, number of rows must be odd"); 
+			return;
+		}
+		int head = 0;
+		int tail = grids.Count-1;
+		while(head < tail){
+			for(int i=0;i<grids[head].Count;i++){
+				grids[tail][i].GetComponent<TnGAttribute>().CopyTerrainAttributesFrom(grids[head][i].GetComponent<TnGAttribute>());
+			}
+			head ++;
+			tail --;
+		}
+		UpdateGridMap();
+	}
+	
+	public void Ymirror()
+	{
+		List<List<GameObject>> grids = GetGridData();
+		int head;
+		int tail;
+		for(int i=0;i<grids.Count;i++)
+		{
+			head = 0;
+			tail = grids[i].Count-1;
+			while(head<tail){
+				grids[i][tail].GetComponent<TnGAttribute>().CopyTerrainAttributesFrom(grids[i][head].GetComponent<TnGAttribute>());
+				head ++;
+				tail --;
+			}
+		}
+		UpdateGridMap();
+	}
 }

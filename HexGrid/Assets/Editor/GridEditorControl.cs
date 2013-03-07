@@ -42,5 +42,14 @@ public class GridEditorControl : EditorWindow
 		{
 			GameObject.Find("GridRenderer").GetComponent<GridGenerator>().RunTests();
 		}
+		GUILayout.Label("Mirror the map from top-down(x mirror) or from left-right(y mirror)");
+		if(GUILayout.Button("X mirror"))
+		{
+			GameObject.Find("GridRenderer").GetComponent<GridGenerator>().Xmirror();
+		}
+		if(GUILayout.Button("Y mirror"))
+		{
+			GameObject.Find("GridRenderer").GetComponent<GridGenerator>().Ymirror();
+		}
 	}
 }

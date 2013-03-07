@@ -17,4 +17,9 @@ public class TnGAttribute : MonoBehaviour
 	public TerrainType m_terrainType = TerrainType.plain;
 	public GameObject m_building;
 	public GameObject m_unit;
+	
+	public void CopyTerrainAttributesFrom(TnGAttribute src)
+	{
+		m_terrainType = src.m_terrainType;
+	}
 }
