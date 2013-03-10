@@ -1,0 +1,17 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\HexGridScripts\GridLogic.cs">
+    <Files>
+      <File FileName="Assets\Scripts\HexGridScripts\GridLogic.cs" Line="33" Column="3" />
+      <File FileName="Assets\Scripts\HexGridScripts\GridGenerator.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\HexGridScripts\HexGridModel.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\HexGridScripts\TnGAttribute.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\HexGridScripts\MaskManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\Editor\GridEditorControl.cs" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
