@@ -1,16 +1,16 @@
 using UnityEngine;
 using System.Collections;
 
-public class TestCase3 : MonoBehaviour 
+public class TestDriver : MonoBehaviour 
 {
-  private GameObject tempUnit; 
-  GameObject[] objArray;
-	CPU cpu;
+ 	private GameObject tempUnit; 
+ 	GameObject[] objArray;
+	APSequenceController cpu;
 
 	// Use this for initialization
 	void Start () 
 	{
-		cpu = GetComponent<CPU>();
+		cpu = GetComponent<APSequenceController>();
 		objArray = new GameObject[10];
 
 		for (int i=0; i<10; i++)

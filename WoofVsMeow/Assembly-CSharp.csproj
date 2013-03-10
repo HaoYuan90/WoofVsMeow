@@ -5,7 +5,7 @@
 	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 	<ProductVersion>10.0.20506</ProductVersion>
 	<SchemaVersion>2.0</SchemaVersion>
-	<ProjectGuid>{FC017B03-3764-389D-9D3B-4CA61A23A61A}</ProjectGuid>
+	<ProjectGuid>{7C2B3D8C-9F5A-FB00-23FB-8DBF8749DAF5}</ProjectGuid>
 	<OutputType>Library</OutputType>
 	<AppDesignerFolder>Properties</AppDesignerFolder>
 	<RootNamespace></RootNamespace>
@@ -44,15 +44,9 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\DunnoWhereToPutScripts\CPU.cs" />
-     <Compile Include="Assets\Scripts\DunnoWhereToPutScripts\Controller.cs" />
+     <Compile Include="Assets\Scripts\DunnoWhereToPutScripts\APSequenceController.cs" />
      <Compile Include="Assets\Scripts\DunnoWhereToPutScripts\GameUnitModel.cs" />
-     <Compile Include="Assets\Scripts\DunnoWhereToPutScripts\GeneralizedUnit.cs" />
-     <Compile Include="Assets\Scripts\DunnoWhereToPutScripts\PriorityQueue.cs" />
-     <Compile Include="Assets\Scripts\DunnoWhereToPutScripts\TestCase1.cs" />
-     <Compile Include="Assets\Scripts\DunnoWhereToPutScripts\TestCase2.cs" />
-     <Compile Include="Assets\Scripts\DunnoWhereToPutScripts\TestCase3.cs" />
-     <Compile Include="Assets\Scripts\DunnoWhereToPutScripts\UnitComparer.cs" />
+     <Compile Include="Assets\Scripts\DunnoWhereToPutScripts\TestDriver.cs" />
      <Compile Include="Assets\Scripts\HexGridScripts\GridGenerator.cs" />
      <Compile Include="Assets\Scripts\HexGridScripts\GridLogic.cs" />
      <Compile Include="Assets\Scripts\HexGridScripts\HexGridModel.cs" />

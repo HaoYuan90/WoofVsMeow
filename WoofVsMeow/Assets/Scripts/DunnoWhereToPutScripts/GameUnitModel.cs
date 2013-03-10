@@ -3,11 +3,11 @@ using System.Collections;
 
 public class GameUnitModel : MonoBehaviour
 {
-  private int m_current_AP;
-  private int m_max_AP;
+ 	private int m_current_AP;
+  	private int m_max_AP;
 	private int m_control;
 	private int m_active;
-	private int m_id_no;
+	//private int m_id_no;
 	private int debug_timer;
 
 	// Use this for initialization
@@ -32,9 +32,16 @@ public class GameUnitModel : MonoBehaviour
 
 	public void Initialize(int id, int curr, int max, int control)
 	{
-		m_id_no = id;
+		//m_id_no = id;
 		m_current_AP = curr;
 		m_max_AP = max;
+		m_control = control;
+	}
+	
+	public void InitialiseTestInstance(int control)
+	{
+		m_current_AP = Random.Range(1,500);
+		m_max_AP = m_current_AP+Random.Range(0,50);
 		m_control = control;
 	}
 
@@ -83,12 +90,13 @@ public class GameUnitModel : MonoBehaviour
 	public void TurnEnd()
 	{
 		m_active = 0;
-		GameObject.Find("CPU").GetComponent<CPU>().TurnEnd(gameObject);
+		GameObject.Find("APSequenceController").GetComponent<APSequenceController>().OnTurnEnd();
 	}
 
 	public void Print()
 	{
-		Debug.Log("Index : " + m_id_no.ToString() + "     Current AP : " + m_current_AP.ToString());
+		//Debug.Log("Index : " + m_id_no.ToString() + "     Current AP : " + m_current_AP.ToString());
+		Debug.Log("Current AP : " + m_current_AP.ToString());
 	}
 
 }
