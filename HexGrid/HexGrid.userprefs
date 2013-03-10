@@ -2,11 +2,12 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Editor/GridEditorControl.cs">
     <Files>
-      <File FileName="Assets/Scripts/HexGridScripts/GridLogic.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/HexGridScripts/GridGenerator.cs" Line="142" Column="58" />
+      <File FileName="Assets/Scripts/HexGridScripts/GridLogic.cs" Line="15" Column="35" />
+      <File FileName="Assets/Scripts/HexGridScripts/GridGenerator.cs" Line="137" Column="125" />
       <File FileName="Assets/Scripts/HexGridScripts/HexGridModel.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/HexGridScripts/TnGAttribute.cs" Line="1" Column="1" />
-      <File FileName="Assets/Editor/GridEditorControl.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/HexGridScripts/TnGAttribute.cs" Line="21" Column="39" />
+      <File FileName="Assets/Editor/GridEditorControl.cs" Line="21" Column="3" />
+      <File FileName="Assets/Scripts/HexGridScripts/MaskManager.cs" Line="51" Column="26" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -20,10 +20,12 @@ public class GridGenerator: MonoBehaviour
 	private int m_hexGridRefTestNum;
 	
     public GameObject m_hexPrefab;
-	public GameObject m_hexBlueMaskPrefab;
-	public GameObject m_hexRedMaskPrefab;
-	public GameObject m_hexGreenMaskPrefab;
-	public GameObject m_hexOutlineMaskPrefab;
+	public GameObject m_hexMaskPrefab;
+	public Material m_hexBlueMaskMat;
+	public Material m_hexRedMaskMat;
+	public Material m_hexGreenMaskMat;
+	public Material m_hexOutlineMaskMat;
+	
     //instantiate using unity editor
     public int m_gridNumHor = 11; //number of grids in horizontal direction
     public int m_gridNumVer = 11; //number of grids in vertical direction
@@ -130,13 +132,9 @@ public class GridGenerator: MonoBehaviour
 					//initialise model
 					hex.GetComponent<HexGridModel>().Initialise(grid2DPosition,m_hexWidth,m_hexLength,y,x); //x,y denoting col and row of grid
 					
-					//add mask objects to the grid as children
-					GameObject blueMask = (GameObject)Instantiate(m_hexBlueMaskPrefab);
-					GameObject redMask = (GameObject)Instantiate(m_hexRedMaskPrefab);
-					GameObject greenMask = (GameObject)Instantiate(m_hexGreenMaskPrefab);
-					GameObject outlineMask = (GameObject)Instantiate(m_hexOutlineMaskPrefab);
-					
-					hex.GetComponent<MaskManager>().InitMasks(redMask,greenMask,blueMask,outlineMask);
+					//add mask to the grid as children
+					GameObject mask = (GameObject)Instantiate(m_hexMaskPrefab);
+					hex.GetComponent<MaskManager>().InitMasks(mask,m_hexRedMaskMat,m_hexGreenMaskMat,m_hexBlueMaskMat,m_hexOutlineMaskMat);
 					
 					//set the test bit in terrain component of hexmap to test reference
 					int testInt = testIntGenerator.Next(0,m_gridNumHor);

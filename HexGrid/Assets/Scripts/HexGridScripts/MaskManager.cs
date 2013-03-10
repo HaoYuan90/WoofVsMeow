@@ -6,69 +6,60 @@ using System;
 public class MaskManager : MonoBehaviour {
 	
 	[SerializeField]
-	private GameObject m_redMask;
+	private GameObject m_mask;
 	[SerializeField]
-	private GameObject m_blueMask;
+	private Material m_redMat;
 	[SerializeField]
-	private GameObject m_greenMask;
+	private Material m_blueMat;
 	[SerializeField]
-	private GameObject m_outlineMask;
+	private Material m_greenMat;
+	[SerializeField]
+	private Material m_outlineMat;
 	
 	public float m_maskYOffset = 0.05f;
 	
-	public void InitMasks (GameObject r, GameObject g, GameObject b, GameObject ol)
+	public void InitMasks (GameObject mask, Material r, Material g, Material b, Material ol)
 	{
-		m_redMask = r;
-		m_blueMask = b;
-		m_greenMask = g;
-		m_outlineMask = ol;
-		//group masks under grid
-		m_blueMask.transform.parent = transform;
-		m_redMask.transform.parent = transform;
-		m_greenMask.transform.parent = transform;
-		m_outlineMask.transform.parent = transform;
+		m_mask = mask;
+		//put mask under grid
+		m_mask.transform.parent = transform;
+		//init material
+		m_redMat = r;
+		m_blueMat = b;
+		m_greenMat = g;
+		m_outlineMat = ol;
 		
 		//position of mask
 		float maskHeight = renderer.bounds.size.y+m_maskYOffset;
 		Vector3 maskPos = new Vector3(transform.position.x, transform.position.y + maskHeight, transform.position.z);
 		//apply masks
-		m_blueMask.transform.position = maskPos;
-		m_redMask.transform.position = maskPos;
-		m_greenMask.transform.position = maskPos;
-		m_outlineMask.transform.position = maskPos;
+		m_mask.transform.position = maskPos;
 		//show grid by default
 		OutlineMaskOn();
 	}
 	
 	public void TurnOffAllMasks ()
 	{
-		m_redMask.SetActive(false);
-		m_blueMask.SetActive(false);
-		m_greenMask.SetActive(false);
-		m_outlineMask.SetActive(false);
+		m_mask.renderer.material = null;
 	}
 	
 	public void RedMaskOn()
 	{
-		TurnOffAllMasks();
-		m_redMask.SetActive(true);
+		m_mask.renderer.material = m_redMat;
 	}
 	
 	public void BlueMaskOn()
 	{
-		TurnOffAllMasks();
-		m_blueMask.SetActive(true);
+		m_mask.renderer.material = m_blueMat;
 	}
 	
 	public void GreenMaskOn()
 	{
-		TurnOffAllMasks();
-		m_greenMask.SetActive(true);
+		m_mask.renderer.material = m_greenMat;
 	}
 	
 	public void OutlineMaskOn()
 	{
-		TurnOffAllMasks();
-		m_outlineMask.SetActive(true);
+		m_mask.renderer.material = m_outlineMat;
 	}
 }

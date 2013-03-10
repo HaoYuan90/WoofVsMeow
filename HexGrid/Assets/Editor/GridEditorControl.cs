@@ -17,6 +17,8 @@ public class GridEditorControl : EditorWindow
 	void OnGUI()
 	{
 		//fields to recreate gridmap
+		GUILayout.Label("Toggle grid masks");
+		
 		GUILayout.Label("Recreate grid map, will erase all you had before");
 		m_numRows = EditorGUILayout.IntField("number of rows",m_numRows);
 		m_numCols = EditorGUILayout.IntField("number of cols",m_numCols);
