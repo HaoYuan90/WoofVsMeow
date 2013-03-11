@@ -47,6 +47,14 @@ public class GameUnitModel : MonoBehaviour
 		m_control = control;
 		m_debugID = id;
 	}
+	
+	public void InitialiseTestInstance(int id, int current, int max, int control)
+	{
+		m_current_AP = current;
+		m_max_AP = max;
+		m_control = control;
+		m_debugID = id;
+	}
 
 	public void Set_Ap(int ap)
 	{
