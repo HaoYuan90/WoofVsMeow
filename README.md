@@ -9,3 +9,5 @@ Current working generation method is GridMapGeneratorTest <== which is a test ve
 
 GameObject HexGrid will have a component model attached to them, this is where their data attributes are stored. 
 This component's data are set when they are drawn to unity scene. Also a reference to them are added to a list. 
+
+testing testing
