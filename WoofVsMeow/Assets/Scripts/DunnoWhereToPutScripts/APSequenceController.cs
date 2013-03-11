@@ -24,6 +24,7 @@ public class APSequenceController : MonoBehaviour
 	{
 		m_gameUnits = new List<GameObject>();
 		m_APComparer = new APComparer();
+		gameObject.AddComponent("TestDriver");
 	}
 
 	private void InsertUnit(GameObject unit)

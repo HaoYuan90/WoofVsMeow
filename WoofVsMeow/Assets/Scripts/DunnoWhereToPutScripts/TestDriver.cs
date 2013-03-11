@@ -15,14 +15,14 @@ public class TestDriver : MonoBehaviour
 
 		for (int i=0; i<10; i++)
 		{
-			objArray[i] = new GameObject("Object"+ (i+1).ToString());
+			objArray[i] = new GameObject("Object"+ i.ToString());
 			objArray[i].AddComponent("GameUnitModel");
-			objArray[i].GetComponent<GameUnitModel>().Initialize(i+1, Random.Range(1,500), 500, Random.Range(1,2));
+			objArray[i].GetComponent<GameUnitModel>().InitialiseTestInstance(i,Random.Range (0,1));
 		}
 
 		for (int j=0; j<10; j++)
 		{
-			cpu.Insert(objArray[j]);
+			cpu.AddNewUnit(objArray[j]);
 		}
 
 	}
@@ -30,21 +30,23 @@ public class TestDriver : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
-
-			//Press P to see the contents of the Queue
-			if (Input.GetKeyDown(KeyCode.P))
-			{
-				cpu.Print();
-			}
-
-			//Press T to elapse the Turn
-			else if (Input.GetKeyDown(KeyCode.T))
-			{
-				cpu.TurnBegin();
-			}
-			else if (Input.GetKeyDown(KeyCode.C))
-			{
-				cpu.DebugCount();
-			}
+		//Press P to see the contents of the Queue
+		if (Input.GetKeyDown(KeyCode.P))
+		{
+			cpu.Print();
+		}
+		//Press T to elapse the Turn
+		else if (Input.GetKeyDown(KeyCode.T))
+		{
+			GameObject thisObj = cpu.OnTurnBegin();
+			GameUnitModel temp = thisObj.GetComponent<GameUnitModel>();
+			temp.Print();
+			temp.Set_Ap(temp.Get_Max());
+			cpu.OnTurnEnd();	
+		}
+		else if (Input.GetKeyDown(KeyCode.C))
+		{
+			cpu.DebugCount();
+		}
 	}
 }

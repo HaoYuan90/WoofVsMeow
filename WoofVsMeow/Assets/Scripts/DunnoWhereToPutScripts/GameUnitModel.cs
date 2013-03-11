@@ -7,17 +7,18 @@ public class GameUnitModel : MonoBehaviour
   	private int m_max_AP;
 	private int m_control;
 	private int m_active;
+	
+	private int m_debugID;
 	//private int m_id_no;
-	private int debug_timer;
+	//private int debug_timer;
 
 	// Use this for initialization
 	public void Start () 
 	{
 		m_active = 0;
-		debug_timer = 0;
 	}
 
-	// Update is called once per frame
+	/*
 	void Update () 
 	{
 		if (debug_timer > 0)
@@ -28,21 +29,23 @@ public class GameUnitModel : MonoBehaviour
 				TurnEnd();
 			}
 		}
-	}
+	}*/
 
-	public void Initialize(int id, int curr, int max, int control)
+	public void Initialize(int curr, int max, int control)
 	{
-		//m_id_no = id;
 		m_current_AP = curr;
 		m_max_AP = max;
 		m_control = control;
+		
+		m_debugID = 0;
 	}
 	
-	public void InitialiseTestInstance(int control)
+	public void InitialiseTestInstance(int id, int control)
 	{
 		m_current_AP = Random.Range(1,500);
 		m_max_AP = m_current_AP+Random.Range(0,50);
 		m_control = control;
+		m_debugID = id;
 	}
 
 	public void Set_Ap(int ap)
@@ -62,7 +65,6 @@ public class GameUnitModel : MonoBehaviour
 	{
 		m_current_AP=0;
 		m_active = 1;
-		debug_timer = 6;
 	}
 
 	public void Set_Control(int c)
@@ -95,8 +97,7 @@ public class GameUnitModel : MonoBehaviour
 
 	public void Print()
 	{
-		//Debug.Log("Index : " + m_id_no.ToString() + "     Current AP : " + m_current_AP.ToString());
-		Debug.Log("Current AP : " + m_current_AP.ToString());
+		Debug.Log("Index : " + m_debugID.ToString() + "     Current AP : " + m_current_AP.ToString() + "      Max AP : " + m_max_AP.ToString());
 	}
 
 }
