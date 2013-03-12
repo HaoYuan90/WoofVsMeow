@@ -61,7 +61,7 @@ public class TestDriver : MonoBehaviour
 			GameObject thisObj = cpu.OnTurnBegin();
 			GameUnitModel temp = thisObj.GetComponent<GameUnitModel>();
 			temp.Print();
-			temp.Set_Ap(temp.Get_Max());
+			temp.SetAP(temp.GetMax());
 			cpu.OnTurnEnd();	
 		}
 		else if (Input.GetKeyDown(KeyCode.C))
