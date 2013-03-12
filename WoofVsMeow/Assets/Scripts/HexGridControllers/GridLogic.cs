@@ -10,9 +10,8 @@ public class GridLogic : MonoBehaviour {
 	
 	private List<List<GameObject>> m_grids;
 	
-	//temp used, debatable
-	private int m_click_number=0;
-	private GameObject currentSelectedGrid=null;
+	bool m_unitSelected;
+	private GameObject m_selectedGrid=null;
 	
 	private void InitGridData()
 	{
@@ -22,6 +21,14 @@ public class GridLogic : MonoBehaviour {
 		//activate mask when game actually starts
 		gen.m_maskActive = false;
 		gen.ToggleMask();
+	}
+	
+	private void InitUnitsAndBuildings(){
+		foreach (Transform child in GameObject.Find ("Units").transform){
+			child.gameObject.GetComponent<MovementController>().Initialise(this);
+		}
+			
+		//do the same for buildings
 	}
 	
 	private void CheckGridData()
@@ -41,6 +48,8 @@ public class GridLogic : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		InitGridData();
+		InitUnitsAndBuildings();
+		m_unitSelected = false;
 		//CheckGridData();
 	}
 	
@@ -193,39 +202,56 @@ public class GridLogic : MonoBehaviour {
 	}
 	
 	//return a Grid list from source to destination
-	public List<GameObject> HighlightMovementPath(GameObject src, GameObject dest) 
+	public void HighlightMovementPath(GameObject src, GameObject dest) 
 	{
-		List<GameObject> pathList = new List<GameObject>();
 		GameObject currentNode = dest;		
 		while (currentNode != null) {
-			pathList.Insert(0,currentNode);
 			currentNode.GetComponent<MaskManager>().BlueMaskOn();
 			currentNode=currentNode.GetComponent<HexGridModel>().m_prevNode;
 		}
 		src.GetComponent<MaskManager>().RedMaskOn();
 		dest.GetComponent<MaskManager>().RedMaskOn();
-		ResetAllGraphStateVars();
+	}
+	
+	public List<GameObject> GetMovementPath(GameObject src, GameObject dest)
+	{
+		List<GameObject> pathList = new List<GameObject>();
+		GameObject currentNode = dest;		
+		while (currentNode != null) {
+			pathList.Insert(0,currentNode);
+			currentNode=currentNode.GetComponent<HexGridModel>().m_prevNode;
+		}
 		return pathList;
 	}
 	
 	void Update () {
 		if(Input.GetButtonDown("Fire1")) {
-			m_click_number=(m_click_number+1)%2;
 			RaycastHit grid;
 			Ray selection = Camera.main.ScreenPointToRay(Input.mousePosition);
 			if (Physics.Raycast(selection,out grid)){				
-				if (m_click_number==1) { //First click will show the movement range
+				if (!m_unitSelected) { //select an unit
 					//Debug.Log("Clicking on: "+grid.collider.gameObject.GetComponent<HexGridModel>().m_row.ToString()
 					//					+", "+grid.collider.gameObject.GetComponent<HexGridModel>().m_col.ToString());
-					currentSelectedGrid=grid.collider.gameObject;
 					ClearAllMasks();
-					HighlightMovementRange(currentSelectedGrid, 5);
-					grid.collider.gameObject.GetComponent<MaskManager>().RedMaskOn();
+					m_selectedGrid=grid.collider.gameObject;
+					m_selectedGrid.GetComponent<MaskManager>().RedMaskOn();
+					if(m_selectedGrid.GetComponent<TnGAttribute>().m_unit != null){
+						m_unitSelected = true;
+						GameObject unit = m_selectedGrid.GetComponent<TnGAttribute>().m_unit;
+						HighlightMovementRange(m_selectedGrid, unit.GetComponent<MovementController>().m_movementRange);
+					}
 				}
-				else { //Second Click will show the movement path
+				else { //if unit is already selected, choose the destination
 					//Debug.Log("Destination: "+grid.collider.gameObject.GetComponent<HexGridModel>().m_row.ToString()
 					//					+", "+grid.collider.gameObject.GetComponent<HexGridModel>().m_col.ToString());
-					HighlightMovementPath(currentSelectedGrid,grid.collider.gameObject);
+					GameObject dest = grid.collider.gameObject;
+					//make sure selected node is in range and is not the src node itself
+					if(dest.GetComponent<HexGridModel>().m_prevNode != null){
+						GameObject unit = m_selectedGrid.GetComponent<TnGAttribute>().m_unit;
+						unit.GetComponent<MovementController>().Move(GetMovementPath(m_selectedGrid,dest));
+						dest.GetComponent<MaskManager>().RedMaskOn();
+						m_unitSelected = false;
+					}
 				}
 			}
 		}

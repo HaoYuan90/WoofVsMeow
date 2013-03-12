@@ -53,7 +53,7 @@
      <Compile Include="Assets\Scripts\HexGridControllers\MaskManager.cs" />
      <Compile Include="Assets\Scripts\HexGridControllers\TestAttribute.cs" />
      <Compile Include="Assets\Scripts\HexGridControllers\TnGAttribute.cs" />
-     <Compile Include="Assets\Scripts\UnitControllers\UnitController.cs" />
+     <Compile Include="Assets\Scripts\UnitControllers\MovementController.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

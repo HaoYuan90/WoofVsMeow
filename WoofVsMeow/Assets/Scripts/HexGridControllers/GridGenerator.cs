@@ -201,6 +201,7 @@ public class GridGenerator: MonoBehaviour
 		foreach(GameObject e in m_grids){
 			TnGAttribute tempTnG = e.GetComponent<TnGAttribute>();
 			HexGridModel tempModel = e.GetComponent<HexGridModel>();
+			//update y scaling of different terrain types
 			if(tempTnG.m_terrainType == TerrainType.hill){
 				Vector3 scaling = new Vector3(1.0f,0.35f,1.0f);
 				e.transform.localScale = scaling;
@@ -216,6 +217,15 @@ public class GridGenerator: MonoBehaviour
 				Vector3 scaling = new Vector3(1.0f,0.2f,1.0f);
 				e.transform.localScale = scaling;
 				tempModel.m_movementCost = 1;
+			}
+			//object has unit on top, place unit to proper place
+			if(tempTnG.m_unit != null){
+				tempTnG.m_unit.transform.position = 
+					new Vector3(tempModel.m_center.x,e.renderer.bounds.max.y,tempModel.m_center.y);
+				if(GameObject.Find("Units") == null){
+					new GameObject("Units");
+				}
+				tempTnG.m_unit.transform.parent = GameObject.Find("Units").transform;
 			}
 		}
 	}

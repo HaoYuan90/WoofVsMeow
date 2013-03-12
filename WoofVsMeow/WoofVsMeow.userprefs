@@ -1,8 +1,9 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\UnitControllers\UnitController.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\UnitControllers\MovementController.cs">
     <Files>
-      <File FileName="Assets\Scripts\UnitControllers\UnitController.cs" Line="39" Column="1" />
+      <File FileName="Assets\Scripts\UnitControllers\MovementController.cs" Line="61" Column="28" />
+      <File FileName="Assets\Scripts\HexGridControllers\GridLogic.cs" Line="252" Column="52" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

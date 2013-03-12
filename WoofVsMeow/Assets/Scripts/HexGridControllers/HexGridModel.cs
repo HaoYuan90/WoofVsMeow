@@ -33,6 +33,7 @@ public class HexGridModel :MonoBehaviour{
 
         //movement cost is set in editor
 		m_movementLeft = -1;
+		m_prevNode = null;
 	}
 	
 	
