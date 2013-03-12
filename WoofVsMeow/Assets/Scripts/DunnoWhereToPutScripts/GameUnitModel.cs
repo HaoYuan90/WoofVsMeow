@@ -1,6 +1,3 @@
-using UnityEngine;
-using System.Collections;
-
 public class GameUnitModel : MonoBehaviour
 {
  	private int m_current_AP;
@@ -56,17 +53,22 @@ public class GameUnitModel : MonoBehaviour
 		m_debugID = id;
 	}
 
-	public void Set_Ap(int ap)
+	public void SetAP(int ap)
 	{
 		m_current_AP = ap;
 	}
-	public void Modify_Ap(int ap)
+	public void ModifyAP(int ap)
 	{
 		m_current_AP += ap;
 	}
-	public int Get_AP()
+	public int GetAP()
 	{
 		return m_current_AP;
+	}
+	
+	public int GetID()
+	{
+		return m_debugID;
 	}
 
 	public void Activate()
@@ -75,12 +77,12 @@ public class GameUnitModel : MonoBehaviour
 		m_active = 1;
 	}
 
-	public void Set_Control(int c)
+	public void SetControl(int c)
 	{
 		m_control = c;
 	}
 
-	public int Get_Control()
+	public int GetControl()
 	{
 		return m_control;
 	}
@@ -88,11 +90,11 @@ public class GameUnitModel : MonoBehaviour
 	{
 		m_active = 0;
 	}
-	public void Set_Max(int ap)
+	public void SetMax(int ap)
 	{
 		m_max_AP = ap;
 	}
-	public int Get_Max()
+	public int GetMax()
 	{
 		return m_max_AP;
 	}
@@ -106,6 +108,12 @@ public class GameUnitModel : MonoBehaviour
 	public void Print()
 	{
 		Debug.Log("Index : " + m_debugID.ToString() + "     Current AP : " + m_current_AP.ToString() + "      Max AP : " + m_max_AP.ToString());
+	}
+	
+	//For testing
+	public string ToString()
+	{
+		return m_debugID.ToString() + "-" + m_current_AP.ToString() + "-" + m_max_AP.ToString();
 	}
 
 }
