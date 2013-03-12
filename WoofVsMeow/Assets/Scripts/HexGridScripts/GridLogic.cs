@@ -12,8 +12,7 @@ public class GridLogic : MonoBehaviour {
 	
 	//temp used, debatable
 	private int m_click_number=0;
-	private int m_current_grid_row=0;
-	private int m_current_grid_col=0;
+	private GameObject currentSelectedGrid=null;
 	
 	private void InitGridData()
 	{
@@ -61,13 +60,16 @@ public class GridLogic : MonoBehaviour {
 		return neighbours;
 	}
 	
-	//check if row,col is valid in the current map
-	private bool IsInBound(int row, int col) 
+	//return the GameObject grid if row,col is in bound and units can move pass
+	private GameObject TryGetGrid(int row, int col) 
 	{
 		int maxCol=GameObject.Find("GridRenderer").GetComponent<GridGenerator>().m_gridNumHor;
 		int maxRow=GameObject.Find("GridRenderer").GetComponent<GridGenerator>().m_gridNumVer;
 		maxCol = (row%2==0) ? maxCol : maxCol-1;
-      	return (row>=0 && row<maxRow && col>=0 && col<maxCol);
+      	if (row>=0 && row<maxRow && col>=0 && col<maxCol && CanPass(row,col))
+			return m_grids[row][col];
+		else
+			return null;
 	}
 	
 	private bool CanPass(int row, int col)
@@ -81,10 +83,8 @@ public class GridLogic : MonoBehaviour {
 		int col = grid.GetComponent<HexGridModel>().m_col;
 		col = (row%2 == 0)?col-1:col;
 		row = row-1;
-		if(IsInBound(row,col) && CanPass(row,col))
-			return m_grids[row][col];
-		else
-			return null;
+
+		return TryGetGrid(row,col);
 	}
 		
 	private GameObject GetTopRight(GameObject grid) 
@@ -93,10 +93,8 @@ public class GridLogic : MonoBehaviour {
 		int col = grid.GetComponent<HexGridModel>().m_col;
 		col = (row%2 == 0)?col:col+1;
 		row = row-1;
-		if(IsInBound(row,col) && CanPass(row,col))
-			return m_grids[row][col];
-		else
-			return null;
+
+		return TryGetGrid(row,col);
 	}
 		
 	private GameObject GetLeft(GameObject grid) 
@@ -104,20 +102,16 @@ public class GridLogic : MonoBehaviour {
 		int row = grid.GetComponent<HexGridModel>().m_row;
 		int col = grid.GetComponent<HexGridModel>().m_col;
 		col = col-1;
-		if(IsInBound(row,col) && CanPass(row,col))
-			return m_grids[row][col];
-		else
-			return null;
+
+		return TryGetGrid(row,col);
 	}
 		
 	private GameObject GetRight(GameObject grid) {
 		int row = grid.GetComponent<HexGridModel>().m_row;
 		int col = grid.GetComponent<HexGridModel>().m_col;
 		col = col+1;
-		if(IsInBound(row,col) && CanPass(row,col))
-			return m_grids[row][col];
-		else
-			return null;
+
+		return TryGetGrid(row,col);
 	}
 		
 	private GameObject GetBottomLeft(GameObject grid) {
@@ -125,10 +119,8 @@ public class GridLogic : MonoBehaviour {
 		int col = grid.GetComponent<HexGridModel>().m_col;
 		col = (row%2 == 0)?col-1:col;
 		row = row+1;
-		if(IsInBound(row,col) && CanPass(row,col))
-			return m_grids[row][col];
-		else
-			return null;
+
+		return TryGetGrid(row,col);
 	}
 		
 	private GameObject GetBottomRight(GameObject grid) {
@@ -136,37 +128,10 @@ public class GridLogic : MonoBehaviour {
 		int col = grid.GetComponent<HexGridModel>().m_col;
 		col = (row%2 == 0)?col:col+1;
 		row = row+1;
-		if(IsInBound(row,col) && CanPass(row,col))
-			return m_grids[row][col];
-		else
-			return null;
+
+		return TryGetGrid(row,col);
 	}
-	
-	/*
-	public class Node:IEquatable<Node>, IComparable<Node> {
-	    public float Cost_So_Far;
-	    public double Cost_Remaining;
-		public List<List<int>> Past_Nodes;
-	
-    	public Node(int x,int y,float cost_so_far,double cost_remaining, List<List<int>> past_nodes) {
-	        this.X=x;
-	        this.Y=y;
-			this.Cost_So_Far=cost_so_far;
-			this.Cost_Remaining=cost_remaining;
-			this.Past_Nodes=past_nodes;
-			this.Past_Nodes.Add(new List<int>(){x,y});
-	    }
-		
-	    public bool Equals(Node other) {
-	        return (this.X==other.X && this.Y==other.Y);
-	    }f
-			
-		public int CompareTo(Node other) {
-	        return Cost_Remaining.CompareTo(other.Cost_Remaining);
-	    }
-	}
-	*/
-	
+
 	//reset certain fields in hexgridmodel 
 	//to run BFS and A* path finding
 	private void ResetAllGraphStateVars()
@@ -177,134 +142,76 @@ public class GridLogic : MonoBehaviour {
 	}
 	
 	//find the range of movement and highlight those grids
-	public void HighlightMovementRange(int row, int col, int movement)
+	public void HighlightMovementRange(GameObject src, float movement)
 	{
-		//clear state variables
-		ResetAllGraphStateVars();
-		//list of nodes to check
-		List<GameObject> openList=new List<GameObject>();
-		//list of nodes already checked
-		List<GameObject> closedList=new List<GameObject>();
-		
-		GameObject currentNode=m_grids[row][col];
-		//set movementleft
-		currentNode.GetComponent<HexGridModel>().InitMovementLeft(movement);
-		
-		//check if first node is valid
-		if (IsInBound(row,col))
-			openList.Add(currentNode);
-		
-		//run BFS
-		while (openList.Count!=0) {
-			//sort from largest movement left to smallest movementleft
-			openList.Sort(
-				delegate (GameObject a, GameObject b) 
-   				{
-					int mla = a.GetComponent<HexGridModel>().movementLeft;
-					int mlb = b.GetComponent<HexGridModel>().movementLeft;
-					return mlb.CompareTo(mla); //order matters
-				} 
-			);
-			currentNode=openList[0];
-			//Debug.Log("Current node: "+currentNode.ToString());
-			openList.RemoveAt(0);
-			int movementLeft = currentNode.GetComponent<HexGridModel>().movementLeft;
-			if (!closedList.Contains(currentNode) && movementLeft >= 0) {
-				closedList.Add(currentNode);
-				//turn on this hexgrid
-				currentNode.GetComponent<MaskManager>().GreenMaskOn();	
-				//if movement is 0, stop here
-				if(movementLeft > 0){
-					List<GameObject> currentNeighbours=GetNeighbours(currentNode);
-					foreach (GameObject n in currentNeighbours) {
-						//update cost
-						n.GetComponent<HexGridModel>().UpdateMovementLeft(movementLeft);
-						//if openlist already contains this node, the cost will be automatically updated
-						//since openlist only contains a pointer to the gameobject
-						if (!openList.Contains(n)) 
-							openList.Add(n);
-					}
-				}
-			}
-		}
+        //clear state variables
+        ResetAllGraphStateVars();
+        //list of nodes to check
+        List<GameObject> openList = new List<GameObject>();
+        //list of nodes already checked
+        List<GameObject> closedList = new List<GameObject>();
+
+        GameObject currentNode = m_grids[row][col];
+        //set movementleft
+        currentNode.GetComponent<HexGridModel>().InitMovementLeft(movement);
+
+        //check if first node is valid
+        if (IsInBound(row, col))
+            openList.Add(currentNode);
+
+        //run BFS
+        while (openList.Count != 0)
+        {
+            //sort from largest movement left to smallest movementleft
+            openList.Sort(
+                delegate(GameObject a, GameObject b)
+                {
+                    int mla = a.GetComponent<HexGridModel>().movementLeft;
+                    int mlb = b.GetComponent<HexGridModel>().movementLeft;
+                    return mlb.CompareTo(mla); //order matters
+                }
+            );
+            currentNode = openList[0];
+            //Debug.Log("Current node: "+currentNode.ToString());
+            openList.RemoveAt(0);
+            int movementLeft = currentNode.GetComponent<HexGridModel>().movementLeft;
+            if (!closedList.Contains(currentNode) && movementLeft >= 0)
+            {
+                closedList.Add(currentNode);
+                //turn on this hexgrid
+                currentNode.GetComponent<MaskManager>().GreenMaskOn();
+                //if movement is 0, stop here
+                if (movementLeft > 0)
+                {
+                    List<GameObject> currentNeighbours = GetNeighbours(currentNode);
+                    foreach (GameObject n in currentNeighbours)
+                    {
+                        //update cost
+                        n.GetComponent<HexGridModel>().UpdateMovementLeft(movementLeft);
+                        //if openlist already contains this node, the cost will be automatically updated
+                        //since openlist only contains a pointer to the gameobject
+                        if (!openList.Contains(n))
+                            openList.Add(n);
+                    }
+                }
+            }
+        }
 	}
 	
-	//implement : return a list of path instead of just highlighting them
-	//find path from source to destination
-	public void HighlightMovementPath(GameObject src, GameObject dest) 
+	//return a Grid list from source to destination
+	public List<GameObject> HighlightMovementPath(GameObject src, GameObject dest) 
 	{
-		ResetAllGraphStateVars();
-		List<GameObject> openList=new List<GameObject>();
-		List<GameObject> closedList=new List<GameObject>();
-		
-		int srcRow = src.GetComponent<HexGridModel>().m_row;
-		int srcCol = src.GetComponent<HexGridModel>().m_col;
-		
-		GameObject currentNode = m_grids[srcRow][srcCol];
-		currentNode.GetComponent<HexGridModel>().InitDistToDest(dest);
-		currentNode.GetComponent<HexGridModel>().m_prevNode = null;
-		
-		//make sure src node is valid
-		if (IsInBound(srcRow,srcCol))
-			openList.Add(currentNode);
-		
-		//run A* path finding
-		while (openList.Count!=0) 
-		{
-			//change later, dont have to use current node
-			//to indicate if reachable
-			if (openList.Contains(dest)){
-				currentNode = dest;
-				break;
-			}
-			openList.Sort(
-				delegate (GameObject a, GameObject b) 
-   				{
-					float mla = a.GetComponent<HexGridModel>().distToDest;
-					float mlb = b.GetComponent<HexGridModel>().distToDest;
-					return mla.CompareTo(mlb); //order matters
-				} 
-			);
-			currentNode=openList[0];
-			openList.RemoveAt(0);
-			//terminate if destination is reached
-			//dijkstra like shortest path finding
-			closedList.Add(currentNode);
-			List<GameObject> currentNeighbours=GetNeighbours(currentNode);
-			foreach (GameObject n in currentNeighbours) {
-				n.GetComponent<HexGridModel>().InitDistToDest(dest);
-				/*if (openList.Contains(n)) {
-					*
-					 * why can this happen? your cost remaining will always be the same isnt it?
-					 * seems it is just the distance from this node to dest node
-					if (n.Cost_Remaining>openList.Find(n2=>n2.Equals(n)).Cost_Remaining) {
-						openList.Remove(n);
-					 *contains already does a search, whats the purpose of doing binary search again?
-					 *duplicate node?
-						int index=openList.BinarySearch(n);
-						if (index<0)
-							openList.Insert(~index,n);
-						else
-							openList.Insert(index,n);
-					}*
-				}*/
-				if(!openList.Contains(n)&&!closedList.Contains(n)){
-					n.GetComponent<HexGridModel>().m_prevNode = currentNode;
-					openList.Add(n);
-				}
-			}
-			currentNode=null;
+		List<GameObject> pathList = new List<GameObject>();
+		GameObject currentNode = dest;		
+		while (currentNode != null) {
+			pathList.Insert(0,currentNode);
+			currentNode.GetComponent<MaskManager>().BlueMaskOn();
+			currentNode=currentNode.GetComponent<HexGridModel>().m_prevNode;
 		}
-		//turn on path
-
-		if (currentNode!=null){
-			while(currentNode.GetComponent<HexGridModel>().m_prevNode != null){
-				currentNode.GetComponent<MaskManager>().BlueMaskOn();
-				currentNode = currentNode.GetComponent<HexGridModel>().m_prevNode;
-			}
-		}
-		//turn on dest node
+		src.GetComponent<MaskManager>().RedMaskOn();
 		dest.GetComponent<MaskManager>().RedMaskOn();
+		ResetAllGraphStateVars();
+		return pathList;
 	}
 	
 	void Update () {
@@ -313,19 +220,18 @@ public class GridLogic : MonoBehaviour {
 			RaycastHit grid;
 			Ray selection = Camera.main.ScreenPointToRay(Input.mousePosition);
 			if (Physics.Raycast(selection,out grid)){				
-				if (m_click_number==1) { //BFS
-					Debug.Log("Clicking on: "+grid.collider.gameObject.GetComponent<HexGridModel>().m_row.ToString()
-										+", "+grid.collider.gameObject.GetComponent<HexGridModel>().m_col.ToString());
-					m_current_grid_row=grid.collider.gameObject.GetComponent<HexGridModel>().m_row;
-					m_current_grid_col=grid.collider.gameObject.GetComponent<HexGridModel>().m_col;
+				if (m_click_number==1) { //First click will show the movement range
+					//Debug.Log("Clicking on: "+grid.collider.gameObject.GetComponent<HexGridModel>().m_row.ToString()
+					//					+", "+grid.collider.gameObject.GetComponent<HexGridModel>().m_col.ToString());
+					currentSelectedGrid=grid.collider.gameObject;
 					ClearAllMasks();
-					HighlightMovementRange(m_current_grid_row, m_current_grid_col, 3);
+					HighlightMovementRange(currentSelectedGrid, (float)3.0);
 					grid.collider.gameObject.GetComponent<MaskManager>().RedMaskOn();
 				}
-				else { //A*
-					Debug.Log("Destination: "+grid.collider.gameObject.GetComponent<HexGridModel>().m_row.ToString()
-										+", "+grid.collider.gameObject.GetComponent<HexGridModel>().m_col.ToString());
-					HighlightMovementPath(m_grids[m_current_grid_row][m_current_grid_col],grid.collider.gameObject);
+				else { //Second Click will show the movement path
+					//Debug.Log("Destination: "+grid.collider.gameObject.GetComponent<HexGridModel>().m_row.ToString()
+					//					+", "+grid.collider.gameObject.GetComponent<HexGridModel>().m_col.ToString());
+					HighlightMovementPath(currentSelectedGrid,grid.collider.gameObject);
 				}
 			}
 		}
