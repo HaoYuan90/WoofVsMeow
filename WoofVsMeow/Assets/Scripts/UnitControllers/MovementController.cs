@@ -42,10 +42,12 @@ public class MovementController : MonoBehaviour
 	void FixedUpdate () {
 		if(m_pathList.Count > 0)
 		{
-			gameObject.animation.Play("Take 001");
+			if(!gameObject.animation.IsPlaying("Take 001"))
+				gameObject.animation.Play("Take 001");
 			//have reached the next node which should be index 0
 			if(m_movementStepLeft == 0){
-				gameObject.transform.position = m_pathList[0].transform.position;
+				//set this line 
+				//gameObject.transform.position = m_pathList[0].transform.position;
 				//have not yet reached destination
 				if(m_pathList.Count > 1) {
 					//face the next node
@@ -61,11 +63,16 @@ public class MovementController : MonoBehaviour
 				m_pathList.RemoveAt(0);
 				m_movementStepLeft = m_movementSpeed;
 			}
-			
 			Vector3 src = gameObject.transform.position;
-			Vector3 dest = m_pathList[0].transform.position;
+			Vector3 temp = m_pathList[0].transform.position;
+			Vector3 dest = new Vector3(temp.x,m_pathList[0].renderer.bounds.max.y,temp.z);
 			gameObject.transform.position = Vector3.Lerp(src,dest,(float)1/m_movementStepLeft);
 			m_movementStepLeft --;
+		}
+		else
+		{
+			if(gameObject.animation.IsPlaying("Take 001"))
+				gameObject.animation.Stop();
 		}
 			/*
 		if (pathList.Count <= 1) { //there is no grid to walk onto
