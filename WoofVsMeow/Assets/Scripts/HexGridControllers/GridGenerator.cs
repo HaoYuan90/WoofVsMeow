@@ -248,7 +248,7 @@ public class GridGenerator: MonoBehaviour
 		int tail = grids.Count-1;
 		while(head < tail){
 			for(int i=0;i<grids[head].Count;i++){
-				grids[tail][i].GetComponent<TnGAttribute>().CopyTerrainAttributesFrom(grids[head][i].GetComponent<TnGAttribute>());
+				grids[tail][i].GetComponent<TnGAttribute>().MirrorTnGAttributesFrom(grids[head][i].GetComponent<TnGAttribute>());
 			}
 			head ++;
 			tail --;
@@ -266,7 +266,7 @@ public class GridGenerator: MonoBehaviour
 			head = 0;
 			tail = grids[i].Count-1;
 			while(head<tail){
-				grids[i][tail].GetComponent<TnGAttribute>().CopyTerrainAttributesFrom(grids[i][head].GetComponent<TnGAttribute>());
+				grids[i][tail].GetComponent<TnGAttribute>().MirrorTnGAttributesFrom(grids[i][head].GetComponent<TnGAttribute>());
 				head ++;
 				tail --;
 			}
