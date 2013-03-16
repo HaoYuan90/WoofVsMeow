@@ -21,7 +21,9 @@ public class TnGAttribute : MonoBehaviour
 	public void MirrorTnGAttributesFrom(TnGAttribute src)
 	{
 		m_terrainType = src.m_terrainType;
-		if(src.m_unit != null)
+		if(src.m_unit != null){
 			m_unit = (GameObject)Instantiate(src.m_unit);
+			m_unit.name = src.m_unit.name;
+		}
 	}
 }

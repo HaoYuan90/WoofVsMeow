@@ -37,23 +37,23 @@
     <Reference Include="System.XML" />
 	<Reference Include="System.Core" />
 	<Reference Include="UnityEngine">
-	  <HintPath>/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEngine.dll</HintPath>
+	  <HintPath>D:/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
 	</Reference>
 	<Reference Include="UnityEditor">
-	  <HintPath>/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEditor.dll</HintPath>
+	  <HintPath>D:/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\DunnoWhereToPutScripts\APSequenceController.cs" />
-     <Compile Include="Assets\Scripts\DunnoWhereToPutScripts\FixedTestDriver.cs" />
-     <Compile Include="Assets\Scripts\DunnoWhereToPutScripts\GameUnitModel.cs" />
-     <Compile Include="Assets\Scripts\DunnoWhereToPutScripts\TestDriver.cs" />
+     <Compile Include="Assets\Scripts\GameLogic\APSequenceController.cs" />
+     <Compile Include="Assets\Scripts\GameLogic\FixedTestDriver.cs" />
+     <Compile Include="Assets\Scripts\GameLogic\GridLogic.cs" />
+     <Compile Include="Assets\Scripts\GameLogic\TestDriver.cs" />
      <Compile Include="Assets\Scripts\HexGridControllers\GridGenerator.cs" />
-     <Compile Include="Assets\Scripts\HexGridControllers\GridLogic.cs" />
      <Compile Include="Assets\Scripts\HexGridControllers\HexGridModel.cs" />
      <Compile Include="Assets\Scripts\HexGridControllers\MaskManager.cs" />
      <Compile Include="Assets\Scripts\HexGridControllers\TestAttribute.cs" />
      <Compile Include="Assets\Scripts\HexGridControllers\TnGAttribute.cs" />
+     <Compile Include="Assets\Scripts\UnitControllers\GameUnitModel.cs" />
      <Compile Include="Assets\Scripts\UnitControllers\MovementController.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -127,6 +127,7 @@ public class GridGenerator: MonoBehaviour
             	{
 					//col
                 	GameObject hex = (GameObject)Instantiate(m_hexPrefab);
+					hex.name = String.Format("Grid[{0}][{1}]",y,x);
 					//get world coordinates of grid
                 	hex.transform.position = CalcWorldCoord(x,y);
 					//assign parent
@@ -137,6 +138,7 @@ public class GridGenerator: MonoBehaviour
 					
 					//add mask to the grid as children
 					GameObject mask = (GameObject)Instantiate(m_hexMaskPrefab);
+					mask.name = "mask";
 					hex.GetComponent<MaskManager>().InitMasks(mask,m_hexRedMaskMat,m_hexGreenMaskMat,m_hexBlueMaskMat,m_hexOutlineMaskMat);
 					
 					//set the test bit in terrain component of hexmap to test reference
