@@ -16,6 +16,7 @@ public class APSequenceController : MonoBehaviour
 	}
 	
 	//list sorted according to ap
+	public bool m_debug;
  	private List<GameObject> m_gameUnits;
 	private APComparer m_APComparer;
 
@@ -24,7 +25,11 @@ public class APSequenceController : MonoBehaviour
 	{
 		m_gameUnits = new List<GameObject>();
 		m_APComparer = new APComparer();
-		gameObject.AddComponent("FixedTestDriver");
+		
+		if(m_debug){
+			gameObject.AddComponent("FixedTestDriver");
+			gameObject.GetComponent<FixedTestDriver>().RunTest();
+		}
 	}
 
 	private void InsertUnit(GameObject unit)
@@ -75,12 +80,6 @@ public class APSequenceController : MonoBehaviour
 		InsertUnit(unit);
 	}
 	
-	/* obselete
-	public void Remove(int index)
-	{
-		m_gameUnits.RemoveAt(index);
-	}*/
-	
 	public GameObject OnTurnBegin()
 	{
 		int apModAmt;
@@ -111,7 +110,14 @@ public class APSequenceController : MonoBehaviour
 		if(m_gameUnits.Count > 0)
 			ArrangeUnit(m_gameUnits[0]);
 	}
-
+	
+	public int GetCount()
+	{
+		return m_gameUnits.Count;
+	}
+	
+	
+	//debug functions 
 	public void Print()
 	{
 		for (int i=0; i<m_gameUnits.Count; i++)
@@ -119,18 +125,12 @@ public class APSequenceController : MonoBehaviour
 			m_gameUnits[i].GetComponent<GameUnitModel>().Print();
 		}
 	}
-
+	
 	public void DebugCount()
 	{
 		Debug.Log(m_gameUnits.Count);
 	}
 	
-	public int GetCount()
-	{
-		return m_gameUnits.Count;
-	}
-	
-	//For testing
 	public string ListToString()
 	{
 		string result = "";

@@ -224,6 +224,7 @@ public class GridGenerator: MonoBehaviour
 			if(tempTnG.m_unit != null){
 				tempTnG.m_unit.transform.position = 
 					new Vector3(tempModel.m_center.x,e.renderer.bounds.max.y,tempModel.m_center.y);
+				//initialise parent object group
 				if(GameObject.Find("Units") == null){
 					new GameObject("Units");
 				}

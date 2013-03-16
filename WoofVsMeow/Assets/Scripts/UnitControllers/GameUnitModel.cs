@@ -113,7 +113,7 @@ public class GameUnitModel : MonoBehaviour
 	}
 	
 	//For testing
-	public string ToString()
+	public override string ToString()
 	{
 		return m_debugID.ToString() + "-" + m_current_AP.ToString() + "-" + m_max_AP.ToString();
 	}
