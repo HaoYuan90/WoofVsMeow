@@ -11,7 +11,7 @@ public class APSequenceController : MonoBehaviour
 		{
 			GameUnitModel gumA = objA.GetComponent<GameUnitModel>();
 			GameUnitModel gumB = objB.GetComponent<GameUnitModel>();		
-			return gumA.Get_AP() - gumB.Get_AP();
+			return gumA.GetAP() - gumB.GetAP();
 		}
 	}
 	
@@ -24,7 +24,7 @@ public class APSequenceController : MonoBehaviour
 	{
 		m_gameUnits = new List<GameObject>();
 		m_APComparer = new APComparer();
-		gameObject.AddComponent("TestDriver");
+		gameObject.AddComponent("FixedTestDriver");
 	}
 
 	private void InsertUnit(GameObject unit)
@@ -44,8 +44,8 @@ public class APSequenceController : MonoBehaviour
 			else
 			{
 				//find the last occurence and append after it
-				int temp = unit.GetComponent<GameUnitModel>().Get_AP();
-				index = m_gameUnits.FindLastIndex(x => x.GetComponent<GameUnitModel>().Get_AP() <= temp)+1;
+				int temp = unit.GetComponent<GameUnitModel>().GetAP();
+				index = m_gameUnits.FindLastIndex(x => x.GetComponent<GameUnitModel>().GetAP() <= temp)+1;
 				m_gameUnits.Insert(index, unit);
 			}
 		}
@@ -75,7 +75,7 @@ public class APSequenceController : MonoBehaviour
 		InsertUnit(unit);
 	}
 	
-	/* obseleted
+	/* obselete
 	public void Remove(int index)
 	{
 		m_gameUnits.RemoveAt(index);
@@ -88,12 +88,12 @@ public class APSequenceController : MonoBehaviour
 		
 		if(m_gameUnits.Count > 0){
 			unit = m_gameUnits[0];
-			apModAmt = -unit.GetComponent<GameUnitModel>().Get_AP();
+			apModAmt = -unit.GetComponent<GameUnitModel>().GetAP();
 			
 			//reduce ap of all units in the list by the amount of the 1st unit
 			foreach(GameObject e in m_gameUnits)
 			{
-				e.GetComponent<GameUnitModel>().Modify_Ap(apModAmt);
+				e.GetComponent<GameUnitModel>().ModifyAP(apModAmt);
 			}
 			return unit;
 		}
@@ -123,5 +123,32 @@ public class APSequenceController : MonoBehaviour
 	public void DebugCount()
 	{
 		Debug.Log(m_gameUnits.Count);
+	}
+	
+	public int GetCount()
+	{
+		return m_gameUnits.Count;
+	}
+	
+	//For testing
+	public string ListToString()
+	{
+		string result = "";
+		
+		if (m_gameUnits.Count < 1)
+		{
+			return result;
+		}
+		else
+		{
+			result = m_gameUnits[0].GetComponent<GameUnitModel>().ToString();
+			for (int i=1; i<m_gameUnits.Count; i++)
+			{
+				result += " ";
+				result += m_gameUnits[i].GetComponent<GameUnitModel>().ToString();
+			}
+		}
+		
+		return result;
 	}
 }
