@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class GameUnitModel : MonoBehaviour
 {
  	private int m_current_AP;

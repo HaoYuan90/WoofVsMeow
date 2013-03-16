@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\DunnoWhereToPutScripts\APSequenceController.cs" />
+     <Compile Include="Assets\Scripts\DunnoWhereToPutScripts\FixedTestDriver.cs" />
      <Compile Include="Assets\Scripts\DunnoWhereToPutScripts\GameUnitModel.cs" />
      <Compile Include="Assets\Scripts\DunnoWhereToPutScripts\TestDriver.cs" />
      <Compile Include="Assets\Scripts\HexGridControllers\GridGenerator.cs" />
