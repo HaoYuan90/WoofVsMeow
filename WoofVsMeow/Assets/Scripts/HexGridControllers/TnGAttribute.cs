@@ -4,9 +4,9 @@ using System;
 
 public enum TerrainType
 {
+	hill,
 	plain,
 	forest,
-	hill,
 	obstacle //debug
 };
 

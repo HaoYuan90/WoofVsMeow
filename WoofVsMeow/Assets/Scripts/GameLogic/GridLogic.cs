@@ -188,6 +188,62 @@ public class GridLogic : MonoBehaviour {
         }
 	}
 	
+	public void ProcessAttackRange(GameObject src, int range)
+	{
+        //clear state variables
+        ResetAllGraphStateVars();
+        //list of nodes to check sorted from highest movementleft to lowest
+        List<GameObject> openList = new List<GameObject>();
+        //list of nodes already checked
+        List<GameObject> closedList = new List<GameObject>();
+		
+		//COMPARE HEIGHT INSTEAD OF TERRAIN TYPE
+		GameObject currentNode = src;
+		TerrainType srcType = currentNode.GetComponentInChildren<TnGAttribute>().m_terrainType;
+		if(srcType == TerrainType.hill)
+        	currentNode.GetComponent<HexGridModel>().m_movementLeft = range+1;
+		else
+        	currentNode.GetComponent<HexGridModel>().m_movementLeft = range;
+        openList.Add(currentNode);
+
+        //run BFS
+        while (openList.Count != 0)
+        {
+			openList.Sort(
+                delegate(GameObject a, GameObject b)
+                {
+                    int mla = a.GetComponent<HexGridModel>().m_movementLeft;
+                    int mlb = b.GetComponent<HexGridModel>().m_movementLeft;
+                    return mlb.CompareTo(mla); //order matters
+                }
+            );
+            currentNode = openList[0];
+            openList.RemoveAt(0);
+            int movementLeft = currentNode.GetComponent<HexGridModel>().m_movementLeft;
+            if (!closedList.Contains(currentNode) && movementLeft >= 0)
+            {
+                closedList.Add(currentNode);
+                //turn on this hexgrid
+                currentNode.GetComponent<MaskManager>().RedMaskOn();
+				TerrainType destType = currentNode.GetComponent<TnGAttribute>().m_terrainType;
+                //if movement is 0, stop here
+                if (movementLeft > 0)
+                {
+                    List<GameObject> currentNeighbours = GetNeighbours(currentNode);
+                    foreach (GameObject n in currentNeighbours)
+                    {
+						if(destType >= srcType) //greater than means height is lower than
+                        	n.GetComponent<HexGridModel>().UpdateRangeLeft(currentNode,movementLeft-1);
+						else
+							n.GetComponent<HexGridModel>().UpdateRangeLeft(currentNode,movementLeft-2);
+                        if (!openList.Contains(n))
+                            openList.Add(n);
+                    }
+                }
+            }
+        }
+	}
+	
 	//return a Grid list from source to destination
 	public void HighlightMovementPath(GameObject src, GameObject dest) 
 	{

@@ -135,6 +135,8 @@ public class GridGenerator: MonoBehaviour
 					Vector2 grid2DPosition = new Vector2(hex.transform.position.x, hex.transform.position.z);
 					//initialise model
 					hex.GetComponent<HexGridModel>().Initialise(grid2DPosition,m_hexWidth,m_hexLength,y,x); //x,y denoting col and row of grid
+					hex.GetComponent<TnGAttribute>().m_terrainType = TerrainType.plain;
+					hex.tag = "Grid";
 					
 					//add mask to the grid as children
 					GameObject mask = (GameObject)Instantiate(m_hexMaskPrefab);
@@ -224,6 +226,7 @@ public class GridGenerator: MonoBehaviour
 			if(tempTnG.m_unit != null){
 				tempTnG.m_unit.transform.position = 
 					new Vector3(tempModel.m_center.x,e.renderer.bounds.max.y,tempModel.m_center.y);
+				tempTnG.m_unit.tag = "Unit";
 				//initialise parent object group
 				if(GameObject.Find("Units") == null){
 					new GameObject("Units");

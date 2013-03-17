@@ -6,10 +6,11 @@ public class GameEngine : MonoBehaviour {
 	private GridLogic m_gridLogic;
 	private APSequenceController m_apController;
 	
-	private GameObject m_unitToMove;
+	private GameObject m_currUnit;
 	private bool m_inTurn;
 	
 	private bool m_isReadyToMove;
+	private bool m_isReadyToAttack;
 
 	void Start () {
 		//boot all the components on start
@@ -17,10 +18,11 @@ public class GameEngine : MonoBehaviour {
 		InitUnitsAndBuildings();
 		InitialiseAPSequenceController();
 		
-		m_unitToMove = null;
+		m_currUnit = null;
 		m_inTurn = false;
 		
 		m_isReadyToMove = false;
+		m_isReadyToAttack = false;
 	}
 	
 	private void InitUnitsAndBuildings()
@@ -49,10 +51,10 @@ public class GameEngine : MonoBehaviour {
 	public void UnitTurnEnded()
 	{
 		//determine how much ap to replenish according to type of movement
-		m_unitToMove.GetComponent<APnControlModel>().ReplenishAP(1);
+		m_currUnit.GetComponent<APnControlModel>().ReplenishAP(1);
 		m_apController.OnTurnEnd();
 		m_inTurn = false;
-		m_unitToMove = null;
+		m_currUnit = null;
 	}
 	
 	public void ProcessMovementRange(GameObject unit)
@@ -62,63 +64,76 @@ public class GameEngine : MonoBehaviour {
 		m_isReadyToMove = true;
 	}
 	
+	public void ProcessAttackRange(GameObject unit)
+	{
+		AttackController temp = unit.GetComponent<AttackController>();
+		m_gridLogic.ProcessAttackRange(temp.m_currentGrid,temp.attackRange);
+		m_isReadyToAttack = true;
+	}
+	
 	void Update () 
 	{
 		if(!m_inTurn){
 			m_gridLogic.ClearAllMasks();
-			m_unitToMove = m_apController.OnTurnBegin();
-			if(m_unitToMove != null){
-				m_unitToMove.GetComponent<UnitController>().Activate();
+			m_currUnit = m_apController.OnTurnBegin();
+			if(m_currUnit != null){
+				m_currUnit.GetComponent<UnitController>().Activate();
 				m_inTurn = true;
 			}
 		}
-		
+		//actual move
 		if(m_isReadyToMove){
 			if(Input.GetButtonDown("LeftClick")) {
 				RaycastHit grid;
 				Ray selection = Camera.main.ScreenPointToRay(Input.mousePosition);
 				if (Physics.Raycast(selection,out grid)){				
 					GameObject dest = grid.collider.gameObject;
-					//make sure selected node is in range and is not the src node itself
-					if(dest.GetComponent<HexGridModel>().m_prevNode != null){
-						m_gridLogic.ClearAllMasks();
-						dest.GetComponent<MaskManager>().RedMaskOn();
-						m_unitToMove.GetComponent<UnitController>().Move(dest);
-						m_isReadyToMove = false;
+					if(dest.tag == "Grid"){
+						//make sure selected node is in range and is not the src node itself
+						if(dest.GetComponent<HexGridModel>().m_prevNode != null){
+							m_gridLogic.ClearAllMasks();
+							dest.GetComponent<MaskManager>().RedMaskOn();
+							m_currUnit.GetComponent<UnitController>().Move(dest);
+							m_isReadyToMove = false;
+						}
 					}
 				}
 			}
 		}
-		/*
-		if(Input.GetButtonDown("Fire1")) {
-			RaycastHit grid;
-			Ray selection = Camera.main.ScreenPointToRay(Input.mousePosition);
-			if (Physics.Raycast(selection,out grid)){				
-				if (!m_unitSelected) { //select an unit
-					//Debug.Log("Clicking on: "+grid.collider.gameObject.GetComponent<HexGridModel>().m_row.ToString()
-					//					+", "+grid.collider.gameObject.GetComponent<HexGridModel>().m_col.ToString());
-					m_gridLogic.ClearAllMasks();
-					m_selectedGrid=grid.collider.gameObject;
-					m_selectedGrid.GetComponent<MaskManager>().RedMaskOn();
-					if(m_selectedGrid.GetComponent<TnGAttribute>().m_unit != null){
-						m_unitSelected = true;
-						GameObject unit = m_selectedGrid.GetComponent<TnGAttribute>().m_unit;
-						m_gridLogic.HighlightMovementRange(m_selectedGrid, unit.GetComponent<MovementController>().m_movementRange);
-					}
-				}
-				else { //if unit is already selected, choose the destination
-					//Debug.Log("Destination: "+grid.collider.gameObject.GetComponent<HexGridModel>().m_row.ToString()
-					//					+", "+grid.collider.gameObject.GetComponent<HexGridModel>().m_col.ToString());
-					GameObject dest = grid.collider.gameObject;
-					//make sure selected node is in range and is not the src node itself
-					if(dest.GetComponent<HexGridModel>().m_prevNode != null){
-						GameObject unit = m_selectedGrid.GetComponent<TnGAttribute>().m_unit;
-						unit.GetComponent<MovementController>().Move(m_gridLogic.GetMovementPath(m_selectedGrid,dest));
-						dest.GetComponent<MaskManager>().RedMaskOn();
-						m_unitSelected = false;
+		//actual attack
+		if(m_isReadyToAttack){
+			if(Input.GetButtonDown("LeftClick")) {
+				RaycastHit grid;
+				Ray selection = Camera.main.ScreenPointToRay(Input.mousePosition);
+				if (Physics.Raycast(selection,out grid)){				
+					GameObject tar = grid.collider.gameObject;
+					if(tar.tag == "Grid"){
+						//make sure target is within attack range and it does hold a unit
+						if(tar.GetComponent<HexGridModel>().m_prevNode != null)
+						{
+							//single unit attack
+							GameObject unit = tar.GetComponent<TnGAttribute>().m_unit;
+							//check if it is enemy
+							if(unit!=null){
+								m_gridLogic.ClearAllMasks();
+								tar.GetComponent<MaskManager>().RedMaskOn();
+								m_currUnit.GetComponent<UnitController>().Attack(tar);
+								m_isReadyToAttack = false;
+							}
+						}
 					}
 				}
 			}
-		}*/
+		}
+		//cancel move/attack
+		if(m_isReadyToMove || m_isReadyToAttack){
+			//cancel
+			if(Input.GetButtonDown("RightClick")) {
+				m_gridLogic.ClearAllMasks();
+				m_isReadyToMove = false;
+				m_isReadyToAttack = false;
+				m_currUnit.GetComponent<UnitController>().CommandCancelled();
+			}
+		}
 	}
 }

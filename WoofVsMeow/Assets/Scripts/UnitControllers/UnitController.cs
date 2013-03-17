@@ -28,7 +28,7 @@ public class UnitController : MonoBehaviour
 		
 		gameObject.GetComponent<MovementController>().Initialise(currentGrid);
 		gameObject.GetComponent<APnControlModel>().Initialise();
-		gameObject.GetComponent<AttackController>().Initialise();
+		gameObject.GetComponent<AttackController>().Initialise(currentGrid);
 	}
 	
 	public void Activate()
@@ -56,6 +56,25 @@ public class UnitController : MonoBehaviour
 		m_hasMoved = true;
 	}
 	
+	public void Attack(GameObject tar)
+	{
+		m_hideGUI = true;
+		gameObject.GetComponent<AttackController>().Attack(tar);
+	}
+	
+	public void AttackFinished()
+	{
+		m_hideGUI = false;
+		m_hasAttacked = true;
+		//DO NOT ALLOW MOVE AFTER ATTACK
+		m_hasMoved = true;
+	}
+	
+	public void CommandCancelled()
+	{
+		m_hideGUI = false;
+	}
+	
 	void OnGUI()
 	{
 		if(m_active == true && !m_hideGUI){
@@ -72,6 +91,11 @@ public class UnitController : MonoBehaviour
 			GUI.enabled = !m_hasAttacked; //enable if unit has not attacked
 			if(GUI.Button(new Rect(buttonX,buttonY,m_buttonWidth,m_buttonHeight),"Attack"))
 			{
+				m_hideGUI = true;
+				//give attack module the current current grid
+				gameObject.GetComponent<AttackController>().m_currentGrid = 
+					gameObject.GetComponent<MovementController>().m_currentGrid;
+				m_engine.ProcessAttackRange(gameObject);
 			}
 			buttonY += m_buttonHeight+m_buttonYOffset;
 			GUI.enabled = true;

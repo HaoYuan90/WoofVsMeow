@@ -45,10 +45,10 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\GameLogic\APSequenceController.cs" />
-     <Compile Include="Assets\Scripts\GameLogic\FixedTestDriver.cs" />
+     <Compile Include="Assets\Scripts\GameLogic\APSequenceTests\FixedTestDriver.cs" />
+     <Compile Include="Assets\Scripts\GameLogic\APSequenceTests\TestDriver.cs" />
      <Compile Include="Assets\Scripts\GameLogic\GameEngine.cs" />
      <Compile Include="Assets\Scripts\GameLogic\GridLogic.cs" />
-     <Compile Include="Assets\Scripts\GameLogic\TestDriver.cs" />
      <Compile Include="Assets\Scripts\HexGridControllers\GridGenerator.cs" />
      <Compile Include="Assets\Scripts\HexGridControllers\HexGridModel.cs" />
      <Compile Include="Assets\Scripts\HexGridControllers\MaskManager.cs" />

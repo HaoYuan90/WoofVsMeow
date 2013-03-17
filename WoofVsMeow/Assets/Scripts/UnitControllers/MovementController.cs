@@ -19,7 +19,6 @@ public class MovementController : MonoBehaviour
 	{
 		m_pathList = new List<GameObject>();
 		m_currentGrid = currentGrid;
-			//m_currentGrid = grid;
 		m_movementRange = 5; //get these values from unit model to be implemented
 		m_movementSpeed = 30;
 		m_movementStepLeft = 0;

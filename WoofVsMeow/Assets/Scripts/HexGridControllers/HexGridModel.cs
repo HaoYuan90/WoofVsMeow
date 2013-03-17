@@ -54,6 +54,14 @@ public class HexGridModel :MonoBehaviour{
 		}
 	}
 	
+	public void UpdateRangeLeft (GameObject prevNode, int newRange)
+	{
+		if (newRange > m_movementLeft && newRange >= 0) {
+			m_movementLeft = newRange;
+			m_prevNode = prevNode;
+		}
+	}
+	
 	public bool CanPass(String currentPlayerTag)
 	{
 		bool canPass = true;
