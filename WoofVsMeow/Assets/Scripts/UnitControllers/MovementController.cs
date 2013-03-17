@@ -5,35 +5,38 @@ using System.Collections.Generic;
 
 public class MovementController : MonoBehaviour 
 {
-	private GridLogic m_gridLogic; 
-	//private GameObject m_currentGrid;
+	public GameObject m_currentGrid;
 	
 	public int m_movementRange;
 	//storing last grid walked past and the next grids that needs to walk onto
 	private List<GameObject> m_pathList; 
-	//make sure unit is not interrupted while doing something
-	//GUI layer will again make sure of this
-	bool m_isInAction;
 
 	private int m_movementSpeed;       //frames required to walk from a grid to another
 	private int m_movementStepLeft;         //frames left to reach the next node
 
 	// Use this for initialization
-	public void Initialise (GridLogic gridLogic)
+	public void Initialise (GameObject currentGrid)
 	{
 		m_pathList = new List<GameObject>();
-		m_isInAction = false;
-		m_gridLogic = gridLogic;
+		m_currentGrid = currentGrid;
 			//m_currentGrid = grid;
 		m_movementRange = 5; //get these values from unit model to be implemented
 		m_movementSpeed = 30;
 		m_movementStepLeft = 0;
 	}
 	
-	public void Move (List<GameObject> pathList){
+	public void Move (GameObject dest)
+	{
+		//get the movement path
+		List<GameObject> pathList = new List<GameObject>();
+		GameObject currentNode = dest;		
+		while (currentNode != null) {
+			pathList.Insert(0,currentNode);
+			currentNode=currentNode.GetComponent<HexGridModel>().m_prevNode;
+		}
 		//gameobject should not be moving alreay
 		//pathList should at least have a src and destination
-		if(!m_isInAction && pathList.Count>=2){
+		if(pathList.Count>=2){
 			m_pathList = pathList;
 			m_pathList[0].GetComponent<TnGAttribute>().m_unit = null;
 		}
@@ -57,7 +60,10 @@ public class MovementController : MonoBehaviour
 				else{
 					//if destination is reached, destination node should claim ownership
 					m_pathList[0].GetComponent<TnGAttribute>().m_unit = gameObject;
+					m_currentGrid = m_pathList[0];
 					m_pathList = new List<GameObject>();
+					//inform unit controller
+					gameObject.GetComponent<UnitController>().MoveFinished();
 					return;
 				}
 				m_pathList.RemoveAt(0);

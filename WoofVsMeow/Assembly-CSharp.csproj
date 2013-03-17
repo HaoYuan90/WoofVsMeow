@@ -46,6 +46,7 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\GameLogic\APSequenceController.cs" />
      <Compile Include="Assets\Scripts\GameLogic\FixedTestDriver.cs" />
+     <Compile Include="Assets\Scripts\GameLogic\GameEngine.cs" />
      <Compile Include="Assets\Scripts\GameLogic\GridLogic.cs" />
      <Compile Include="Assets\Scripts\GameLogic\TestDriver.cs" />
      <Compile Include="Assets\Scripts\HexGridControllers\GridGenerator.cs" />
@@ -53,8 +54,10 @@
      <Compile Include="Assets\Scripts\HexGridControllers\MaskManager.cs" />
      <Compile Include="Assets\Scripts\HexGridControllers\TestAttribute.cs" />
      <Compile Include="Assets\Scripts\HexGridControllers\TnGAttribute.cs" />
-     <Compile Include="Assets\Scripts\UnitControllers\GameUnitModel.cs" />
+     <Compile Include="Assets\Scripts\UnitControllers\APnControlModel.cs" />
+     <Compile Include="Assets\Scripts\UnitControllers\AttackController.cs" />
      <Compile Include="Assets\Scripts\UnitControllers\MovementController.cs" />
+     <Compile Include="Assets\Scripts\UnitControllers\UnitController.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

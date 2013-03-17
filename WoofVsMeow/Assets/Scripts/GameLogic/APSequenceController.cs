@@ -9,9 +9,9 @@ public class APSequenceController : MonoBehaviour
 	{
 		public int Compare(GameObject objA, GameObject objB)
 		{
-			GameUnitModel gumA = objA.GetComponent<GameUnitModel>();
-			GameUnitModel gumB = objB.GetComponent<GameUnitModel>();		
-			return gumA.GetAP() - gumB.GetAP();
+			APnControlModel A = objA.GetComponent<APnControlModel>();
+			APnControlModel B = objB.GetComponent<APnControlModel>();		
+			return A.GetAP() - B.GetAP();
 		}
 	}
 	
@@ -21,7 +21,7 @@ public class APSequenceController : MonoBehaviour
 	private APComparer m_APComparer;
 
 	// Use this for initialization
-	void Start () 
+	public void Initialise () 
 	{
 		m_gameUnits = new List<GameObject>();
 		m_APComparer = new APComparer();
@@ -49,8 +49,8 @@ public class APSequenceController : MonoBehaviour
 			else
 			{
 				//find the last occurence and append after it
-				int temp = unit.GetComponent<GameUnitModel>().GetAP();
-				index = m_gameUnits.FindLastIndex(x => x.GetComponent<GameUnitModel>().GetAP() <= temp)+1;
+				int temp = unit.GetComponent<APnControlModel>().GetAP();
+				index = m_gameUnits.FindLastIndex(x => x.GetComponent<APnControlModel>().GetAP() <= temp)+1;
 				m_gameUnits.Insert(index, unit);
 			}
 		}
@@ -87,12 +87,12 @@ public class APSequenceController : MonoBehaviour
 		
 		if(m_gameUnits.Count > 0){
 			unit = m_gameUnits[0];
-			apModAmt = -unit.GetComponent<GameUnitModel>().GetAP();
+			apModAmt = -unit.GetComponent<APnControlModel>().GetAP();
 			
 			//reduce ap of all units in the list by the amount of the 1st unit
 			foreach(GameObject e in m_gameUnits)
 			{
-				e.GetComponent<GameUnitModel>().ModifyAP(apModAmt);
+				e.GetComponent<APnControlModel>().ModifyAP(apModAmt);
 			}
 			return unit;
 		}
@@ -122,7 +122,7 @@ public class APSequenceController : MonoBehaviour
 	{
 		for (int i=0; i<m_gameUnits.Count; i++)
 		{
-			m_gameUnits[i].GetComponent<GameUnitModel>().Print();
+			m_gameUnits[i].GetComponent<APnControlModel>().Print();
 		}
 	}
 	
@@ -141,11 +141,11 @@ public class APSequenceController : MonoBehaviour
 		}
 		else
 		{
-			result = m_gameUnits[0].GetComponent<GameUnitModel>().ToString();
+			result = m_gameUnits[0].GetComponent<APnControlModel>().ToString();
 			for (int i=1; i<m_gameUnits.Count; i++)
 			{
 				result += " ";
-				result += m_gameUnits[i].GetComponent<GameUnitModel>().ToString();
+				result += m_gameUnits[i].GetComponent<APnControlModel>().ToString();
 			}
 		}
 		

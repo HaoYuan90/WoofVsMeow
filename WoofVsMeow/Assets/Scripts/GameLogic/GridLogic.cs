@@ -10,8 +10,11 @@ public class GridLogic : MonoBehaviour {
 	
 	private List<List<GameObject>> m_grids;
 	
-	bool m_unitSelected;
-	private GameObject m_selectedGrid=null;
+	// Use this for initialization
+	public void Initialise () {
+		InitGridData();
+		//CheckGridData();
+	}
 	
 	private void InitGridData()
 	{
@@ -23,14 +26,6 @@ public class GridLogic : MonoBehaviour {
 		gen.ToggleMask();
 	}
 	
-	private void InitUnitsAndBuildings(){
-		foreach (Transform child in GameObject.Find ("Units").transform){
-			child.gameObject.GetComponent<MovementController>().Initialise(this);
-		}
-			
-		//do the same for buildings
-	}
-	
 	private void CheckGridData()
 	{
 		foreach(List<GameObject> a in m_grids)
@@ -38,24 +33,15 @@ public class GridLogic : MonoBehaviour {
 				Debug.Log (b.GetComponent<HexGridModel>());
 	}
 	
-	private void ClearAllMasks()
+	public void ClearAllMasks()
 	{
 		foreach(List<GameObject> a in m_grids)
 			foreach(GameObject b in a)
 				b.GetComponent<MaskManager>().OutlineMaskOn();
 	}
 	
-	// Use this for initialization
-	void Start () {
-		InitGridData();
-		InitUnitsAndBuildings();
-		m_unitSelected = false;
-		//CheckGridData();
-	}
-	
 	//methods to find neighbour of a grid
-	
-	List<GameObject> GetNeighbours(GameObject grid) 
+	private List<GameObject> GetNeighbours(GameObject grid) 
 	{
 		//implement : if grid cannot be passed
 		List<GameObject> neighbours=new List<GameObject>();
@@ -151,7 +137,8 @@ public class GridLogic : MonoBehaviour {
 	}
 	
 	//find the range of movement and highlight those grids
-	public void HighlightMovementRange(GameObject src, int movement)
+	//also formulate a path from src to all grids in range
+	public void ProcessMovementRange(GameObject src, int movement)
 	{
         //clear state variables
         ResetAllGraphStateVars();
@@ -213,45 +200,13 @@ public class GridLogic : MonoBehaviour {
 		dest.GetComponent<MaskManager>().RedMaskOn();
 	}
 	
-	public List<GameObject> GetMovementPath(GameObject src, GameObject dest)
+	public void InitUnitsAndBuildings(GameEngine engine)
 	{
-		List<GameObject> pathList = new List<GameObject>();
-		GameObject currentNode = dest;		
-		while (currentNode != null) {
-			pathList.Insert(0,currentNode);
-			currentNode=currentNode.GetComponent<HexGridModel>().m_prevNode;
-		}
-		return pathList;
-	}
-	
-	void Update () {
-		if(Input.GetButtonDown("Fire1")) {
-			RaycastHit grid;
-			Ray selection = Camera.main.ScreenPointToRay(Input.mousePosition);
-			if (Physics.Raycast(selection,out grid)){				
-				if (!m_unitSelected) { //select an unit
-					//Debug.Log("Clicking on: "+grid.collider.gameObject.GetComponent<HexGridModel>().m_row.ToString()
-					//					+", "+grid.collider.gameObject.GetComponent<HexGridModel>().m_col.ToString());
-					ClearAllMasks();
-					m_selectedGrid=grid.collider.gameObject;
-					m_selectedGrid.GetComponent<MaskManager>().RedMaskOn();
-					if(m_selectedGrid.GetComponent<TnGAttribute>().m_unit != null){
-						m_unitSelected = true;
-						GameObject unit = m_selectedGrid.GetComponent<TnGAttribute>().m_unit;
-						HighlightMovementRange(m_selectedGrid, unit.GetComponent<MovementController>().m_movementRange);
-					}
-				}
-				else { //if unit is already selected, choose the destination
-					//Debug.Log("Destination: "+grid.collider.gameObject.GetComponent<HexGridModel>().m_row.ToString()
-					//					+", "+grid.collider.gameObject.GetComponent<HexGridModel>().m_col.ToString());
-					GameObject dest = grid.collider.gameObject;
-					//make sure selected node is in range and is not the src node itself
-					if(dest.GetComponent<HexGridModel>().m_prevNode != null){
-						GameObject unit = m_selectedGrid.GetComponent<TnGAttribute>().m_unit;
-						unit.GetComponent<MovementController>().Move(GetMovementPath(m_selectedGrid,dest));
-						dest.GetComponent<MaskManager>().RedMaskOn();
-						m_unitSelected = false;
-					}
+		foreach(List<GameObject> l in m_grids){
+			foreach(GameObject e in l){
+				if(e.GetComponent<TnGAttribute>().m_unit!= null){
+					GameObject temp = e.GetComponent<TnGAttribute>().m_unit;
+					temp.GetComponent<UnitController>().InitialiseUnit(engine,e);
 				}
 			}
 		}
