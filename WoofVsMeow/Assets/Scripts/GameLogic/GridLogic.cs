@@ -264,6 +264,10 @@ public class GridLogic : MonoBehaviour {
 					GameObject temp = e.GetComponent<TnGAttribute>().m_unit;
 					temp.GetComponent<UnitController>().InitialiseUnit(engine,e);
 				}
+				if(e.GetComponent<TnGAttribute>().m_building!= null){
+					GameObject temp = e.GetComponent<TnGAttribute>().m_building;
+					temp.GetComponent<BuildingController>().InitialiseBuilding();
+				}
 			}
 		}
 	}

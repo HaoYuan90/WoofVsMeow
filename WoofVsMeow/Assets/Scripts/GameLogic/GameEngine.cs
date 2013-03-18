@@ -46,6 +46,12 @@ public class GameEngine : MonoBehaviour {
 				m_apController.AddNewUnit(child.gameObject);
 			}
 		}
+		//add buildings to ap list
+		if(GameObject.Find ("Buildings")!= null){
+			foreach (Transform child in GameObject.Find ("Buildings").transform){
+				m_apController.AddNewUnit(child.gameObject);
+			}
+		}
 	}
 	
 	public void UnitTurnEnded()
@@ -77,8 +83,15 @@ public class GameEngine : MonoBehaviour {
 			m_gridLogic.ClearAllMasks();
 			m_currUnit = m_apController.OnTurnBegin();
 			if(m_currUnit != null){
-				m_currUnit.GetComponent<UnitController>().Activate();
-				m_inTurn = true;
+				if(m_currUnit.tag == "Unit"){
+					m_currUnit.GetComponent<UnitController>().Activate();
+					m_inTurn = true;
+				}
+				else if(m_currUnit.tag == "Building"){
+				}
+				else{
+					Debug.LogWarning("weird stuff is taking its turn now...");
+				}
 			}
 		}
 		//actual move

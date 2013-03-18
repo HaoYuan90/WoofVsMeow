@@ -233,6 +233,16 @@ public class GridGenerator: MonoBehaviour
 				}
 				tempTnG.m_unit.transform.parent = GameObject.Find("Units").transform;
 			}
+			if(tempTnG.m_building != null){
+				tempTnG.m_building.transform.position = 
+					new Vector3(tempModel.m_center.x,e.renderer.bounds.max.y,tempModel.m_center.y);
+				tempTnG.m_building.tag = "Building";
+				//initialise parent object group
+				if(GameObject.Find("Buildings") == null){
+					new GameObject("Buildings");
+				}
+				tempTnG.m_building.transform.parent = GameObject.Find("Buildings").transform;
+			}
 		}
 	}
 	
