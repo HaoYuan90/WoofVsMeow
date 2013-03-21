@@ -11,6 +11,7 @@ public class GameEngine : MonoBehaviour {
 	
 	private bool m_isReadyToMove;
 	private bool m_isReadyToAttack;
+	private bool m_isReadyToProduce;
 
 	void Start () {
 		//boot all the components on start
@@ -76,6 +77,11 @@ public class GameEngine : MonoBehaviour {
 		m_gridLogic.ProcessAttackRange(temp.m_currentGrid,temp.attackRange);
 		m_isReadyToAttack = true;
 	}
+
+	public void ProcessProductionRange(GameObject unit) {
+		m_gridLogic.ProcessProductionRange(unit.GetComponent<BuildingController>().m_currentGrid);
+		m_isReadyToProduce = true;
+	}
 	
 	void Update () 
 	{
@@ -88,6 +94,8 @@ public class GameEngine : MonoBehaviour {
 					m_inTurn = true;
 				}
 				else if(m_currUnit.tag == "Building"){
+					m_currUnit.GetComponent<BuildingController>().Activate();
+					m_inTurn = true;
 				}
 				else{
 					Debug.LogWarning("weird stuff is taking its turn now...");
@@ -102,8 +110,10 @@ public class GameEngine : MonoBehaviour {
 				if (Physics.Raycast(selection,out grid)){				
 					GameObject dest = grid.collider.gameObject;
 					if(dest.tag == "Grid"){
-						//make sure selected node is in range and is not the src node itself
-						if(dest.GetComponent<HexGridModel>().m_prevNode != null){
+						//make sure selected node is in range and there is not units and buildings occupying it
+						if (dest.GetComponent<HexGridModel>().m_prevNode != null)
+							if (dest.GetComponent<TnGAttribute>().m_unit == null)
+								if (dest.GetComponent<TnGAttribute>().m_unit == null) {
 							m_gridLogic.ClearAllMasks();
 							dest.GetComponent<MaskManager>().RedMaskOn();
 							m_currUnit.GetComponent<UnitController>().Move(dest);
@@ -138,13 +148,34 @@ public class GameEngine : MonoBehaviour {
 				}
 			}
 		}
+		//actual produce
+		if (m_isReadyToProduce){
+			if(Input.GetButtonDown("LeftClick")) {
+				RaycastHit grid;
+				Ray selection = Camera.main.ScreenPointToRay(Input.mousePosition);
+				if (Physics.Raycast(selection,out grid)){				
+					GameObject tar = grid.collider.gameObject;
+					if(tar.tag == "Grid"){
+						//make sure target is within production range and it does not hold a unit
+						if (tar.GetComponent<HexGridModel>().m_prevNode != null) {
+							if(tar.GetComponent<TnGAttribute>().m_unit==null) {
+								m_gridLogic.ClearAllMasks();
+								m_currUnit.GetComponent<BuildingController>().Produce(tar);
+								m_isReadyToProduce = false;
+							}
+						}
+					}
+				}
+			}
+		}
 		//cancel move/attack
-		if(m_isReadyToMove || m_isReadyToAttack){
+		if(m_isReadyToMove || m_isReadyToAttack || m_isReadyToProduce) {
 			//cancel
 			if(Input.GetButtonDown("RightClick")) {
 				m_gridLogic.ClearAllMasks();
 				m_isReadyToMove = false;
 				m_isReadyToAttack = false;
+				m_isReadyToProduce = false;
 				m_currUnit.GetComponent<UnitController>().CommandCancelled();
 			}
 		}

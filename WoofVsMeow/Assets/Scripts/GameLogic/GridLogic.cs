@@ -168,22 +168,27 @@ public class GridLogic : MonoBehaviour {
             openList.RemoveAt(0);
             int movementLeft = currentNode.GetComponent<HexGridModel>().m_movementLeft;
             if (!closedList.Contains(currentNode) && movementLeft >= 0)
-            {
-                closedList.Add(currentNode);
-                //turn on this hexgrid
-                currentNode.GetComponent<MaskManager>().GreenMaskOn();
-                //if movement is 0, stop here
-                if (movementLeft > 0)
-                {
-                    List<GameObject> currentNeighbours = GetNeighbours(currentNode);
-                    foreach (GameObject n in currentNeighbours)
-                    {
-                        //update cost
-                        n.GetComponent<HexGridModel>().UpdateMovementLeft(currentNode);
-                        if (!openList.Contains(n))
-                            openList.Add(n);
-                    }
-                }
+				//grid in the path must be empty or occupied by allies
+            	if (currentNode.GetComponent<TnGAttribute>().m_unit == null
+						|| (currentNode.GetComponent<TnGAttribute>().m_unit.GetComponent<UnitController>().m_control
+						== currentNode.GetComponent<TnGAttribute>().m_unit.GetComponent<UnitController>().m_control)) {
+	                closedList.Add(currentNode);
+	                //turn on this hexgrid
+					if (currentNode.GetComponent<TnGAttribute>().m_unit == null)
+						if (currentNode.GetComponent<TnGAttribute>().m_unit == null)
+	                		currentNode.GetComponent<MaskManager>().GreenMaskOn();
+	                //if movement is 0, stop here
+	                if (movementLeft > 0)
+	                {
+	                    List<GameObject> currentNeighbours = GetNeighbours(currentNode);
+	                    foreach (GameObject n in currentNeighbours)
+	                    {
+	                        //update cost
+	                        n.GetComponent<HexGridModel>().UpdateMovementLeft(currentNode);
+	                        if (!openList.Contains(n))
+	                            openList.Add(n);
+	                    }
+	                }
             }
         }
 	}
@@ -225,6 +230,15 @@ public class GridLogic : MonoBehaviour {
                 closedList.Add(currentNode);
                 //turn on this hexgrid
                 currentNode.GetComponent<MaskManager>().RedMaskOn();
+				
+				/*
+				if (currentNode.GetComponent<TnGAttribute>().m_unit == null)
+                	currentNode.GetComponent<MaskManager>().BlueMaskOn();
+				else if (src.GetComponent<TnGAttribute>().m_unit.GetComponent<UnitController>().m_control
+					!= currentNode.GetComponent<TnGAttribute>().m_unit.GetComponent<UnitController>().m_control)
+                	currentNode.GetComponent<MaskManager>().RedMaskOn();
+				 */
+				
 				TerrainType destType = currentNode.GetComponent<TnGAttribute>().m_terrainType;
                 //if movement is 0, stop here
                 if (movementLeft > 0)
@@ -256,6 +270,17 @@ public class GridLogic : MonoBehaviour {
 		dest.GetComponent<MaskManager>().RedMaskOn();
 	}
 	
+	public void ProcessProductionRange(GameObject src) {
+		List<GameObject> currentNeighbours = GetNeighbours(src);
+		foreach (GameObject n in currentNeighbours) {
+			if (n.GetComponent<TnGAttribute>().m_unit == null) {
+				n.GetComponent<MaskManager>().RedMaskOn();
+				n.GetComponent<HexGridModel>().m_prevNode = src;
+			}
+		}
+	}
+	
+	
 	public void InitUnitsAndBuildings(GameEngine engine)
 	{
 		foreach(List<GameObject> l in m_grids){
@@ -266,7 +291,7 @@ public class GridLogic : MonoBehaviour {
 				}
 				if(e.GetComponent<TnGAttribute>().m_building!= null){
 					GameObject temp = e.GetComponent<TnGAttribute>().m_building;
-					temp.GetComponent<BuildingController>().InitialiseBuilding();
+					temp.GetComponent<BuildingController>().InitialiseBuilding(engine,e);
 				}
 			}
 		}
