@@ -16,12 +16,48 @@ public class GridEditorControl : EditorWindow
 
 	void OnGUI()
 	{
-		//fields to recreate gridmap
-		if(GUILayout.Button("Toggle grid masks"))
+		//setup the scene
+		GUILayout.Label("Initialise all necessary components");
+		if(GUILayout.Button("Setup Scene"))
 		{
-			GameObject.Find("GridRenderer").GetComponent<GridGenerator>().ToggleMask();
+			//adjust camera
+			GameObject camera = GameObject.Find("Main Camera");
+			camera.transform.position = new Vector3(0f,25f,30f);
+			camera.transform.rotation = Quaternion.identity;
+			camera.transform.Rotate(new Vector3(50f,180f,0f));
+			//setup lighting
+			if(GameObject.Find("DirectionalLightForEditingMap") == null)
+			{
+				GameObject temp = new GameObject("DirectionalLightForEditingMap");
+				temp.transform.position = new Vector3(0f,50f,0f);
+				temp.transform.rotation = Quaternion.identity;
+				temp.transform.Rotate(new Vector3(90f,0f,0f));
+				temp.AddComponent<Light>();
+				Light light = temp.GetComponent<Light>();
+				light.type = LightType.Directional;
+				light.color = Color.white;
+				light.intensity = 0.59f;
+			}
+			//setup renderer
+			if(GameObject.Find("GridRenderer") == null)
+			{
+				GameObject temp = new GameObject("GridRenderer");
+				temp.transform.position = new Vector3(100f,100f,100f);
+				temp.transform.rotation = Quaternion.identity;
+				temp.AddComponent<GridGenerator>();
+			}
+			//setup engine
+			if(GameObject.Find("GameEngine") == null)
+			{
+				GameObject temp = new GameObject("GameEngine");
+				temp.transform.position = new Vector3(100f,100f,100f);
+				temp.transform.rotation = Quaternion.identity;
+				temp.AddComponent<GridLogic>();
+				temp.AddComponent<APSequenceController>();
+				temp.AddComponent<GameEngine>();
+			}
 		}
-		
+		//fields to recreate gridmap
 		GUILayout.Label("Recreate grid map, will erase all you had before");
 		m_numRows = EditorGUILayout.IntField("number of rows",m_numRows);
 		m_numCols = EditorGUILayout.IntField("number of cols",m_numCols);
@@ -34,6 +70,11 @@ public class GridEditorControl : EditorWindow
 			gen.m_gridNumHor = m_numCols;
 			gen.m_gridNumVer = m_numRows;
 			gen.CreateGridMap();
+		}
+		
+		if(GUILayout.Button("Toggle grid masks"))
+		{
+			GameObject.Find("GridRenderer").GetComponent<GridGenerator>().ToggleMask();
 		}
 		
 		GUILayout.Label("Update grid map, set y scaling according to terrain type");
