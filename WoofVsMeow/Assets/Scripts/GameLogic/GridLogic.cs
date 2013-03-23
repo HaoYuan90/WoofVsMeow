@@ -26,13 +26,6 @@ public class GridLogic : MonoBehaviour {
 		gen.ToggleMask();
 	}
 	
-	private void CheckGridData()
-	{
-		foreach(List<GameObject> a in m_grids)
-			foreach(GameObject b in a)
-				Debug.Log (b.GetComponent<HexGridModel>());
-	}
-	
 	public void ClearAllMasks()
 	{
 		foreach(List<GameObject> a in m_grids)
@@ -55,21 +48,16 @@ public class GridLogic : MonoBehaviour {
 		return neighbours;
 	}
 	
-	//return the GameObject grid if row,col is in bound and units can move pass
+	//return the GameObject grid if row,col is in bound
 	private GameObject TryGetGrid(int row, int col) 
 	{
 		int maxCol=GameObject.Find("GridRenderer").GetComponent<GridGenerator>().m_gridNumHor;
 		int maxRow=GameObject.Find("GridRenderer").GetComponent<GridGenerator>().m_gridNumVer;
 		maxCol = (row%2==0) ? maxCol : maxCol-1;
-      	if (row>=0 && row<maxRow && col>=0 && col<maxCol && CanPass(row,col))
+      	if (row>=0 && row<maxRow && col>=0 && col<maxCol)
 			return m_grids[row][col];
 		else
 			return null;
-	}
-	
-	private bool CanPass(int row, int col)
-	{
-		return m_grids[row][col].GetComponent<HexGridModel>().CanPass("");
 	}
 	
 	private GameObject GetTopLeft(GameObject grid) 
@@ -149,6 +137,9 @@ public class GridLogic : MonoBehaviour {
 		
 		GameObject currentNode = src;
         currentNode.GetComponent<HexGridModel>().m_movementLeft = movement;
+		//the player this unit belong to
+		int thisControl = currentNode.GetComponent<TnGAttribute>().
+			m_unit.GetComponent<UnitController>().m_control;
         openList.Add(currentNode);
 
         //run BFS
@@ -164,10 +155,48 @@ public class GridLogic : MonoBehaviour {
                 }
             );
             currentNode = openList[0];
-            //Debug.Log("Current node: "+currentNode.ToString());
             openList.RemoveAt(0);
             int movementLeft = currentNode.GetComponent<HexGridModel>().m_movementLeft;
+			
             if (!closedList.Contains(currentNode) && movementLeft >= 0)
+			{	
+				closedList.Add(currentNode);
+				 //turn on this hexgrid if there is no unit occupying it
+				//if(currentNode.GetComponent<TnGAttribute>().m_unit == null){
+					currentNode.GetComponent<MaskManager>().GreenMaskOn();
+				//}
+				if(movementLeft > 0)
+				{
+					int costToPass = currentNode.GetComponent<HexGridModel>().m_movementCost;
+					List<GameObject> currentNeighbours = GetNeighbours(currentNode);
+					foreach(GameObject n in currentNeighbours)
+					{
+						int srcHeight = currentNode.GetComponent<TnGAttribute>().m_height;
+						int destHeight = n.GetComponent<TnGAttribute>().m_height;
+						int costToJump = Math.Abs(destHeight-srcHeight)/3;
+						int costToReach = costToPass + costToJump;
+						//if closed list has n then
+						//cannot move past n (enemy unit on or itself is an obstacle
+						//or n has already been processed
+						if(!closedList.Contains(n)){
+							//n has already passed check, so do not have to check again
+							if(openList.Contains (n)){
+								n.GetComponent<HexGridModel>().UpdateMovementLeft(currentNode,costToReach);
+							}
+							else{
+								if(n.GetComponent<HexGridModel>().CanPass(thisControl,false)){
+									n.GetComponent<HexGridModel>().UpdateMovementLeft(currentNode,costToReach);
+									openList.Add(n);
+								}
+								else{
+									closedList.Add(n);
+								}
+							}
+						}
+					}
+				}
+			}
+			/*
 				//grid in the path must be empty or occupied by allies
             	if (currentNode.GetComponent<TnGAttribute>().m_unit == null
 						|| (currentNode.GetComponent<TnGAttribute>().m_unit.GetComponent<UnitController>().m_control
@@ -188,8 +217,7 @@ public class GridLogic : MonoBehaviour {
 	                        if (!openList.Contains(n))
 	                            openList.Add(n);
 	                    }
-	                }
-            }
+	                }*/
         }
 	}
 	
@@ -202,13 +230,12 @@ public class GridLogic : MonoBehaviour {
         //list of nodes already checked
         List<GameObject> closedList = new List<GameObject>();
 		
-		//COMPARE HEIGHT INSTEAD OF TERRAIN TYPE
 		GameObject currentNode = src;
-		TerrainType srcType = currentNode.GetComponentInChildren<TnGAttribute>().m_terrainType;
-		if(srcType == TerrainType.hill)
-        	currentNode.GetComponent<HexGridModel>().m_movementLeft = range+1;
-		else
-        	currentNode.GetComponent<HexGridModel>().m_movementLeft = range;
+		int srcHeight = currentNode.GetComponentInChildren<TnGAttribute>().m_height;
+		//the player this unit belong to
+		int thisControl = currentNode.GetComponent<TnGAttribute>().
+			m_unit.GetComponent<UnitController>().m_control;
+		currentNode.GetComponent<HexGridModel>().m_movementLeft = range;
         openList.Add(currentNode);
 
         //run BFS
@@ -224,37 +251,40 @@ public class GridLogic : MonoBehaviour {
             );
             currentNode = openList[0];
             openList.RemoveAt(0);
-            int movementLeft = currentNode.GetComponent<HexGridModel>().m_movementLeft;
-            if (!closedList.Contains(currentNode) && movementLeft >= 0)
+            int rangeLeft = currentNode.GetComponent<HexGridModel>().m_movementLeft;
+            if (!closedList.Contains(currentNode) && rangeLeft >= 0)
             {
                 closedList.Add(currentNode);
                 //turn on this hexgrid
-                currentNode.GetComponent<MaskManager>().RedMaskOn();
+				if(currentNode.GetComponent<TnGAttribute>().m_unit == null){
+					//lighter redmask to indicate valid range but no one to attack
+					//TO CHANGE
+					currentNode.GetComponent<MaskManager>().BlueMaskOn();
+				}
+				else if(thisControl != 
+					currentNode.GetComponent<TnGAttribute>().m_unit.GetComponent<UnitController>().m_control)
+				{
+					//darker redmask to indicate can attack enemy
+					currentNode.GetComponent<MaskManager>().RedMaskOn();
+				}
 				
-				/*
-				if (currentNode.GetComponent<TnGAttribute>().m_unit == null)
-                	currentNode.GetComponent<MaskManager>().BlueMaskOn();
-				else if (src.GetComponent<TnGAttribute>().m_unit.GetComponent<UnitController>().m_control
-					!= currentNode.GetComponent<TnGAttribute>().m_unit.GetComponent<UnitController>().m_control)
-                	currentNode.GetComponent<MaskManager>().RedMaskOn();
-				 */
-				
-				TerrainType destType = currentNode.GetComponent<TnGAttribute>().m_terrainType;
                 //if movement is 0, stop here
-                if (movementLeft > 0)
+                if (rangeLeft > 0)
                 {
                     List<GameObject> currentNeighbours = GetNeighbours(currentNode);
                     foreach (GameObject n in currentNeighbours)
                     {
-						if(destType >= srcType) //greater than means height is lower than
-                        	n.GetComponent<HexGridModel>().UpdateRangeLeft(currentNode,movementLeft-1);
+						int destHeight = n.GetComponent<TnGAttribute>().m_height;
+						
+						if(destHeight - srcHeight >= 5) //dest a lot higher than src, hard to shoot up
+                        	n.GetComponent<HexGridModel>().UpdateRangeLeft(currentNode,rangeLeft-2);
 						else
-							n.GetComponent<HexGridModel>().UpdateRangeLeft(currentNode,movementLeft-2);
+							n.GetComponent<HexGridModel>().UpdateRangeLeft(currentNode,rangeLeft-1);
                         if (!openList.Contains(n))
                             openList.Add(n);
                     }
                 }
-            }
+			}
         }
 	}
 	
@@ -295,6 +325,14 @@ public class GridLogic : MonoBehaviour {
 				}
 			}
 		}
+	}
+	
+	//debug method
+	private void CheckGridData()
+	{
+		foreach(List<GameObject> a in m_grids)
+			foreach(GameObject b in a)
+				Debug.Log (b.GetComponent<HexGridModel>());
 	}
 	
 	/* legacy A* path finding

@@ -25,6 +25,8 @@ public class GridEditorControl : EditorWindow
 			camera.transform.position = new Vector3(0f,25f,30f);
 			camera.transform.rotation = Quaternion.identity;
 			camera.transform.Rotate(new Vector3(50f,180f,0f));
+			if(camera.GetComponent<CameraController>() == null)
+				camera.AddComponent<CameraController>();
 			//setup lighting
 			if(GameObject.Find("DirectionalLightForEditingMap") == null)
 			{

@@ -135,7 +135,8 @@ public class GridGenerator: MonoBehaviour
 					Vector2 grid2DPosition = new Vector2(hex.transform.position.x, hex.transform.position.z);
 					//initialise model
 					hex.GetComponent<HexGridModel>().Initialise(grid2DPosition,m_hexWidth,m_hexLength,y,x); //x,y denoting col and row of grid
-					hex.GetComponent<TnGAttribute>().m_terrainType = TerrainType.plain;
+					hex.GetComponent<TnGAttribute>().m_height = 1;
+					//hex.GetComponent<TnGAttribute>().m_terrainType = TerrainType.plain;
 					hex.tag = "Grid";
 					
 					//add mask to the grid as children
@@ -205,23 +206,27 @@ public class GridGenerator: MonoBehaviour
 		foreach(GameObject e in m_grids){
 			TnGAttribute tempTnG = e.GetComponent<TnGAttribute>();
 			HexGridModel tempModel = e.GetComponent<HexGridModel>();
-			//update y scaling of different terrain types
+			if(tempTnG.m_height < 1)
+				tempTnG.m_height = 1;
+			if(tempTnG.m_height > 10)
+				tempTnG.m_height = 10;
+			//update y scaling of different terrain heights
+			Vector3 scaling = new Vector3(1.0f,0.2f*tempTnG.m_height,1.0f);
+			e.transform.localScale = scaling;
+			
+			tempModel.m_movementCost = 1;
+			/*
 			if(tempTnG.m_terrainType == TerrainType.hill){
-				Vector3 scaling = new Vector3(1.0f,0.35f,1.0f);
-				e.transform.localScale = scaling;
 				tempModel.m_movementCost = 2;
 			}
 			else if(tempTnG.m_terrainType == TerrainType.obstacle){
-				Vector3 scaling = new Vector3(1.0f,0.1f,1.0f);
-				e.transform.localScale = scaling;
 				tempModel.m_movementCost = 0;
 			}
 			else//plain
 			{
-				Vector3 scaling = new Vector3(1.0f,0.2f,1.0f);
-				e.transform.localScale = scaling;
 				tempModel.m_movementCost = 1;
-			}
+			}*/
+			
 			//object has unit on top, place unit to proper place
 			if(tempTnG.m_unit != null){
 				tempTnG.m_unit.transform.position = 

@@ -7,7 +7,7 @@ public class HexGridModel :MonoBehaviour{
 	
 	public Vector2 m_center;
 	public float m_width;
-	public float m_height;
+	public float m_length;
 	public int m_row;
 	public int m_col;
 	
@@ -23,11 +23,11 @@ public class HexGridModel :MonoBehaviour{
 
 	public GameObject m_prevNode;
 	
-	public void Initialise (Vector2 center, float width, float height, int row, int col)
+	public void Initialise (Vector2 center, float width, float length, int row, int col)
 	{
 		m_center = center;
 		m_width = width;
-		m_height = height;
+		m_length = length;
 		m_row = row;
 		m_col = col;
 
@@ -44,10 +44,10 @@ public class HexGridModel :MonoBehaviour{
 	}
 	
 	//if this movementLeft is greater, replace its parent node
-	public void UpdateMovementLeft (GameObject prevNode)
+	public void UpdateMovementLeft (GameObject prevNode, int costToReach)
 	{
 		int movementLeftPrev = prevNode.GetComponent<HexGridModel>().m_movementLeft;
-		int newMovementLeft = movementLeftPrev-m_movementCost;
+		int newMovementLeft = movementLeftPrev-costToReach;
 		if (newMovementLeft > m_movementLeft && newMovementLeft >= 0) {
 			m_movementLeft = newMovementLeft;
 			m_prevNode = prevNode;
@@ -62,16 +62,21 @@ public class HexGridModel :MonoBehaviour{
 		}
 	}
 	
-	public bool CanPass(String currentPlayerTag)
+	//determine if unit carrying currentUnitControl can pass this grid
+	public bool CanPass(int currentUnitControl, bool flying)
 	{
 		bool canPass = true;
-		TnGAttribute attri = GetComponent<TnGAttribute>();
-		if(attri.m_unit != null)
+		TnGAttribute tng = GetComponent<TnGAttribute>();
+		if(tng.m_unit != null)
 		{
-			//compare tag
+			if(tng.m_unit.GetComponent<UnitController>().m_control != currentUnitControl)
+				canPass = false;
 		}
+		if(!flying){
+		/*
 		if(attri.m_terrainType == TerrainType.obstacle)
-			canPass = false;
+			canPass = false;*/
+		}
 		return canPass;
 	}
 	
