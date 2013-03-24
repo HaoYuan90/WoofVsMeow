@@ -33,11 +33,13 @@ public class MovementController : MonoBehaviour
 			pathList.Insert(0,currentNode);
 			currentNode=currentNode.GetComponent<HexGridModel>().m_prevNode;
 		}
-		//gameobject should not be moving alreay
 		//pathList should at least have a src and destination
 		if(pathList.Count>=2){
 			m_pathList = pathList;
 			m_pathList[0].GetComponent<TnGAttribute>().m_unit = null;
+			//give control to destination node
+			dest.GetComponent<TnGAttribute>().m_unit = gameObject;
+			m_currentGrid = dest;
 		}
 	}
 	
@@ -53,13 +55,10 @@ public class MovementController : MonoBehaviour
 				//have not yet reached destination
 				if(m_pathList.Count > 1) {
 					//face the next node
-					gameObject.transform.rotation = 
-						Quaternion.LookRotation(m_pathList[1].transform.position-gameObject.transform.position);
+					Vector3 dir = m_pathList[1].transform.position-gameObject.transform.position;
+					gameObject.transform.rotation = Quaternion.LookRotation(new Vector3(dir.x,0,dir.z));
 				}
 				else{
-					//if destination is reached, destination node should claim ownership
-					m_pathList[0].GetComponent<TnGAttribute>().m_unit = gameObject;
-					m_currentGrid = m_pathList[0];
 					m_pathList = new List<GameObject>();
 					//inform unit controller
 					gameObject.GetComponent<UnitController>().MoveFinished();

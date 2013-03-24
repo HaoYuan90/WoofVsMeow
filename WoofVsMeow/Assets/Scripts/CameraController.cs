@@ -34,6 +34,7 @@ public class CameraController : MonoBehaviour {
 		}
 	 	
 		if(!m_isDragging && !m_disabled){
+			/*
 			//translate left
 		    if (mousePosX < m_edgeWidth){
 				transform.Translate(-Vector3.right * m_scrollSpeed * Time.deltaTime); 
@@ -56,7 +57,7 @@ public class CameraController : MonoBehaviour {
 		    if (mousePosY >= Screen.height - m_edgeWidth){
 		    	transform.position = transform.position + forward * m_scrollSpeed * Time.deltaTime;
 				return;
-			}
+			}*/
 			if (Input.GetAxis("Mouse ScrollWheel")>0){
 				transform.Translate(Vector3.forward * m_zoomSpeed * Time.deltaTime);
 				return;
