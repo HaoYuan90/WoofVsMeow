@@ -1,15 +1,16 @@
 using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-
 
 public class MovementController : MonoBehaviour 
 {
 	public GameObject m_currentGrid;
 	
 	public int m_movementRange;
-	//storing last grid walked past and the next grids that needs to walk onto
-	private List<GameObject> m_pathList; 
+	//A list of grids that a unit needs to walk onto
+	private List<GameObject> m_pathList;
+	private GameObject lastGrid;
 
 	private int m_movementSpeed;       //frames required to walk from a grid to another
 	private int m_movementStepLeft;         //frames left to reach the next node
@@ -64,13 +65,41 @@ public class MovementController : MonoBehaviour
 					gameObject.GetComponent<UnitController>().MoveFinished();
 					return;
 				}
+				lastGrid = m_pathList[0];
 				m_pathList.RemoveAt(0);
 				m_movementStepLeft = m_movementSpeed;
 			}
+			
+			/*
 			Vector3 src = gameObject.transform.position;
 			Vector3 temp = m_pathList[0].transform.position;
 			Vector3 dest = new Vector3(temp.x,m_pathList[0].renderer.bounds.max.y,temp.z);
 			gameObject.transform.position = Vector3.Lerp(src,dest,(float)1/m_movementStepLeft);
+			*/
+			
+			Vector3 src = gameObject.transform.position;
+			Vector3 dest = m_pathList[0].transform.position;
+			dest.y = m_pathList[0].renderer.bounds.max.y;
+			Vector3 nextPosition = Vector3.Lerp(src,dest,(float)1/m_movementStepLeft);
+			if (lastGrid.renderer.bounds.max.y!=m_pathList[0].renderer.bounds.max.y) { //jumping
+				float maxJumpHeight = (float)3 + Math.Max(lastGrid.renderer.bounds.max.y, m_pathList[0].renderer.bounds.max.y);
+				if (m_movementStepLeft > m_movementSpeed/2) { //jumping up
+					float deltaY = maxJumpHeight - lastGrid.renderer.bounds.max.y;
+					float coeff = (float)(m_movementStepLeft - m_movementSpeed/2)/(m_movementSpeed/2);
+					deltaY = deltaY * (1-coeff*coeff);
+					nextPosition.y = lastGrid.renderer.bounds.max.y + deltaY;
+					//Debug.Log(m_movementStepLeft.ToString()+", "+(1-coeff*coeff).ToString());
+				}
+				else { //jumping down
+					float deltaY = maxJumpHeight - m_pathList[0].renderer.bounds.max.y;
+					float coeff = (float)m_movementStepLeft/(m_movementSpeed/2);
+					deltaY = deltaY * (coeff*coeff);
+					//Debug.Log(m_movementStepLeft.ToString()+", "+(coeff*coeff).ToString());
+					nextPosition.y = m_pathList[0].renderer.bounds.max.y + deltaY;
+				}
+			}
+			gameObject.transform.position = nextPosition;
+			
 			m_movementStepLeft --;
 		}
 		else
