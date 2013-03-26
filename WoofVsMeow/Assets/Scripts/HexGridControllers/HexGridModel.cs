@@ -6,8 +6,6 @@ using System.Collections;
 public class HexGridModel :MonoBehaviour{
 	
 	public Vector2 m_center;
-	public float m_width;
-	public float m_length;
 	public int m_row;
 	public int m_col;
 	
@@ -23,11 +21,9 @@ public class HexGridModel :MonoBehaviour{
 
 	public GameObject m_prevNode;
 	
-	public void Initialise (Vector2 center, float width, float length, int row, int col)
+	public void Initialise (Vector2 center, int row, int col)
 	{
 		m_center = center;
-		m_width = width;
-		m_length = length;
 		m_row = row;
 		m_col = col;
 

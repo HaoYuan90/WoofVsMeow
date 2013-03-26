@@ -27,6 +27,8 @@ public class GridGenerator: MonoBehaviour
 	public Material m_hexGreenMaskMat;
 	public Material m_hexOutlineMaskMat;
 	
+	public GameObject m_treePrefab;
+	
     //instantiate using unity editor
     public int m_gridNumHor = 11; //number of grids in horizontal direction
     public int m_gridNumVer = 11; //number of grids in vertical direction
@@ -134,7 +136,7 @@ public class GridGenerator: MonoBehaviour
                 	hex.transform.parent = hexGridGroup.transform;
 					Vector2 grid2DPosition = new Vector2(hex.transform.position.x, hex.transform.position.z);
 					//initialise model
-					hex.GetComponent<HexGridModel>().Initialise(grid2DPosition,m_hexWidth,m_hexLength,y,x); //x,y denoting col and row of grid
+					hex.GetComponent<HexGridModel>().Initialise(grid2DPosition,y,x); //x,y denoting col and row of grid
 					hex.GetComponent<TnGAttribute>().m_height = 1;
 					hex.GetComponent<TnGAttribute>().m_terrainType = TerrainType.normal;
 					hex.tag = "Grid";
@@ -199,18 +201,53 @@ public class GridGenerator: MonoBehaviour
 		UpdateGridMap();
 	}
 	
+	//plant 5 trees in grid
+	private void PlantTrees(GameObject grid)
+	{
+		HexGridModel temp = grid.GetComponent<HexGridModel>();
+		Vector2 center = temp.m_center;
+		float height = grid.renderer.bounds.max.y;
+		float rad = m_hexWidth/2;
+		for(int i=0;i<5;i++){
+			float x = UnityEngine.Random.Range(-rad*0.8f,rad*0.8f);
+			float y = UnityEngine.Random.Range(-rad*0.8f,rad*0.8f);
+			Vector2 vec = new Vector2(x,y);
+			if(vec.magnitude > rad)
+				vec = vec.normalized*rad;
+			Vector2 pos = center + vec;
+			GameObject tree = (GameObject)Instantiate(m_treePrefab);
+			tree.name = "tree";
+			tree.transform.parent = GameObject.Find("Vegetation").transform;
+			tree.transform.position = new Vector3(pos.x, height, pos.y);
+		}
+	}
+	
 	//update y scaling ,units and buildings
 	public void UpdateGridMap()
 	{
+		//initialise parent object group
+		if(GameObject.Find("Units") == null){
+			new GameObject("Units");
+		}
+		if(GameObject.Find("Buildings") == null){
+			new GameObject("Buildings");
+		}
+		//refresh tree
+		if(GameObject.Find("Vegetation") != null){
+			GameObject.DestroyImmediate(GameObject.Find("Vegetation"));
+		}
+		new GameObject("Vegetation");
+		//get size of grids
+		GetGridSize();
 		//TODO: all constants are hard coded, this is bad
 		foreach(GameObject e in m_grids){
 			TnGAttribute tempTnG = e.GetComponent<TnGAttribute>();
 			HexGridModel tempModel = e.GetComponent<HexGridModel>();
+			//update height of grid
 			if(tempTnG.m_height < 1)
 				tempTnG.m_height = 1;
 			if(tempTnG.m_height > 10)
 				tempTnG.m_height = 10;
-			//update y scaling of different terrain heights
 			Vector3 scaling = new Vector3(1.0f,0.2f*tempTnG.m_height,1.0f);
 			e.transform.localScale = scaling;
 			
@@ -219,21 +256,19 @@ public class GridGenerator: MonoBehaviour
 				tempTnG.m_unit.transform.position = 
 					new Vector3(tempModel.m_center.x,e.renderer.bounds.max.y,tempModel.m_center.y);
 				tempTnG.m_unit.tag = "Unit";
-				//initialise parent object group
-				if(GameObject.Find("Units") == null){
-					new GameObject("Units");
-				}
 				tempTnG.m_unit.transform.parent = GameObject.Find("Units").transform;
 			}
 			if(tempTnG.m_building != null){
 				tempTnG.m_building.transform.position = 
 					new Vector3(tempModel.m_center.x,e.renderer.bounds.max.y,tempModel.m_center.y);
 				tempTnG.m_building.tag = "Building";
-				//initialise parent object group
-				if(GameObject.Find("Buildings") == null){
-					new GameObject("Buildings");
-				}
 				tempTnG.m_building.transform.parent = GameObject.Find("Buildings").transform;
+			}
+			
+			//place trees on top of forest
+			if(tempTnG.m_terrainType == TerrainType.forest)
+			{
+				PlantTrees(e);
 			}
 		}
 	}
