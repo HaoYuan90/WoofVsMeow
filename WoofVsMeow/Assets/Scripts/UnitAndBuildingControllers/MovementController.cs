@@ -47,22 +47,24 @@ public class MovementController : MonoBehaviour
 	void FixedUpdate () {
 		if(m_pathList.Count > 0)
 		{
-			if(!gameObject.animation.IsPlaying("Take 001"))
-				gameObject.animation.Play("Take 001");
+			if(!animation.IsPlaying("run"))
+				animation.Play("run");
 			//have reached the next node which should be index 0
 			if(m_movementStepLeft == 0){
 				//set this line 
-				//gameObject.transform.position = m_pathList[0].transform.position;
+				//transform.position = m_pathList[0].transform.position;
 				//have not yet reached destination
 				if(m_pathList.Count > 1) {
 					//face the next node
-					Vector3 dir = m_pathList[1].transform.position-gameObject.transform.position;
-					gameObject.transform.rotation = Quaternion.LookRotation(new Vector3(dir.x,0,dir.z));
+					Vector3 dir = m_pathList[1].transform.position-transform.position;
+					transform.rotation = Quaternion.LookRotation(new Vector3(dir.x,0,dir.z));
 				}
 				else{
 					m_pathList = new List<GameObject>();
 					//inform unit controller
-					gameObject.GetComponent<UnitController>().MoveFinished();
+					GetComponent<UnitController>().MoveFinished();
+					//setup animation
+					animation.Play ("still");
 					return;
 				}
 				lastGrid = m_pathList[0];
@@ -70,18 +72,11 @@ public class MovementController : MonoBehaviour
 				m_movementStepLeft = m_movementSpeed;
 			}
 			
-			/*
-			Vector3 src = gameObject.transform.position;
-			Vector3 temp = m_pathList[0].transform.position;
-			Vector3 dest = new Vector3(temp.x,m_pathList[0].renderer.bounds.max.y,temp.z);
-			gameObject.transform.position = Vector3.Lerp(src,dest,(float)1/m_movementStepLeft);
-			*/
-			
-			Vector3 src = gameObject.transform.position;
+			Vector3 src = transform.position;
 			Vector3 dest = m_pathList[0].transform.position;
 			dest.y = m_pathList[0].renderer.bounds.max.y;
 			Vector3 nextPosition = Vector3.Lerp(src,dest,(float)1/m_movementStepLeft);
-			if (lastGrid.renderer.bounds.max.y!=m_pathList[0].renderer.bounds.max.y) { //jumping
+			if(Mathf.Abs(lastGrid.renderer.bounds.max.y-m_pathList[0].renderer.bounds.max.y) > 0.01){ //jumping
 				float maxJumpHeight = (float)3 + Math.Max(lastGrid.renderer.bounds.max.y, m_pathList[0].renderer.bounds.max.y);
 				if (m_movementStepLeft > m_movementSpeed/2) { //jumping up
 					float deltaY = maxJumpHeight - lastGrid.renderer.bounds.max.y;
@@ -98,14 +93,9 @@ public class MovementController : MonoBehaviour
 					nextPosition.y = m_pathList[0].renderer.bounds.max.y + deltaY;
 				}
 			}
-			gameObject.transform.position = nextPosition;
+			transform.position = nextPosition;
 			
 			m_movementStepLeft --;
-		}
-		else
-		{
-			if(gameObject.animation.IsPlaying("Take 001"))
-				gameObject.animation.Stop();
 		}
 	}
 }

@@ -35,9 +35,13 @@ public class AttackController : MonoBehaviour
 	//grid under enemy is passed in
 	public void Attack(GameObject tar)
 	{
+		//face the right direction
+		Vector3 dir = tar.transform.position-transform.position;
+		transform.rotation = Quaternion.LookRotation(new Vector3(dir.x,0,dir.z));
 		//decrease health and whatever shit
 		DisplayFloatingText(tar,"-50");
-		gameObject.GetComponent<UnitController>().AttackFinished();
+		animation.Play ("attack");
+		GetComponent<UnitController>().AttackFinished();
 	}
 	
 	private void DisplayFloatingText(GameObject target, string msg)
