@@ -117,11 +117,29 @@ public class GridLogic : MonoBehaviour {
 
 	//reset certain fields in hexgridmodel 
 	//to run BFS and A* path finding
-	private void ResetAllGraphStateVars()
+	private void ResetAllGraphStateVars(bool considerTerrain)
 	{
 		foreach(List<GameObject> a in m_grids)
 			foreach(GameObject b in a)
-				b.GetComponent<HexGridModel>().ResetGraphStateVars();
+				b.GetComponent<HexGridModel>().ResetGraphStateVars(considerTerrain);
+	}
+	
+	private void SetMovementCostAroundEnemies(GameObject src)
+	{
+		UnitController unit = src.GetComponent<TnGAttribute>().m_unit.GetComponent<UnitController>();
+		int control = unit.m_control;
+		foreach(Transform t in GameObject.Find("Units").transform)
+		{
+			UnitController temp = t.gameObject.GetComponent<UnitController>();
+			int tempControl = temp.m_control;
+			//is enemy, make grids near him harder to move about
+			if(tempControl!=control){
+				List<GameObject> neighbours = GetNeighbours(temp.currentGrid);
+				foreach(GameObject e in neighbours){
+					e.GetComponent<HexGridModel>().UpdateEnemyBlockageCost();
+				}
+			}
+		}
 	}
 	
 	//find the range of movement and highlight those grids
@@ -129,7 +147,8 @@ public class GridLogic : MonoBehaviour {
 	public void ProcessMovementRange(GameObject src, int movement)
 	{
         //clear state variables
-        ResetAllGraphStateVars();
+        ResetAllGraphStateVars(true);
+		SetMovementCostAroundEnemies(src);
         //list of nodes to check sorted from highest movementleft to lowest
         List<GameObject> openList = new List<GameObject>();
         //list of nodes already checked
@@ -196,35 +215,13 @@ public class GridLogic : MonoBehaviour {
 					}
 				}
 			}
-			/*
-				//grid in the path must be empty or occupied by allies
-            	if (currentNode.GetComponent<TnGAttribute>().m_unit == null
-						|| (currentNode.GetComponent<TnGAttribute>().m_unit.GetComponent<UnitController>().m_control
-						== currentNode.GetComponent<TnGAttribute>().m_unit.GetComponent<UnitController>().m_control)) {
-	                closedList.Add(currentNode);
-	                //turn on this hexgrid
-					if (currentNode.GetComponent<TnGAttribute>().m_unit == null)
-						if (currentNode.GetComponent<TnGAttribute>().m_unit == null)
-	                		currentNode.GetComponent<MaskManager>().GreenMaskOn();
-	                //if movement is 0, stop here
-	                if (movementLeft > 0)
-	                {
-	                    List<GameObject> currentNeighbours = GetNeighbours(currentNode);
-	                    foreach (GameObject n in currentNeighbours)
-	                    {
-	                        //update cost
-	                        n.GetComponent<HexGridModel>().UpdateMovementLeft(currentNode);
-	                        if (!openList.Contains(n))
-	                            openList.Add(n);
-	                    }
-	                }*/
         }
 	}
 	
 	public void ProcessAttackRange(GameObject src, int range)
 	{
         //clear state variables
-        ResetAllGraphStateVars();
+        ResetAllGraphStateVars(false);
         //list of nodes to check sorted from highest movementleft to lowest
         List<GameObject> openList = new List<GameObject>();
         //list of nodes already checked

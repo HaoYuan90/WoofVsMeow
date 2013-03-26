@@ -5,27 +5,24 @@ using System.Collections.Generic;
 
 public class MovementController : MonoBehaviour 
 {
-	public GameObject m_currentGrid;
-	
-	public int m_movementRange;
 	//A list of grids that a unit needs to walk onto
 	private List<GameObject> m_pathList;
+	
+	//for update purposes
 	private GameObject lastGrid;
-
 	private int m_movementSpeed;       //frames required to walk from a grid to another
 	private int m_movementStepLeft;         //frames left to reach the next node
 
 	// Use this for initialization
-	public void Initialise (GameObject currentGrid)
+	public void Initialise ()
 	{
 		m_pathList = new List<GameObject>();
-		m_currentGrid = currentGrid;
-		m_movementRange = 5; //get these values from unit model to be implemented
 		m_movementSpeed = 30;
 		m_movementStepLeft = 0;
 	}
 	
-	public void Move (GameObject dest)
+	//get the movement path, and from the path, determine if the movement is valid
+	public bool Move (GameObject dest)
 	{
 		//get the movement path
 		List<GameObject> pathList = new List<GameObject>();
@@ -37,10 +34,9 @@ public class MovementController : MonoBehaviour
 		//pathList should at least have a src and destination
 		if(pathList.Count>=2){
 			m_pathList = pathList;
-			m_pathList[0].GetComponent<TnGAttribute>().m_unit = null;
-			//give control to destination node
-			dest.GetComponent<TnGAttribute>().m_unit = gameObject;
-			m_currentGrid = dest;
+			return true;
+		} else {
+			return false;
 		}
 	}
 	

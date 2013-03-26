@@ -66,15 +66,15 @@ public class GameEngine : MonoBehaviour {
 	
 	public void ProcessMovementRange(GameObject unit)
 	{
-		MovementController temp = unit.GetComponent<MovementController>();
-		m_gridLogic.ProcessMovementRange(temp.m_currentGrid,temp.m_movementRange);
+		UnitController temp = unit.GetComponent<UnitController>();
+		m_gridLogic.ProcessMovementRange(temp.currentGrid,temp.m_movementRange);
 		m_isReadyToMove = true;
 	}
 	
 	public void ProcessAttackRange(GameObject unit)
 	{
-		AttackController temp = unit.GetComponent<AttackController>();
-		m_gridLogic.ProcessAttackRange(temp.m_currentGrid,temp.attackRange);
+		UnitController temp = unit.GetComponent<UnitController>();
+		m_gridLogic.ProcessAttackRange(temp.currentGrid,temp.m_attackRange);
 		m_isReadyToAttack = true;
 	}
 

@@ -4,6 +4,11 @@ using System.Collections.Generic;
 public class UnitController : MonoBehaviour 
 {
 	private GameEngine m_engine;
+	private GameObject m_currentGrid;
+	public GameObject currentGrid
+	{
+		get{return m_currentGrid;}
+	}
 	
 	public int m_control;
 	private bool m_active;
@@ -18,17 +23,24 @@ public class UnitController : MonoBehaviour
 	public int m_buttonYOffset = 2;
 	public int m_firstButtonOffset = 80;
 	
+	public int m_movementRange;
+	public int m_attackRange;
+	
 	public void InitialiseUnit (GameEngine engine, GameObject currentGrid) 
 	{
 		m_engine = engine;
+		m_currentGrid = currentGrid;
 		m_active = false;
 		m_hideGUI = false;
 		m_hasMoved = false;
 		m_hasAttacked = false;
 		
-		gameObject.GetComponent<MovementController>().Initialise(currentGrid);
+		m_movementRange = 5;
+		m_attackRange = 1;
+		
+		gameObject.GetComponent<MovementController>().Initialise();
 		gameObject.GetComponent<APnControlModel>().Initialise();
-		gameObject.GetComponent<AttackController>().Initialise(currentGrid);
+		gameObject.GetComponent<AttackController>().Initialise();
 	}
 	
 	public void Activate()
@@ -47,7 +59,14 @@ public class UnitController : MonoBehaviour
 	public void Move(GameObject dest)
 	{
 		m_hideGUI = true;
-		gameObject.GetComponent<MovementController>().Move(dest);
+		//valid movement, give control to destination
+		if(GetComponent<MovementController>().Move(dest))
+		{
+			m_currentGrid.GetComponent<TnGAttribute>().m_unit = null;
+			//give control to destination node
+			dest.GetComponent<TnGAttribute>().m_unit = gameObject;
+			m_currentGrid = dest;
+		}
 	}
 	
 	public void MoveFinished()
@@ -92,9 +111,6 @@ public class UnitController : MonoBehaviour
 			if(GUI.Button(new Rect(buttonX,buttonY,m_buttonWidth,m_buttonHeight),"Attack"))
 			{
 				m_hideGUI = true;
-				//give attack module the current current grid
-				gameObject.GetComponent<AttackController>().m_currentGrid = 
-					gameObject.GetComponent<MovementController>().m_currentGrid;
 				m_engine.ProcessAttackRange(gameObject);
 			}
 			buttonY += m_buttonHeight+m_buttonYOffset;

@@ -3,8 +3,6 @@ using System.Collections;
 
 public class AttackController : MonoBehaviour 
 {
-	public GameObject m_currentGrid;
-	
 	private int m_attackRange;
 	public int attackRange
 	{
@@ -20,10 +18,8 @@ public class AttackController : MonoBehaviour
 	readonly private int m_floatingTextMaxLife = 120;
 	readonly private Rect m_textBox = new Rect(0,0,100,100);
 	
-	public void Initialise (GameObject currentGrid)
+	public void Initialise ()
 	{
-		m_currentGrid = currentGrid;
-		
 		//get this from data file
 		m_attackRange = 1;
 		

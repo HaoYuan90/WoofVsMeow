@@ -31,14 +31,42 @@ public class HexGridModel :MonoBehaviour{
 		m_row = row;
 		m_col = col;
 
-        //movement cost is set in editor
+        m_movementCost = 0;
 		m_movementLeft = -1;
 		m_prevNode = null;
 	}
 	
-	
-	public void ResetGraphStateVars ()
+	private void SetMovementCost(bool considerTerrains)
 	{
+		if(considerTerrains){
+			TerrainType temp = GetComponent<TnGAttribute>().m_terrainType;
+			switch(temp){
+			case TerrainType.normal:
+				m_movementCost = 1;
+				break;
+			case TerrainType.forest:
+				m_movementCost = 2;
+				break;
+				//obstacles will not be counted in algorithm
+			case TerrainType.obstacle:
+				m_movementCost = 0;
+				break;
+			}
+		}
+		else
+			m_movementCost = 1;
+	}
+	
+	public void UpdateEnemyBlockageCost()
+	{
+		m_movementCost = m_movementCost+1;
+		if(m_movementCost > 5)
+			m_movementCost = 5;
+	}
+	
+	public void ResetGraphStateVars (bool considerTerrains)
+	{
+		SetMovementCost(considerTerrains);
 		m_movementLeft = -1;
 		m_prevNode = null;
 	}
@@ -73,9 +101,8 @@ public class HexGridModel :MonoBehaviour{
 				canPass = false;
 		}
 		if(!flying){
-		/*
-		if(attri.m_terrainType == TerrainType.obstacle)
-			canPass = false;*/
+			if(tng.m_terrainType == TerrainType.obstacle)
+				canPass = false;
 		}
 		return canPass;
 	}

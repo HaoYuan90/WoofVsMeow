@@ -136,7 +136,7 @@ public class GridGenerator: MonoBehaviour
 					//initialise model
 					hex.GetComponent<HexGridModel>().Initialise(grid2DPosition,m_hexWidth,m_hexLength,y,x); //x,y denoting col and row of grid
 					hex.GetComponent<TnGAttribute>().m_height = 1;
-					//hex.GetComponent<TnGAttribute>().m_terrainType = TerrainType.plain;
+					hex.GetComponent<TnGAttribute>().m_terrainType = TerrainType.normal;
 					hex.tag = "Grid";
 					
 					//add mask to the grid as children
@@ -199,7 +199,7 @@ public class GridGenerator: MonoBehaviour
 		UpdateGridMap();
 	}
 	
-	//update y scaling as well as movement cost
+	//update y scaling ,units and buildings
 	public void UpdateGridMap()
 	{
 		//TODO: all constants are hard coded, this is bad
@@ -213,19 +213,6 @@ public class GridGenerator: MonoBehaviour
 			//update y scaling of different terrain heights
 			Vector3 scaling = new Vector3(1.0f,0.2f*tempTnG.m_height,1.0f);
 			e.transform.localScale = scaling;
-			
-			tempModel.m_movementCost = 1;
-			/*
-			if(tempTnG.m_terrainType == TerrainType.hill){
-				tempModel.m_movementCost = 2;
-			}
-			else if(tempTnG.m_terrainType == TerrainType.obstacle){
-				tempModel.m_movementCost = 0;
-			}
-			else//plain
-			{
-				tempModel.m_movementCost = 1;
-			}*/
 			
 			//object has unit on top, place unit to proper place
 			if(tempTnG.m_unit != null){
