@@ -158,41 +158,6 @@ public class GridGenerator: MonoBehaviour
 		}
     }
 	
-	private void TestListSerielisation()
-	{
-		bool passedTest = true;
-		foreach(GameObject e in m_grids){
-			if(e == null){
-				passedTest = false;
-			}
-		}
-		
-		if(!passedTest)
-			Debug.Log("Failed TestListSerielisation()");
-		else
-			Debug.Log("Passed TestListSerielisation()");
-		/*
-		foreach(GameObject e in m_grids)
-		{
-			Debug.Log(e);
-		}*/
-	}
-	
-	private void TestReferenceSerielisation()
-	{
-		int numTestInt = 0;
-		//test case set to 1
-		foreach(GameObject e in m_grids)
-		{
-			if((e.GetComponent<TestAttribute>() as TestAttribute).testNum == 1)
-				numTestInt ++;
-		}
-		if(numTestInt!= m_hexGridRefTestNum)
-			Debug.Log ("Failed TestReferenceSerielisation()");
-		else 
-			Debug.Log ("Passed TestReferenceSerielisation()");
-	}
-	
 	public void CreateGridMap()
 	{
 		GetGridSize();
@@ -207,18 +172,15 @@ public class GridGenerator: MonoBehaviour
 		HexGridModel temp = grid.GetComponent<HexGridModel>();
 		Vector2 center = temp.m_center;
 		float height = grid.renderer.bounds.max.y;
-		float rad = m_hexWidth/2;
+		//offset is applied here to make sure trees are more towards the center
+		float rad = m_hexWidth/2 * 0.8f;
 		for(int i=0;i<5;i++){
-			float x = UnityEngine.Random.Range(-rad*0.8f,rad*0.8f);
-			float y = UnityEngine.Random.Range(-rad*0.8f,rad*0.8f);
-			Vector2 vec = new Vector2(x,y);
-			if(vec.magnitude > rad)
-				vec = vec.normalized*rad;
-			Vector2 pos = center + vec;
+			Vector2 vec = UnityEngine.Random.insideUnitCircle*rad;
+			vec = center + vec;
 			GameObject tree = (GameObject)Instantiate(m_treePrefab);
 			tree.name = "tree";
 			tree.transform.parent = GameObject.Find("Vegetation").transform;
-			tree.transform.position = new Vector3(pos.x, height, pos.y);
+			tree.transform.position = new Vector3(vec.x, height, vec.y);
 		}
 	}
 	
@@ -272,13 +234,7 @@ public class GridGenerator: MonoBehaviour
 			}
 		}
 	}
-	
-	public void RunTests()
-	{
-		TestListSerielisation();
-		TestReferenceSerielisation();
-	}
-	
+
 	public void Xmirror()
 	{
 		List<List<GameObject>> grids = GetGridData();
@@ -328,5 +284,46 @@ public class GridGenerator: MonoBehaviour
 			foreach(GameObject e in m_grids)
 				e.GetComponent<MaskManager>().DeactivateMask();
 		}
+	}
+	
+	public void RunTests()
+	{
+		TestListSerielisation();
+		TestReferenceSerielisation();
+	}
+	
+	private void TestListSerielisation()
+	{
+		bool passedTest = true;
+		foreach(GameObject e in m_grids){
+			if(e == null){
+				passedTest = false;
+			}
+		}
+		
+		if(!passedTest)
+			Debug.Log("Failed TestListSerielisation()");
+		else
+			Debug.Log("Passed TestListSerielisation()");
+		/*
+		foreach(GameObject e in m_grids)
+		{
+			Debug.Log(e);
+		}*/
+	}
+	
+	private void TestReferenceSerielisation()
+	{
+		int numTestInt = 0;
+		//test case set to 1
+		foreach(GameObject e in m_grids)
+		{
+			if((e.GetComponent<TestAttribute>() as TestAttribute).testNum == 1)
+				numTestInt ++;
+		}
+		if(numTestInt!= m_hexGridRefTestNum)
+			Debug.Log ("Failed TestReferenceSerielisation()");
+		else 
+			Debug.Log ("Passed TestReferenceSerielisation()");
 	}
 }
