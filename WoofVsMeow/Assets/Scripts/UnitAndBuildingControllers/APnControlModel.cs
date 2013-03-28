@@ -2,20 +2,34 @@ using UnityEngine;
 
 public class APnControlModel : MonoBehaviour
 {
+	private int m_maxAP;
  	private int m_currentAP;
-  	public int m_maxAP;
+	public int currentAP{
+		get{return m_currentAP;}
+	}
 	
 	private int m_debugID;
 
-	public void Initialise()
+	public void Initialise(int maxAP)
 	{
-		//get this from data storage class
-		//m_maxAP = 100;
+		m_maxAP = maxAP;
 		m_currentAP = m_maxAP;
 		
 		m_debugID = 0;
 	}
 	
+	public void DecreaseAP(int ap)
+	{
+		m_currentAP -= ap;
+		if(m_currentAP < 0)
+			Debug.LogError("ap is less than 0, should not happen");
+	}
+	public void ReplenishAP(double percentage)
+	{
+		m_currentAP = (int)percentage*m_maxAP;
+	}
+	
+	//For testing
 	//random test instance
 	public void InitialiseTestInstance(int id)
 	{
@@ -23,6 +37,7 @@ public class APnControlModel : MonoBehaviour
 		m_maxAP = m_currentAP+Random.Range(0,50);
 		m_debugID = id;
 	}
+	
 	//fixed test instance
 	public void InitialiseTestInstance(int id, int current, int max)
 	{
@@ -31,36 +46,6 @@ public class APnControlModel : MonoBehaviour
 		m_debugID = id;
 	}
 	
-	//m_CurrentAP
-	public void SetAP(int ap)
-	{
-		m_currentAP = ap;
-	}
-	public void ModifyAP(int ap)
-	{
-		m_currentAP += ap;
-	}
-	public int GetAP()
-	{
-		return m_currentAP;
-	}
-	
-	public void ReplenishAP(double percentage)
-	{
-		m_currentAP = (int)percentage*m_maxAP;
-	}
-	
-	//m_maxAP
-	public void SetMax(int ap)
-	{
-		m_maxAP = ap;
-	}
-	public int GetMax()
-	{
-		return m_maxAP;
-	}
-	
-	//For testing
 	public int GetID()
 	{
 		return m_debugID;

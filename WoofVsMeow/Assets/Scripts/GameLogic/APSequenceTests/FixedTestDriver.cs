@@ -27,7 +27,7 @@ public class FixedTestDriver : MonoBehaviour
 				break;
 			}
 			
-			temp.SetAP(temp.GetMax());
+			temp.ReplenishAP(1);
 			m_controller.OnTurnEnd();	
 			
 			if (!ValidateList(i))

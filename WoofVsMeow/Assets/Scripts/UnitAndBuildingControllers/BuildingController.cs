@@ -24,7 +24,7 @@ public class BuildingController : MonoBehaviour {
 		m_hideGUI = false;
 		m_hasProduced = false;
 		
-		gameObject.GetComponent<APnControlModel>().Initialise();
+		gameObject.GetComponent<APnControlModel>().Initialise(100);
 	}
 	
 	public void Activate() {

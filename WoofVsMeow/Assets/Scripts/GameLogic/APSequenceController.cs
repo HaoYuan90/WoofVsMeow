@@ -11,7 +11,7 @@ public class APSequenceController : MonoBehaviour
 		{
 			APnControlModel A = objA.GetComponent<APnControlModel>();
 			APnControlModel B = objB.GetComponent<APnControlModel>();		
-			return A.GetAP() - B.GetAP();
+			return A.currentAP - B.currentAP;
 		}
 	}
 	
@@ -49,8 +49,8 @@ public class APSequenceController : MonoBehaviour
 			else
 			{
 				//find the last occurence and append after it
-				int temp = unit.GetComponent<APnControlModel>().GetAP();
-				index = m_gameUnits.FindLastIndex(x => x.GetComponent<APnControlModel>().GetAP() <= temp)+1;
+				int temp = unit.GetComponent<APnControlModel>().currentAP;
+				index = m_gameUnits.FindLastIndex(x => x.GetComponent<APnControlModel>().currentAP <= temp)+1;
 				m_gameUnits.Insert(index, unit);
 			}
 		}
@@ -87,12 +87,12 @@ public class APSequenceController : MonoBehaviour
 		
 		if(m_gameUnits.Count > 0){
 			unit = m_gameUnits[0];
-			apModAmt = -unit.GetComponent<APnControlModel>().GetAP();
+			apModAmt = unit.GetComponent<APnControlModel>().currentAP;
 			
 			//reduce ap of all units in the list by the amount of the 1st unit
 			foreach(GameObject e in m_gameUnits)
 			{
-				e.GetComponent<APnControlModel>().ModifyAP(apModAmt);
+				e.GetComponent<APnControlModel>().DecreaseAP(apModAmt);
 			}
 			return unit;
 		}

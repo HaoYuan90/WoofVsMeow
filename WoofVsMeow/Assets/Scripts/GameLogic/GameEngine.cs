@@ -58,7 +58,6 @@ public class GameEngine : MonoBehaviour {
 	public void UnitTurnEnded()
 	{
 		//determine how much ap to replenish according to type of movement
-		m_currUnit.GetComponent<APnControlModel>().ReplenishAP(1);
 		m_apController.OnTurnEnd();
 		m_inTurn = false;
 		m_currUnit = null;
@@ -136,12 +135,17 @@ public class GameEngine : MonoBehaviour {
 						{
 							//single unit attack
 							GameObject unit = tar.GetComponent<TnGAttribute>().m_unit;
-							//check if it is enemy
+							//check if there is unit on that grid
 							if(unit!=null){
-								m_gridLogic.ClearAllMasks();
-								tar.GetComponent<MaskManager>().RedMaskOn();
-								m_currUnit.GetComponent<UnitController>().Attack(tar);
-								m_isReadyToAttack = false;
+								int currentControl = m_currUnit.GetComponent<UnitController>().m_control;
+								int tarControl = unit.GetComponent<UnitController>().m_control;
+								//if it is enemy
+								if(currentControl != tarControl){
+									m_gridLogic.ClearAllMasks();
+									tar.GetComponent<MaskManager>().RedMaskOn();
+									m_currUnit.GetComponent<UnitController>().Attack(tar);
+									m_isReadyToAttack = false;
+								}
 							}
 						}
 					}

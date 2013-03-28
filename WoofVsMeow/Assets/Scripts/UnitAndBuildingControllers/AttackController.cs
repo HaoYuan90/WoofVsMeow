@@ -3,12 +3,6 @@ using System.Collections;
 
 public class AttackController : MonoBehaviour 
 {
-	private int m_attackRange;
-	public int attackRange
-	{
-		get{return m_attackRange;}
-	}
-	
 	private int m_floatingTextLife;
 	private string m_floatingText;
 	private Rect m_textPos;
@@ -20,9 +14,6 @@ public class AttackController : MonoBehaviour
 	
 	public void Initialise ()
 	{
-		//get this from data file
-		m_attackRange = 1;
-		
 		m_floatingTextLife = 0;
 		m_floatingText = null;
 		m_textPos = new Rect();

@@ -9,22 +9,23 @@ public class UnitController : MonoBehaviour
 	{
 		get{return m_currentGrid;}
 	}
-	
-	public int m_control;
+	//control states
+	public int m_control; //which player owns this unit
 	private bool m_active;
 	private bool m_hideGUI;
-	
 	private bool m_hasMoved;
 	private bool m_hasAttacked;
 	
-	public int m_buttonWidth = 100;
-	public int m_buttonHeight = 30;
-	public int m_buttonXOffset = 20;
-	public int m_buttonYOffset = 2;
-	public int m_firstButtonOffset = 80;
+	readonly private int m_buttonWidth = 100;
+	readonly private int m_buttonHeight = 30;
+	readonly private int m_buttonXOffset = 20;
+	readonly private int m_buttonYOffset = 2;
+	readonly private int m_firstButtonOffset = 80;
 	
+	//unit stats
 	public int m_movementRange;
 	public int m_attackRange;
+	public int m_maxAP;
 	
 	public void InitialiseUnit (GameEngine engine, GameObject currentGrid) 
 	{
@@ -35,11 +36,8 @@ public class UnitController : MonoBehaviour
 		m_hasMoved = false;
 		m_hasAttacked = false;
 		
-		m_movementRange = 5;
-		m_attackRange = 1;
-		
 		gameObject.GetComponent<MovementController>().Initialise();
-		gameObject.GetComponent<APnControlModel>().Initialise();
+		gameObject.GetComponent<APnControlModel>().Initialise(m_maxAP);
 		gameObject.GetComponent<AttackController>().Initialise();
 	}
 	
@@ -118,6 +116,7 @@ public class UnitController : MonoBehaviour
 			if(GUI.Button(new Rect(buttonX,buttonY,m_buttonWidth,m_buttonHeight),"End"))
 			{
 				m_active = false;
+				GetComponent<APnControlModel>().ReplenishAP(1);
 				m_engine.UnitTurnEnded();
 			}
 		}
