@@ -33,6 +33,24 @@ public class GridLogic : MonoBehaviour {
 				b.GetComponent<MaskManager>().OutlineMaskOn();
 	}
 	
+	public GameObject GetBuildingAt(int row, int column)
+	{
+		//this method is made to facilitate RPC calls, it should never return null
+		return m_grids[row][column].GetComponent<TnGAttribute>().m_building;
+	}
+	
+	public GameObject GetUnitAt(int row, int column)
+	{
+		//this method is made to facilitate RPC calls, it should never return null
+		return m_grids[row][column].GetComponent<TnGAttribute>().m_unit;
+	}
+	
+	public GameObject GetGridAt(int row, int column)
+	{
+		//this method is made to facilitate RPC calls, it should never return null
+		return m_grids[row][column];
+	}
+	
 	//methods to find neighbour of a grid
 	private List<GameObject> GetNeighbours(GameObject grid) 
 	{

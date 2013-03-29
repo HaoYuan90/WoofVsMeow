@@ -49,6 +49,12 @@ public class UnitController : MonoBehaviour
 		m_hasAttacked = false;
 	}
 	
+	public IntVector2 GetPositionOnMap()
+	{
+		HexGridModel temp = m_currentGrid.GetComponent<HexGridModel>();
+		return new IntVector2(temp.m_row,temp.m_col);
+	}
+	
 	public bool IsEnemyOf(int currControl)
 	{
 		return !(m_control == currControl);

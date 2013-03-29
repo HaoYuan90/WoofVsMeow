@@ -1,6 +1,15 @@
 using UnityEngine;
 using System.Collections;
 
+public struct IntVector2  {
+    public int x, y;
+ 
+    public IntVector2 (int xi, int yi) {
+        x = xi;
+        y = yi;
+    }   
+}
+
 public class GameEngine : MonoBehaviour {
 	
 	private GridLogic m_gridLogic;
@@ -110,13 +119,18 @@ public class GameEngine : MonoBehaviour {
 					GameObject dest = grid.collider.gameObject;
 					if(dest.tag == "Grid"){
 						//make sure selected node is in range and there is not units and buildings occupying it
-						if (dest.GetComponent<HexGridModel>().m_prevNode != null)
-							if (dest.GetComponent<TnGAttribute>().m_unit == null)
-								if (dest.GetComponent<TnGAttribute>().m_unit == null) {
-							m_gridLogic.ClearAllMasks();
-							dest.GetComponent<MaskManager>().RedMaskOn();
-							m_currUnit.GetComponent<UnitController>().Move(dest);
-							m_isReadyToMove = false;
+						if (dest.GetComponent<HexGridModel>().m_prevNode != null){
+							if (dest.GetComponent<TnGAttribute>().m_unit == null){
+								m_gridLogic.ClearAllMasks();
+								dest.GetComponent<MaskManager>().RedMaskOn();
+								if(Network.isClient || Network.isServer){
+									IntVector2 temp1 = m_currUnit.GetComponent<UnitController>().GetPositionOnMap();
+									IntVector2 temp2 = dest.GetComponent<HexGridModel>().GetPositionOnMap();
+									networkView.RPC("MoveUnitToDest",RPCMode.OthersBuffered,temp1.x,temp1.y,temp2.x,temp2.y);
+								}
+								m_currUnit.GetComponent<UnitController>().Move(dest);
+								m_isReadyToMove = false;
+							}
 						}
 					}
 				}
@@ -143,7 +157,12 @@ public class GameEngine : MonoBehaviour {
 								if(currentControl != tarControl){
 									m_gridLogic.ClearAllMasks();
 									tar.GetComponent<MaskManager>().RedMaskOn();
-									m_currUnit.GetComponent<UnitController>().Attack(tar);
+									if(Network.isClient || Network.isServer){
+										IntVector2 temp1 = m_currUnit.GetComponent<UnitController>().GetPositionOnMap();
+										IntVector2 temp2 = unit.GetComponent<UnitController>().GetPositionOnMap();
+										networkView.RPC("UnitAttackUnit",RPCMode.OthersBuffered,temp1.x,temp1.y,temp2.x,temp2.y);
+									}
+									m_currUnit.GetComponent<UnitController>().Attack(unit);
 									m_isReadyToAttack = false;
 								}
 							}
@@ -183,5 +202,24 @@ public class GameEngine : MonoBehaviour {
 				m_currUnit.GetComponent<UnitController>().CommandCancelled();
 			}
 		}
+	}
+	
+	//network supports, remote procedure calls and their envelopes
+	[RPC]
+	void MoveUnitToDest(int unitX, int unitY, int destX, int destY)
+	{
+		GameObject unit = m_gridLogic.GetUnitAt(unitX,unitY);
+		Debug.Log(unitX);
+		Debug.Log(unitY);
+		ProcessMovementRange(unit);
+		unit.GetComponent<UnitController>().Move(m_gridLogic.GetGridAt(destX,destY));
+	}
+	
+	[RPC]
+	void UnitAttackUnit(int unitX, int unitY, int tarX, int tarY)
+	{
+		GameObject unit = m_gridLogic.GetUnitAt(unitX,unitY);
+		ProcessAttackRange(unit);
+		unit.GetComponent<UnitController>().Attack(m_gridLogic.GetUnitAt(tarX,tarY));
 	}
 }

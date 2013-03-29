@@ -19,7 +19,6 @@ public class AttackController : MonoBehaviour
 		m_textPos = new Rect();
 	}
 	
-	//grid under enemy is passed in
 	public void Attack(GameObject tar)
 	{
 		//face the right direction

@@ -32,6 +32,18 @@ public class HexGridModel :MonoBehaviour{
 		m_prevNode = null;
 	}
 	
+	public IntVector2 GetPositionOnMap()
+	{
+		return new IntVector2(m_row,m_col);
+	}
+	
+	public void UpdateEnemyBlockageCost()
+	{
+		m_movementCost = m_movementCost+1;
+		if(m_movementCost > 5)
+			m_movementCost = 5;
+	}
+	
 	private void SetMovementCost(bool considerTerrains)
 	{
 		if(considerTerrains){
@@ -51,13 +63,6 @@ public class HexGridModel :MonoBehaviour{
 		}
 		else
 			m_movementCost = 1;
-	}
-	
-	public void UpdateEnemyBlockageCost()
-	{
-		m_movementCost = m_movementCost+1;
-		if(m_movementCost > 5)
-			m_movementCost = 5;
 	}
 	
 	public void ResetGraphStateVars (bool considerTerrains)
