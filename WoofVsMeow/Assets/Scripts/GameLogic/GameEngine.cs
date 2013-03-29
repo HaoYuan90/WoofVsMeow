@@ -231,6 +231,7 @@ public class GameEngine : MonoBehaviour
 	{
 		GameObject unit = m_gridLogic.GetUnitAt(unitX,unitY);
 		ProcessMovementRange(unit,true);
+		m_isReadyToMove = false;
 		unit.GetComponent<UnitController>().Move(m_gridLogic.GetGridAt(destX,destY));
 	}
 	
@@ -239,6 +240,7 @@ public class GameEngine : MonoBehaviour
 	{
 		GameObject unit = m_gridLogic.GetUnitAt(unitX,unitY);
 		ProcessAttackRange(unit,true);
+		m_isReadyToAttack = false;
 		unit.GetComponent<UnitController>().Attack(m_gridLogic.GetUnitAt(tarX,tarY));
 	}
 	
@@ -246,7 +248,9 @@ public class GameEngine : MonoBehaviour
 	private void PlayerTurnEnded(int newUnitAP)
 	{
 		m_currUnit.GetComponent<APController>().RPCSetAP(newUnitAP);
-		UnitTurnEnded();
+		m_apController.OnTurnEnd();
+		m_inTurn = false;
+		m_currUnit = null;
 	}
 	
 	void OnPlayerDisconnected()
