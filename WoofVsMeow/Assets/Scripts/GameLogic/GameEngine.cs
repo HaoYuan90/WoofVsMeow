@@ -10,8 +10,9 @@ public struct IntVector2  {
     }   
 }
 
-public class GameEngine : MonoBehaviour {
-	
+public class GameEngine : MonoBehaviour 
+{
+	private int m_control;
 	private GridLogic m_gridLogic;
 	private APSequenceController m_apController;
 	
@@ -23,6 +24,12 @@ public class GameEngine : MonoBehaviour {
 	private bool m_isReadyToProduce;
 
 	void Start () {
+		if(Network.isServer)
+			m_control = PlayerPrefs.GetInt("control");
+		else if(Network.isClient)
+			m_control = PlayerPrefs.GetInt("clientcontrol");
+		else
+			m_control = 0; //no network
 		//boot all the components on start
 		InitialiseGridLogic();
 		InitUnitsAndBuildings();
@@ -67,22 +74,25 @@ public class GameEngine : MonoBehaviour {
 	public void UnitTurnEnded()
 	{
 		//determine how much ap to replenish according to type of movement
+		if(Network.isClient || Network.isServer){
+			networkView.RPC("PlayerTurnEnded",RPCMode.OthersBuffered,m_currUnit.GetComponent<APController>().currentAP);
+		}
 		m_apController.OnTurnEnd();
 		m_inTurn = false;
 		m_currUnit = null;
 	}
 	
-	public void ProcessMovementRange(GameObject unit)
+	public void ProcessMovementRange(GameObject unit, bool isRPC)
 	{
 		UnitController temp = unit.GetComponent<UnitController>();
-		m_gridLogic.ProcessMovementRange(temp.currentGrid,temp.m_movementRange);
+		m_gridLogic.ProcessMovementRange(temp.currentGrid,temp.m_movementRange, isRPC);
 		m_isReadyToMove = true;
 	}
 	
-	public void ProcessAttackRange(GameObject unit)
+	public void ProcessAttackRange(GameObject unit, bool isRPC)
 	{
 		UnitController temp = unit.GetComponent<UnitController>();
-		m_gridLogic.ProcessAttackRange(temp.currentGrid,temp.m_attackRange);
+		m_gridLogic.ProcessAttackRange(temp.currentGrid,temp.m_attackRange, isRPC);
 		m_isReadyToAttack = true;
 	}
 
@@ -91,24 +101,35 @@ public class GameEngine : MonoBehaviour {
 		m_isReadyToProduce = true;
 	}
 	
+	private void ProcessTurnBegin ()
+	{
+		if(m_currUnit != null){
+			if(m_currUnit.tag == "Unit"){
+				m_inTurn = true;
+				int thisControl = m_currUnit.GetComponent<UnitController>().m_control;
+				if(thisControl == m_control){
+					m_currUnit.GetComponent<UnitController>().Activate();
+				}
+			}
+			else if(m_currUnit.tag == "Building"){
+				m_inTurn = true;
+				int thisControl = m_currUnit.GetComponent<BuildingController>().m_control;
+				if(thisControl == m_control){
+					m_currUnit.GetComponent<BuildingController>().Activate();
+				}
+			}
+			else{
+				Debug.LogWarning("weird stuff is taking its turn now...");
+			}
+		}
+	}
+	
 	void Update () 
 	{
 		if(!m_inTurn){
 			m_gridLogic.ClearAllMasks();
 			m_currUnit = m_apController.OnTurnBegin();
-			if(m_currUnit != null){
-				if(m_currUnit.tag == "Unit"){
-					m_currUnit.GetComponent<UnitController>().Activate();
-					m_inTurn = true;
-				}
-				else if(m_currUnit.tag == "Building"){
-					m_currUnit.GetComponent<BuildingController>().Activate();
-					m_inTurn = true;
-				}
-				else{
-					Debug.LogWarning("weird stuff is taking its turn now...");
-				}
-			}
+			ProcessTurnBegin();
 		}
 		//actual move
 		if(m_isReadyToMove){
@@ -206,20 +227,35 @@ public class GameEngine : MonoBehaviour {
 	
 	//network supports, remote procedure calls and their envelopes
 	[RPC]
-	void MoveUnitToDest(int unitX, int unitY, int destX, int destY)
+	private void MoveUnitToDest(int unitX, int unitY, int destX, int destY)
 	{
 		GameObject unit = m_gridLogic.GetUnitAt(unitX,unitY);
-		Debug.Log(unitX);
-		Debug.Log(unitY);
-		ProcessMovementRange(unit);
+		ProcessMovementRange(unit,true);
 		unit.GetComponent<UnitController>().Move(m_gridLogic.GetGridAt(destX,destY));
 	}
 	
 	[RPC]
-	void UnitAttackUnit(int unitX, int unitY, int tarX, int tarY)
+	private void UnitAttackUnit(int unitX, int unitY, int tarX, int tarY)
 	{
 		GameObject unit = m_gridLogic.GetUnitAt(unitX,unitY);
-		ProcessAttackRange(unit);
+		ProcessAttackRange(unit,true);
 		unit.GetComponent<UnitController>().Attack(m_gridLogic.GetUnitAt(tarX,tarY));
+	}
+	
+	[RPC]
+	private void PlayerTurnEnded(int newUnitAP)
+	{
+		m_currUnit.GetComponent<APController>().RPCSetAP(newUnitAP);
+		UnitTurnEnded();
+	}
+	
+	void OnPlayerDisconnected()
+	{
+		//return to menu, disconnected player
+	}
+	
+	void OnDisconnectedFromServer()
+	{
+		//return to menu, disconnected player
 	}
 }

@@ -9,8 +9,8 @@ public class APSequenceController : MonoBehaviour
 	{
 		public int Compare(GameObject objA, GameObject objB)
 		{
-			APnControlModel A = objA.GetComponent<APnControlModel>();
-			APnControlModel B = objB.GetComponent<APnControlModel>();		
+			APController A = objA.GetComponent<APController>();
+			APController B = objB.GetComponent<APController>();		
 			return A.currentAP - B.currentAP;
 		}
 	}
@@ -49,8 +49,8 @@ public class APSequenceController : MonoBehaviour
 			else
 			{
 				//find the last occurence and append after it
-				int temp = unit.GetComponent<APnControlModel>().currentAP;
-				index = m_gameUnits.FindLastIndex(x => x.GetComponent<APnControlModel>().currentAP <= temp)+1;
+				int temp = unit.GetComponent<APController>().currentAP;
+				index = m_gameUnits.FindLastIndex(x => x.GetComponent<APController>().currentAP <= temp)+1;
 				m_gameUnits.Insert(index, unit);
 			}
 		}
@@ -87,12 +87,12 @@ public class APSequenceController : MonoBehaviour
 		
 		if(m_gameUnits.Count > 0){
 			unit = m_gameUnits[0];
-			apModAmt = unit.GetComponent<APnControlModel>().currentAP;
+			apModAmt = unit.GetComponent<APController>().currentAP;
 			
 			//reduce ap of all units in the list by the amount of the 1st unit
 			foreach(GameObject e in m_gameUnits)
 			{
-				e.GetComponent<APnControlModel>().DecreaseAP(apModAmt);
+				e.GetComponent<APController>().DecreaseAP(apModAmt);
 			}
 			return unit;
 		}
@@ -122,7 +122,7 @@ public class APSequenceController : MonoBehaviour
 	{
 		for (int i=0; i<m_gameUnits.Count; i++)
 		{
-			m_gameUnits[i].GetComponent<APnControlModel>().Print();
+			m_gameUnits[i].GetComponent<APController>().Print();
 		}
 	}
 	
@@ -141,11 +141,11 @@ public class APSequenceController : MonoBehaviour
 		}
 		else
 		{
-			result = m_gameUnits[0].GetComponent<APnControlModel>().ToString();
+			result = m_gameUnits[0].GetComponent<APController>().ToString();
 			for (int i=1; i<m_gameUnits.Count; i++)
 			{
 				result += " ";
-				result += m_gameUnits[i].GetComponent<APnControlModel>().ToString();
+				result += m_gameUnits[i].GetComponent<APController>().ToString();
 			}
 		}
 		

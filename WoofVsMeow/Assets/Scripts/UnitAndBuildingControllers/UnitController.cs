@@ -32,12 +32,12 @@ public class UnitController : MonoBehaviour
 		m_engine = engine;
 		m_currentGrid = currentGrid;
 		m_active = false;
-		m_hideGUI = false;
+		m_hideGUI = true;
 		m_hasMoved = false;
 		m_hasAttacked = false;
 		
 		gameObject.GetComponent<MovementController>().Initialise();
-		gameObject.GetComponent<APnControlModel>().Initialise(m_maxAP);
+		gameObject.GetComponent<APController>().Initialise(m_maxAP);
 		gameObject.GetComponent<AttackController>().Initialise();
 	}
 	
@@ -108,21 +108,21 @@ public class UnitController : MonoBehaviour
 			if(GUI.Button(new Rect(buttonX,buttonY,m_buttonWidth,m_buttonHeight),"Move"))
 			{
 				m_hideGUI = true;
-				m_engine.ProcessMovementRange(gameObject);
+				m_engine.ProcessMovementRange(gameObject,false);
 			}
 			buttonY += m_buttonHeight+m_buttonYOffset;
 			GUI.enabled = !m_hasAttacked; //enable if unit has not attacked
 			if(GUI.Button(new Rect(buttonX,buttonY,m_buttonWidth,m_buttonHeight),"Attack"))
 			{
 				m_hideGUI = true;
-				m_engine.ProcessAttackRange(gameObject);
+				m_engine.ProcessAttackRange(gameObject,false);
 			}
 			buttonY += m_buttonHeight+m_buttonYOffset;
 			GUI.enabled = true;
 			if(GUI.Button(new Rect(buttonX,buttonY,m_buttonWidth,m_buttonHeight),"End"))
 			{
 				m_active = false;
-				GetComponent<APnControlModel>().ReplenishAP(1);
+				GetComponent<APController>().ReplenishAP(1);
 				m_engine.UnitTurnEnded();
 			}
 		}

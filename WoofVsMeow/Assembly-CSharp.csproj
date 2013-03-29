@@ -57,7 +57,7 @@
      <Compile Include="Assets\Scripts\HexGridControllers\TnGAttribute.cs" />
      <Compile Include="Assets\Scripts\Network\NetworkController.cs" />
      <Compile Include="Assets\Scripts\Network\RPCScript.cs" />
-     <Compile Include="Assets\Scripts\UnitAndBuildingControllers\APnControlModel.cs" />
+     <Compile Include="Assets\Scripts\UnitAndBuildingControllers\APController.cs" />
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\AttackController.cs" />
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\BuildingController.cs" />
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\MovementController.cs" />

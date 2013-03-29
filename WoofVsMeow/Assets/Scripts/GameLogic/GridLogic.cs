@@ -162,7 +162,7 @@ public class GridLogic : MonoBehaviour {
 	
 	//find the range of movement and highlight those grids
 	//also formulate a path from src to all grids in range
-	public void ProcessMovementRange(GameObject src, int movement)
+	public void ProcessMovementRange(GameObject src, int movement, bool isRPC)
 	{
         //clear state variables
         ResetAllGraphStateVars(true);
@@ -198,10 +198,13 @@ public class GridLogic : MonoBehaviour {
             if (!closedList.Contains(currentNode) && movementLeft >= 0)
 			{	
 				closedList.Add(currentNode);
-				 //turn on this hexgrid if there is no unit occupying it
-				//if(currentNode.GetComponent<TnGAttribute>().m_unit == null){
-					currentNode.GetComponent<MaskManager>().GreenMaskOn();
-				//}
+				//turn on this hexgrid if there is no unit occupying it
+				//if function is RPC, then no masks should be added
+				if(!isRPC){
+					if(currentNode.GetComponent<TnGAttribute>().m_unit == null){
+						currentNode.GetComponent<MaskManager>().GreenMaskOn();
+					}
+				}
 				if(movementLeft > 0)
 				{
 					int costToPass = currentNode.GetComponent<HexGridModel>().m_movementCost;
@@ -236,7 +239,7 @@ public class GridLogic : MonoBehaviour {
         }
 	}
 	
-	public void ProcessAttackRange(GameObject src, int range)
+	public void ProcessAttackRange(GameObject src, int range, bool isRPC)
 	{
         //clear state variables
         ResetAllGraphStateVars(false);
@@ -271,16 +274,19 @@ public class GridLogic : MonoBehaviour {
             {
                 closedList.Add(currentNode);
                 //turn on this hexgrid
-				if(currentNode.GetComponent<TnGAttribute>().m_unit == null){
-					//lighter redmask to indicate valid range but no one to attack
-					//TO CHANGE
-					currentNode.GetComponent<MaskManager>().BlueMaskOn();
-				}
-				else if(thisControl != 
-					currentNode.GetComponent<TnGAttribute>().m_unit.GetComponent<UnitController>().m_control)
-				{
+				//if is RPC, should not add any masks
+				if(!isRPC){
+					if(currentNode.GetComponent<TnGAttribute>().m_unit == null){
+						//lighter redmask to indicate valid range but no one to attack
+						//TO CHANGE
+						currentNode.GetComponent<MaskManager>().BlueMaskOn();
+					}
+					else if(thisControl != 
+						currentNode.GetComponent<TnGAttribute>().m_unit.GetComponent<UnitController>().m_control)
+					{
 					//darker redmask to indicate can attack enemy
-					currentNode.GetComponent<MaskManager>().RedMaskOn();
+						currentNode.GetComponent<MaskManager>().RedMaskOn();
+					}
 				}
 				
                 //if movement is 0, stop here

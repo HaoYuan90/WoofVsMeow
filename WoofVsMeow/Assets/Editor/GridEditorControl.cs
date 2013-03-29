@@ -57,6 +57,7 @@ public class GridEditorControl : EditorWindow
 				temp.AddComponent<GridLogic>();
 				temp.AddComponent<APSequenceController>();
 				temp.AddComponent<GameEngine>();
+				temp.AddComponent<NetworkView>();
 			}
 		}
 		//fields to recreate gridmap

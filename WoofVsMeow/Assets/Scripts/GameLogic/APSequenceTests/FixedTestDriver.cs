@@ -15,15 +15,15 @@ public class FixedTestDriver : MonoBehaviour
 		InitializeExpectedOutput();
 		
 		GameObject objToMove; 
-		APnControlModel temp;
+		APController temp;
 		
 		for (int i=0; i<10; i++)
 		{	
 			objToMove = m_controller.OnTurnBegin();
-			temp = objToMove.GetComponent<APnControlModel>();
+			temp = objToMove.GetComponent<APController>();
 			if(!ValidateUnit(i,temp)){
 				Debug.LogError("Object " + temp.GetID().ToString() + " has been given control. " +
-					"Expected object " + m_objArray[m_unitsToMove[i]].GetComponent<APnControlModel>().GetID().ToString() + "\n");
+					"Expected object " + m_objArray[m_unitsToMove[i]].GetComponent<APController>().GetID().ToString() + "\n");
 				break;
 			}
 			
@@ -43,9 +43,9 @@ public class FixedTestDriver : MonoBehaviour
 		}
 	}
 	
-	private bool ValidateUnit(int turn, APnControlModel output)
+	private bool ValidateUnit(int turn, APController output)
 	{
-		return output.ToString().Equals(m_objArray[m_unitsToMove[turn]].GetComponent<APnControlModel>().ToString());
+		return output.ToString().Equals(m_objArray[m_unitsToMove[turn]].GetComponent<APController>().ToString());
 	}
 	
 	private bool ValidateList(int turn)
@@ -81,18 +81,18 @@ public class FixedTestDriver : MonoBehaviour
 		for (int i=0; i<10; i++)
 		{
 			m_objArray[i] = new GameObject("Object"+ i.ToString());
-			m_objArray[i].AddComponent("APnControlModel");
+			m_objArray[i].AddComponent("APController");
 		}
-		m_objArray[0].GetComponent<APnControlModel>().InitialiseTestInstance(0, 15, 35);
-		m_objArray[1].GetComponent<APnControlModel>().InitialiseTestInstance(1, 50, 80);
-		m_objArray[2].GetComponent<APnControlModel>().InitialiseTestInstance(2, 50, 88);
-		m_objArray[3].GetComponent<APnControlModel>().InitialiseTestInstance(3, 55, 77);
-		m_objArray[4].GetComponent<APnControlModel>().InitialiseTestInstance(4, 60, 68);
-		m_objArray[5].GetComponent<APnControlModel>().InitialiseTestInstance(5, 80, 88);
-		m_objArray[6].GetComponent<APnControlModel>().InitialiseTestInstance(6, 95, 105);
-		m_objArray[7].GetComponent<APnControlModel>().InitialiseTestInstance(7, 95, 111);
-		m_objArray[8].GetComponent<APnControlModel>().InitialiseTestInstance(8, 100, 111);
-		m_objArray[9].GetComponent<APnControlModel>().InitialiseTestInstance(9, 111, 125);
+		m_objArray[0].GetComponent<APController>().InitialiseTestInstance(0, 15, 35);
+		m_objArray[1].GetComponent<APController>().InitialiseTestInstance(1, 50, 80);
+		m_objArray[2].GetComponent<APController>().InitialiseTestInstance(2, 50, 88);
+		m_objArray[3].GetComponent<APController>().InitialiseTestInstance(3, 55, 77);
+		m_objArray[4].GetComponent<APController>().InitialiseTestInstance(4, 60, 68);
+		m_objArray[5].GetComponent<APController>().InitialiseTestInstance(5, 80, 88);
+		m_objArray[6].GetComponent<APController>().InitialiseTestInstance(6, 95, 105);
+		m_objArray[7].GetComponent<APController>().InitialiseTestInstance(7, 95, 111);
+		m_objArray[8].GetComponent<APController>().InitialiseTestInstance(8, 100, 111);
+		m_objArray[9].GetComponent<APController>().InitialiseTestInstance(9, 111, 125);
 		
 		for (int j=0; j<10; j++)
 		{
