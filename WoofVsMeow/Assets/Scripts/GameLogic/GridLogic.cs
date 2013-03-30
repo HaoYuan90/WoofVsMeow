@@ -224,7 +224,8 @@ public class GridLogic : MonoBehaviour {
 								n.GetComponent<HexGridModel>().UpdateMovementLeft(currentNode,costToReach);
 							}
 							else{
-								if(n.GetComponent<HexGridModel>().CanPass(thisControl,false)){
+								if(n.GetComponent<HexGridModel>().CanPass(thisControl,false) && 
+									Math.Abs(srcHeight-destHeight)<=5){
 									n.GetComponent<HexGridModel>().UpdateMovementLeft(currentNode,costToReach);
 									openList.Add(n);
 								}
