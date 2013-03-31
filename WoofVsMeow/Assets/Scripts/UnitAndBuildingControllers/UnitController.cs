@@ -23,6 +23,12 @@ public class UnitController : MonoBehaviour
 	readonly private int m_firstButtonOffset = 80;
 	
 	//unit stats
+	public int m_maxHealth;
+	[SerializeField]
+	private int m_health;
+	public int m_damage;
+	//dmg type
+	//armor type
 	public int m_movementRange;
 	public int m_attackRange;
 	public int m_maxAP;
@@ -35,6 +41,8 @@ public class UnitController : MonoBehaviour
 		m_hideGUI = true;
 		m_hasMoved = false;
 		m_hasAttacked = false;
+		
+		m_health = m_maxHealth;
 		
 		gameObject.GetComponent<MovementController>().Initialise();
 		gameObject.GetComponent<APController>().Initialise(m_maxAP);
@@ -79,10 +87,22 @@ public class UnitController : MonoBehaviour
 		m_hasMoved = true;
 	}
 	
-	public void Attack(GameObject tar)
+	//return damage of this attack
+	public int Attack(GameObject tar)
 	{
 		m_hideGUI = true;
-		gameObject.GetComponent<AttackController>().Attack(tar);
+		return GetComponent<AttackController>().Attack(tar, m_damage);
+	}
+	
+	public void LoseHealthBy(int amount)
+	{
+		m_health -= amount;
+		GetComponent<AttackController>().DisplayFloatingText(amount+"");
+		if(m_health <= 0){
+			m_currentGrid.GetComponent<TnGAttribute>().m_unit = null;
+			//death animation?
+			m_engine.OnUnitDeath(gameObject);
+		}
 	}
 	
 	public void AttackFinished()

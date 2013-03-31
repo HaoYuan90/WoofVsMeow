@@ -19,22 +19,31 @@ public class AttackController : MonoBehaviour
 		m_textPos = new Rect();
 	}
 	
-	public void Attack(GameObject tar)
+	//perform the animation related to attack
+	public void DoAttack (GameObject tar)
 	{
-		//face the right direction
+		//face the right direction and play animation
 		Vector3 dir = tar.transform.position-transform.position;
 		transform.rotation = Quaternion.LookRotation(new Vector3(dir.x,0,dir.z));
-		//decrease health and whatever shit
-		DisplayFloatingText(tar,"-50");
 		animation.Play ("attack");
-		GetComponent<UnitController>().AttackFinished();
 	}
 	
-	private void DisplayFloatingText(GameObject target, string msg)
+	public int Attack (GameObject tar, int dmg)
+	{
+		DoAttack (tar);
+		//calculate damage and decrease target hp
+		//get target armor type and calculate
+		int realDmg = dmg;
+		tar.GetComponent<UnitController>().LoseHealthBy(realDmg);
+		GetComponent<UnitController>().AttackFinished();
+		return realDmg;
+	}
+	
+	public void DisplayFloatingText(string msg)
 	{
 		m_floatingTextLife = m_floatingTextMaxLife;
 		m_floatingText = msg;
-		Vector3 temp = Camera.main.WorldToScreenPoint(target.transform.position);
+		Vector3 temp = Camera.main.WorldToScreenPoint(transform.position);
 		m_textPos = new Rect(temp.x,Screen.height-temp.y-m_initHeight,m_textBox.width,m_textBox.height);
 	}
 	

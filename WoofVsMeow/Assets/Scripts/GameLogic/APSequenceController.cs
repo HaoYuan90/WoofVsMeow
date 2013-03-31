@@ -56,7 +56,7 @@ public class APSequenceController : MonoBehaviour
 		}
 	}
 	
-	private void RemoveUnit(GameObject unit)
+	public void RemoveUnit(GameObject unit)
 	{
 		int index = m_gameUnits.IndexOf(unit);
 		if (index != -1){

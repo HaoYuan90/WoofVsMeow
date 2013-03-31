@@ -23,7 +23,8 @@ public class GameEngine : MonoBehaviour
 	private bool m_isReadyToAttack;
 	private bool m_isReadyToProduce;
 
-	void Start () {
+	void Start () 
+	{
 		if(Network.isServer)
 			m_control = PlayerPrefs.GetInt("control");
 		else if(Network.isClient)
@@ -81,6 +82,18 @@ public class GameEngine : MonoBehaviour
 		m_inTurn = false;
 		m_currUnit = null;
 	}
+	
+	//remove unit from ap list and destroy it
+	public void OnUnitDeath(GameObject unit)
+	{
+		m_apController.RemoveUnit(unit);
+		StartCoroutine(DestroyUnit(unit));
+	}
+	
+	IEnumerator DestroyUnit(GameObject unit) {
+        yield return new WaitForSeconds(1.0f);
+       	Destroy(unit);
+    }
 	
 	public void ProcessMovementRange(GameObject unit, bool isRPC)
 	{
@@ -178,12 +191,12 @@ public class GameEngine : MonoBehaviour
 								if(currentControl != tarControl){
 									m_gridLogic.ClearAllMasks();
 									tar.GetComponent<MaskManager>().RedMaskOn();
+									int dmg = m_currUnit.GetComponent<UnitController>().Attack(unit);
 									if(Network.isClient || Network.isServer){
 										IntVector2 temp1 = m_currUnit.GetComponent<UnitController>().GetPositionOnMap();
 										IntVector2 temp2 = unit.GetComponent<UnitController>().GetPositionOnMap();
-										networkView.RPC("UnitAttackUnit",RPCMode.OthersBuffered,temp1.x,temp1.y,temp2.x,temp2.y);
+										networkView.RPC("UnitAttackUnit",RPCMode.OthersBuffered,temp1.x,temp1.y,temp2.x,temp2.y, dmg);
 									}
-									m_currUnit.GetComponent<UnitController>().Attack(unit);
 									m_isReadyToAttack = false;
 								}
 							}
@@ -236,12 +249,14 @@ public class GameEngine : MonoBehaviour
 	}
 	
 	[RPC]
-	private void UnitAttackUnit(int unitX, int unitY, int tarX, int tarY)
+	private void UnitAttackUnit(int unitX, int unitY, int tarX, int tarY, int dmg)
 	{
 		GameObject unit = m_gridLogic.GetUnitAt(unitX,unitY);
+		GameObject tar = m_gridLogic.GetUnitAt(tarX,tarY);
 		ProcessAttackRange(unit,true);
 		m_isReadyToAttack = false;
-		unit.GetComponent<UnitController>().Attack(m_gridLogic.GetUnitAt(tarX,tarY));
+		unit.GetComponent<AttackController>().DoAttack(tar);
+		tar.GetComponent<UnitController>().LoseHealthBy(dmg);
 	}
 	
 	[RPC]
