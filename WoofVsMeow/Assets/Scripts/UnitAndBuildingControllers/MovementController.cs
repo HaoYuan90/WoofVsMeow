@@ -34,6 +34,10 @@ public class MovementController : MonoBehaviour
 		//pathList should at least have a src and destination
 		if(pathList.Count>=2){
 			m_pathList = pathList;
+			//turn on blue masks
+			foreach(GameObject e in m_pathList){
+				e.GetComponent<MaskManager>().BlueMaskOn();
+			}
 			return true;
 		} else {
 			return false;
@@ -47,6 +51,7 @@ public class MovementController : MonoBehaviour
 				animation.Play("run");
 			//have reached the next node which should be index 0
 			if(m_movementStepLeft == 0){
+				m_pathList[0].GetComponent<MaskManager>().OutlineMaskOn();
 				//set this line 
 				//transform.position = m_pathList[0].transform.position;
 				//have not yet reached destination

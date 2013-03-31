@@ -15,6 +15,7 @@ public class GameEngine : MonoBehaviour
 	private int m_control;
 	private GridLogic m_gridLogic;
 	private APSequenceController m_apController;
+	private GameObject m_camera;
 	
 	private GameObject m_currUnit;
 	private bool m_inTurn;
@@ -35,12 +36,18 @@ public class GameEngine : MonoBehaviour
 		InitialiseGridLogic();
 		InitUnitsAndBuildings();
 		InitialiseAPSequenceController();
+		InitialiseCamera();
 		
 		m_currUnit = null;
 		m_inTurn = false;
 		
 		m_isReadyToMove = false;
 		m_isReadyToAttack = false;
+	}
+	
+	private void InitialiseCamera()
+	{
+		m_camera = GameObject.Find("Main Camera");
 	}
 	
 	private void InitUnitsAndBuildings()
@@ -114,6 +121,15 @@ public class GameEngine : MonoBehaviour
 		m_isReadyToProduce = true;
 	}
 	
+	public void CameraLookAt(GameObject unit)
+	{
+		float tempX = unit.transform.position.x;
+		float tempY = unit.transform.position.y + 20f;
+		float tempZ = unit.transform.position.z + 20f;
+		m_camera.transform.position = new Vector3(tempX,tempY,tempZ);
+		m_camera.transform.LookAt(unit.transform);
+	}
+	
 	private void ProcessTurnBegin ()
 	{
 		if(m_currUnit != null){
@@ -121,7 +137,10 @@ public class GameEngine : MonoBehaviour
 				m_inTurn = true;
 				int thisControl = m_currUnit.GetComponent<UnitController>().m_control;
 				if(thisControl == m_control){
+					//only activate the object if it is yours
 					m_currUnit.GetComponent<UnitController>().Activate();
+					//set camera
+					CameraLookAt(m_currUnit);
 				}
 			}
 			else if(m_currUnit.tag == "Building"){
@@ -156,7 +175,6 @@ public class GameEngine : MonoBehaviour
 						if (dest.GetComponent<HexGridModel>().m_prevNode != null){
 							if (dest.GetComponent<TnGAttribute>().m_unit == null){
 								m_gridLogic.ClearAllMasks();
-								dest.GetComponent<MaskManager>().RedMaskOn();
 								if(Network.isClient || Network.isServer){
 									IntVector2 temp1 = m_currUnit.GetComponent<UnitController>().GetPositionOnMap();
 									IntVector2 temp2 = dest.GetComponent<HexGridModel>().GetPositionOnMap();

@@ -47,11 +47,6 @@ public class MaskManager : MonoBehaviour {
 		m_mask.SetActive(true);
 	}
 	
-	public void TurnOffAllMasks ()
-	{
-		m_mask.renderer.material = null;
-	}
-	
 	public void RedMaskOn()
 	{
 		m_mask.renderer.material = m_redMat;
