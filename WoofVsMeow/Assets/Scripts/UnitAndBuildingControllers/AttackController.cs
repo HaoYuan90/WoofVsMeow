@@ -28,13 +28,23 @@ public class AttackController : MonoBehaviour
 		animation.Play ("attack");
 	}
 	
-	public int Attack (GameObject tar, int dmg)
+	public int AttackUnit (GameObject tar, int dmg)
 	{
 		DoAttack (tar);
 		//calculate damage and decrease target hp
 		//get target armor type and calculate
 		int realDmg = dmg;
 		tar.GetComponent<UnitController>().LoseHealthBy(realDmg);
+		GetComponent<UnitController>().AttackFinished();
+		return realDmg;
+	}
+	
+	public int AttackBuilding (GameObject tar, int dmg)
+	{
+		DoAttack (tar);
+		int realDmg = dmg;
+		/*
+		tar.GetComponent<UnitController>().LoseHealthBy(realDmg);*/
 		GetComponent<UnitController>().AttackFinished();
 		return realDmg;
 	}

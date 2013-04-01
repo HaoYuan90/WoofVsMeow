@@ -146,6 +146,7 @@ public class GridLogic : MonoBehaviour {
 	{
 		UnitController unit = src.GetComponent<TnGAttribute>().m_unit.GetComponent<UnitController>();
 		int control = unit.m_control;
+		//cost around enemy units
 		foreach(Transform t in GameObject.Find("Units").transform)
 		{
 			UnitController temp = t.gameObject.GetComponent<UnitController>();
@@ -153,6 +154,19 @@ public class GridLogic : MonoBehaviour {
 			//is enemy, make grids near him harder to move about
 			if(tempControl!=control){
 				List<GameObject> neighbours = GetNeighbours(temp.currentGrid);
+				foreach(GameObject e in neighbours){
+					e.GetComponent<HexGridModel>().UpdateEnemyBlockageCost();
+				}
+			}
+		}
+		//cost around enemy buildings
+		foreach(Transform t in GameObject.Find("Buildings").transform)
+		{
+			BuildingController temp = t.gameObject.GetComponent<BuildingController>();
+			int tempControl = temp.m_control;
+			//is enemy, make grids near him harder to move about
+			if(tempControl!=control){
+				List<GameObject> neighbours = GetNeighbours(temp.m_currentGrid);
 				foreach(GameObject e in neighbours){
 					e.GetComponent<HexGridModel>().UpdateEnemyBlockageCost();
 				}
@@ -201,7 +215,8 @@ public class GridLogic : MonoBehaviour {
 				//turn on this hexgrid if there is no unit occupying it
 				//if function is RPC, then no masks should be added
 				if(!isRPC){
-					if(currentNode.GetComponent<TnGAttribute>().m_unit == null){
+					if(currentNode.GetComponent<TnGAttribute>().m_unit == null
+						&&currentNode.GetComponent<TnGAttribute>().m_building == null){
 						currentNode.GetComponent<MaskManager>().GreenMaskOn();
 					}
 				}
@@ -277,16 +292,27 @@ public class GridLogic : MonoBehaviour {
                 //turn on this hexgrid
 				//if is RPC, should not add any masks
 				if(!isRPC){
-					if(currentNode.GetComponent<TnGAttribute>().m_unit == null){
+					if(currentNode.GetComponent<TnGAttribute>().m_unit == null
+						&&currentNode.GetComponent<TnGAttribute>().m_building == null){
 						//lighter redmask to indicate valid range but no one to attack
 						//TO CHANGE
 						currentNode.GetComponent<MaskManager>().BlueMaskOn();
 					}
-					else if(thisControl != 
-						currentNode.GetComponent<TnGAttribute>().m_unit.GetComponent<UnitController>().m_control)
+					else if(currentNode.GetComponent<TnGAttribute>().m_unit != null)
 					{
-					//darker redmask to indicate can attack enemy
-						currentNode.GetComponent<MaskManager>().RedMaskOn();
+						GameObject tarUnit = currentNode.GetComponent<TnGAttribute>().m_unit;
+						if(thisControl != tarUnit.GetComponent<UnitController>().m_control){
+							//darker redmask to indicate can attack enemy
+							currentNode.GetComponent<MaskManager>().RedMaskOn();
+						}
+					}
+					else if(currentNode.GetComponent<TnGAttribute>().m_building != null)
+					{
+						GameObject tarBuilding = currentNode.GetComponent<TnGAttribute>().m_building;
+						if(thisControl != tarBuilding.GetComponent<BuildingController>().m_control){
+							//darker redmask to indicate can attack enemy
+							currentNode.GetComponent<MaskManager>().RedMaskOn();
+						}
 					}
 				}
 				

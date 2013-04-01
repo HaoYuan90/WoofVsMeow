@@ -91,7 +91,14 @@ public class UnitController : MonoBehaviour
 	public int Attack(GameObject tar)
 	{
 		m_hideGUI = true;
-		return GetComponent<AttackController>().Attack(tar, m_damage);
+		//attacking unit
+		if(tar.GetComponent<UnitController>()!= null){
+			return GetComponent<AttackController>().AttackUnit(tar, m_damage);
+		}
+		//attacking building
+		else{
+			return GetComponent<AttackController>().AttackBuilding(tar, m_damage);
+		}
 	}
 	
 	public void LoseHealthBy(int amount)

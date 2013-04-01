@@ -42,9 +42,10 @@ public class BuildingController : MonoBehaviour
 		m_floatingTextLife = 0;
 		m_floatingText = null;
 		m_textPos = new Rect();
-
+		
+		/*
 		m_producibleUnitPrefabList.Add(m_producibleUnitPrefab0);
-		m_producibleUnitPrefabList.Add(m_producibleUnitPrefab1);
+		m_producibleUnitPrefabList.Add(m_producibleUnitPrefab1);*/
 
 		gameObject.GetComponent<APController>().Initialise(m_maxAP);
 	}

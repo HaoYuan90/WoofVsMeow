@@ -164,6 +164,45 @@ public class GameEngine : MonoBehaviour
 		}
 	}
 	
+	private void ProcessUnitAttack(GameObject tar)
+	{
+		GameObject unit = tar.GetComponent<TnGAttribute>().m_unit;
+		GameObject building = tar.GetComponent<TnGAttribute>().m_building;
+		int currentControl = m_currUnit.GetComponent<UnitController>().m_control;
+		//check if there is unit on that grid
+		if(unit!=null){
+			int tarControl = unit.GetComponent<UnitController>().m_control;
+			//if it is enemy
+			if(currentControl != tarControl){
+				m_gridLogic.ClearAllMasks();
+				tar.GetComponent<MaskManager>().RedMaskOn();
+				int dmg = m_currUnit.GetComponent<UnitController>().Attack(unit);
+				if(Network.isClient || Network.isServer){
+					IntVector2 temp1 = m_currUnit.GetComponent<UnitController>().GetPositionOnMap();
+					IntVector2 temp2 = unit.GetComponent<UnitController>().GetPositionOnMap();
+					networkView.RPC("UnitAttackUnit",RPCMode.OthersBuffered,temp1.x,temp1.y,temp2.x,temp2.y, dmg);
+				}
+				m_isReadyToAttack = false;
+			}
+		}
+		if(building!=null){
+			int tarControl = building.GetComponent<BuildingController>().m_control;
+			//if it is enemy
+			if(currentControl != tarControl){
+				m_gridLogic.ClearAllMasks();
+				tar.GetComponent<MaskManager>().RedMaskOn();
+				int dmg = m_currUnit.GetComponent<UnitController>().Attack(building);
+				if(Network.isClient || Network.isServer){
+					/*
+					IntVector2 temp1 = m_currUnit.GetComponent<UnitController>().GetPositionOnMap();
+					IntVector2 temp2 = unit.GetComponent<UnitController>().GetPositionOnMap();
+					networkView.RPC("UnitAttackUnit",RPCMode.OthersBuffered,temp1.x,temp1.y,temp2.x,temp2.y, dmg);*/
+				}
+				m_isReadyToAttack = false;
+			}
+		}
+	}
+	
 	void Update () 
 	{
 		if(!m_inTurn){
@@ -178,19 +217,18 @@ public class GameEngine : MonoBehaviour
 				Ray selection = Camera.main.ScreenPointToRay(Input.mousePosition);
 				if (Physics.Raycast(selection,out grid)){				
 					GameObject dest = grid.collider.gameObject;
-					if(dest.tag == "Grid"){
 						//make sure selected node is in range and there is not units and buildings occupying it
-						if (dest.GetComponent<HexGridModel>().m_prevNode != null){
-							if (dest.GetComponent<TnGAttribute>().m_unit == null){
-								m_gridLogic.ClearAllMasks();
-								if(Network.isClient || Network.isServer){
-									IntVector2 temp1 = m_currUnit.GetComponent<UnitController>().GetPositionOnMap();
-									IntVector2 temp2 = dest.GetComponent<HexGridModel>().GetPositionOnMap();
-									networkView.RPC("MoveUnitToDest",RPCMode.OthersBuffered,temp1.x,temp1.y,temp2.x,temp2.y);
-								}
-								m_currUnit.GetComponent<UnitController>().Move(dest);
-								m_isReadyToMove = false;
+					if (dest.GetComponent<HexGridModel>().m_prevNode != null){
+						if (dest.GetComponent<TnGAttribute>().m_unit == null
+							&&dest.GetComponent<TnGAttribute>().m_building == null){
+							m_gridLogic.ClearAllMasks();
+							if(Network.isClient || Network.isServer){
+								IntVector2 temp1 = m_currUnit.GetComponent<UnitController>().GetPositionOnMap();
+								IntVector2 temp2 = dest.GetComponent<HexGridModel>().GetPositionOnMap();
+								networkView.RPC("MoveUnitToDest",RPCMode.OthersBuffered,temp1.x,temp1.y,temp2.x,temp2.y);
 							}
+							m_currUnit.GetComponent<UnitController>().Move(dest);
+							m_isReadyToMove = false;
 						}
 					}
 				}
@@ -203,30 +241,10 @@ public class GameEngine : MonoBehaviour
 				Ray selection = Camera.main.ScreenPointToRay(Input.mousePosition);
 				if (Physics.Raycast(selection,out grid)){				
 					GameObject tar = grid.collider.gameObject;
-					if(tar.tag == "Grid"){
-						//make sure target is within attack range and it does hold a unit
-						if(tar.GetComponent<HexGridModel>().m_prevNode != null)
-						{
-							//single unit attack
-							GameObject unit = tar.GetComponent<TnGAttribute>().m_unit;
-							//check if there is unit on that grid
-							if(unit!=null){
-								int currentControl = m_currUnit.GetComponent<UnitController>().m_control;
-								int tarControl = unit.GetComponent<UnitController>().m_control;
-								//if it is enemy
-								if(currentControl != tarControl){
-									m_gridLogic.ClearAllMasks();
-									tar.GetComponent<MaskManager>().RedMaskOn();
-									int dmg = m_currUnit.GetComponent<UnitController>().Attack(unit);
-									if(Network.isClient || Network.isServer){
-										IntVector2 temp1 = m_currUnit.GetComponent<UnitController>().GetPositionOnMap();
-										IntVector2 temp2 = unit.GetComponent<UnitController>().GetPositionOnMap();
-										networkView.RPC("UnitAttackUnit",RPCMode.OthersBuffered,temp1.x,temp1.y,temp2.x,temp2.y, dmg);
-									}
-									m_isReadyToAttack = false;
-								}
-							}
-						}
+					//make sure target is within attack range and it does hold a unit
+					if(tar.GetComponent<HexGridModel>().m_prevNode != null)
+					{
+						ProcessUnitAttack(tar);
 					}
 				}
 			}
