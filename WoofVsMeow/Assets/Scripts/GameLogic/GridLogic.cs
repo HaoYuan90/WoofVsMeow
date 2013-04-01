@@ -322,7 +322,9 @@ public class GridLogic : MonoBehaviour {
 		dest.GetComponent<MaskManager>().RedMaskOn();
 	}
 	
-	public void ProcessProductionRange(GameObject src) {
+	public void ProcessProductionRange(GameObject src) 
+	{
+		ResetAllGraphStateVars(false);
 		List<GameObject> currentNeighbours = GetNeighbours(src);
 		foreach (GameObject n in currentNeighbours) {
 			if (n.GetComponent<TnGAttribute>().m_unit == null) {

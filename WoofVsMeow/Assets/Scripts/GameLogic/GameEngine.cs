@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public struct IntVector2  {
     public int x, y;
@@ -23,6 +24,8 @@ public class GameEngine : MonoBehaviour
 	private bool m_isReadyToMove;
 	private bool m_isReadyToAttack;
 	private bool m_isReadyToProduce;
+	//temp?
+	public List<int> playerGold = new List<int>();
 
 	void Start () 
 	{
@@ -43,6 +46,9 @@ public class GameEngine : MonoBehaviour
 		
 		m_isReadyToMove = false;
 		m_isReadyToAttack = false;
+		
+		playerGold.Add(1000);
+		playerGold.Add(1000);
 	}
 	
 	private void InitialiseCamera()
@@ -144,6 +150,8 @@ public class GameEngine : MonoBehaviour
 				}
 			}
 			else if(m_currUnit.tag == "Building"){
+				if (m_currUnit.GetComponent<BuildingController>().m_canProduceGold)
+        		    m_currUnit.GetComponent<BuildingController>().ProduceGold();
 				m_inTurn = true;
 				int thisControl = m_currUnit.GetComponent<BuildingController>().m_control;
 				if(thisControl == m_control){
@@ -230,28 +238,29 @@ public class GameEngine : MonoBehaviour
 				Ray selection = Camera.main.ScreenPointToRay(Input.mousePosition);
 				if (Physics.Raycast(selection,out grid)){				
 					GameObject tar = grid.collider.gameObject;
-					if(tar.tag == "Grid"){
-						//make sure target is within production range and it does not hold a unit
-						if (tar.GetComponent<HexGridModel>().m_prevNode != null) {
-							if(tar.GetComponent<TnGAttribute>().m_unit==null) {
-								m_gridLogic.ClearAllMasks();
-								m_currUnit.GetComponent<BuildingController>().Produce(tar);
-								m_isReadyToProduce = false;
-							}
-						}
+					//make sure target is within production range and it does not hold a unit
+					if (tar.GetComponent<HexGridModel>().m_prevNode != null) {
+						m_gridLogic.ClearAllMasks();
+						m_currUnit.GetComponent<BuildingController>().Produce(tar);
+						m_isReadyToProduce = false;
 					}
 				}
 			}
 		}
-		//cancel move/attack
-		if(m_isReadyToMove || m_isReadyToAttack || m_isReadyToProduce) {
-			//cancel
+		if(m_isReadyToAttack || m_isReadyToMove || m_isReadyToProduce){
+		//cancel
 			if(Input.GetButtonDown("RightClick")) {
 				m_gridLogic.ClearAllMasks();
 				m_isReadyToMove = false;
 				m_isReadyToAttack = false;
 				m_isReadyToProduce = false;
-				m_currUnit.GetComponent<UnitController>().CommandCancelled();
+				if(m_currUnit.GetComponent<UnitController>()!= null)
+					m_currUnit.GetComponent<UnitController>().CommandCancelled();
+				else if(m_currUnit.GetComponent<BuildingController>()!= null)
+					m_currUnit.GetComponent<BuildingController>().CommandCancelled();
+				else {
+					Debug.LogWarning("should not happen");
+				}
 			}
 		}
 	}
