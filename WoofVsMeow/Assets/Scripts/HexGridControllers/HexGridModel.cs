@@ -98,7 +98,8 @@ public class HexGridModel :MonoBehaviour{
 		TnGAttribute tng = GetComponent<TnGAttribute>();
 		if(tng.m_building != null)
 		{
-			if(tng.m_building.GetComponent<BuildingController>().m_control != currentUnitControl)
+			int tempControl = tng.m_building.GetComponent<BuildingController>().m_control;
+			if(tempControl != currentUnitControl && tempControl!= -1)
 				canPass = false;
 		}
 		if(tng.m_unit != null)

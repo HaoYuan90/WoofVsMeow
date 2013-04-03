@@ -44,9 +44,10 @@ public class UnitController : MonoBehaviour
 		
 		m_health = m_maxHealth;
 		
-		gameObject.GetComponent<MovementController>().Initialise();
-		gameObject.GetComponent<APController>().Initialise(m_maxAP);
-		gameObject.GetComponent<AttackController>().Initialise();
+		GetComponent<MovementController>().Initialise();
+		GetComponent<APController>().Initialise(m_maxAP);
+		GetComponent<AttackController>().Initialise();
+		GetComponent<GUIController>().Initialise(m_health,m_maxHealth);
 	}
 	
 	public void Activate()
@@ -104,7 +105,7 @@ public class UnitController : MonoBehaviour
 	public void LoseHealthBy(int amount)
 	{
 		m_health -= amount;
-		GetComponent<AttackController>().DisplayFloatingText(amount+"");
+		GetComponent<GUIController>().OnHealthLostBy(amount);
 		if(m_health <= 0){
 			m_currentGrid.GetComponent<TnGAttribute>().m_unit = null;
 			//death animation?

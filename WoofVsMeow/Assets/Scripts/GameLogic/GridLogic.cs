@@ -164,8 +164,9 @@ public class GridLogic : MonoBehaviour {
 		{
 			BuildingController temp = t.gameObject.GetComponent<BuildingController>();
 			int tempControl = temp.m_control;
-			//is enemy, make grids near him harder to move about
-			if(tempControl!=control){
+			//is enemy building, make grids near him harder to move about
+			//neutral buildings have no effect
+			if(tempControl!=control && tempControl!= -1){
 				List<GameObject> neighbours = GetNeighbours(temp.m_currentGrid);
 				foreach(GameObject e in neighbours){
 					e.GetComponent<HexGridModel>().UpdateEnemyBlockageCost();

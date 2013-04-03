@@ -60,6 +60,7 @@
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\APController.cs" />
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\AttackController.cs" />
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\BuildingController.cs" />
+     <Compile Include="Assets\Scripts\UnitAndBuildingControllers\GUIController.cs" />
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\MovementController.cs" />
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\UnitController.cs" />
   </ItemGroup>
