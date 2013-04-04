@@ -5,6 +5,7 @@ public class AttackController : MonoBehaviour
 {
 	public void Initialise ()
 	{
+		//do nothing it seems....
 	}
 	
 	//perform the animation related to attack
@@ -17,24 +18,63 @@ public class AttackController : MonoBehaviour
 		animation.PlayQueued("still");
 	}
 	
-	public int AttackUnit (GameObject tar, int dmg)
+	public int AttackUnit (GameObject tar)
 	{
 		DoAttack (tar);
-		//calculate damage and decrease target hp
-		//get target armor type and calculate
-		int realDmg = dmg;
+		int dmg = GetComponent<UnitController>().m_damage;
+		int realDmg = (int)(dmg*ComputeDmgModifier(tar));
 		tar.GetComponent<UnitController>().LoseHealthBy(realDmg);
 		GetComponent<UnitController>().AttackFinished();
 		return realDmg;
 	}
 	
-	public int AttackBuilding (GameObject tar, int dmg)
+	public int AttackBuilding (GameObject tar)
 	{
 		DoAttack (tar);
-		int realDmg = dmg;
+		int realDmg = GetComponent<UnitController>().m_damage;
 		/*
 		tar.GetComponent<UnitController>().LoseHealthBy(realDmg);*/
 		GetComponent<UnitController>().AttackFinished();
 		return realDmg;
+	}
+	
+	private double ComputeDmgModifier (GameObject tar)
+	{
+		//attack and armor type
+		AttackType at = GetComponent<UnitController>().m_attackType;
+		ArmorType dt = tar.GetComponent<UnitController>().m_armorType;
+		double mod = 1;
+		switch(at){
+		case AttackType.normal:
+			if(dt == ArmorType.light)
+				mod = 2;
+			else if(dt == ArmorType.flyer)
+				mod = 0.5;
+			break;
+		case AttackType.pierce:
+			if(dt == ArmorType.flyer)
+				mod = 2;
+			break;
+		case AttackType.strafe:
+			if(dt == ArmorType.heavy)
+				mod = 2;
+			break;
+		}
+		//terrain type
+		GameObject tarGrid = tar.GetComponent<UnitController>().currentGrid;
+		TerrainType tt = tarGrid.GetComponent<TnGAttribute>().m_terrainType;
+		if(tt == TerrainType.forest)
+			mod *= 0.8;
+		//height
+		if(at != AttackType.strafe){
+			GameObject selfGrid = GetComponent<UnitController>().currentGrid;
+			int tarHeight = tarGrid.GetComponent<TnGAttribute>().m_height;
+			int selfHeight = selfGrid.GetComponent<TnGAttribute>().m_height;
+			if(selfHeight - tarHeight > 2)
+				mod *= 1.2;
+			else if(tarHeight - selfHeight > 2)
+				mod *= 0.8;
+		}
+		return mod;
 	}
 }

@@ -70,6 +70,7 @@ public class GUIController : MonoBehaviour
 	
 	void OnGUI()
 	{
+		GUI.depth = 1;
 		//display floating text
 		if(m_textCurrentTimer > 0)
 		{

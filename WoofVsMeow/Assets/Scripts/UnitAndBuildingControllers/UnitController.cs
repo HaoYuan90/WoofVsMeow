@@ -1,6 +1,18 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+public enum ArmorType{
+	heavy,
+	light,
+	flyer
+}
+
+public enum AttackType{
+	normal,
+	pierce,
+	strafe
+}
+
 public class UnitController : MonoBehaviour 
 {
 	private GameEngine m_engine;
@@ -27,8 +39,8 @@ public class UnitController : MonoBehaviour
 	[SerializeField]
 	private int m_health;
 	public int m_damage;
-	//dmg type
-	//armor type
+	public ArmorType m_armorType;
+	public AttackType m_attackType;
 	public int m_movementRange;
 	public int m_attackRange;
 	public int m_maxAP;
@@ -94,11 +106,11 @@ public class UnitController : MonoBehaviour
 		m_hideGUI = true;
 		//attacking unit
 		if(tar.GetComponent<UnitController>()!= null){
-			return GetComponent<AttackController>().AttackUnit(tar, m_damage);
+			return GetComponent<AttackController>().AttackUnit(tar);
 		}
 		//attacking building
 		else{
-			return GetComponent<AttackController>().AttackBuilding(tar, m_damage);
+			return GetComponent<AttackController>().AttackBuilding(tar);
 		}
 	}
 	
@@ -128,6 +140,7 @@ public class UnitController : MonoBehaviour
 	
 	void OnGUI()
 	{
+		GUI.depth = 0;
 		if(m_active == true && !m_hideGUI){
 			Vector3 temp = Camera.main.WorldToScreenPoint(gameObject.transform.position);
 			float buttonX = temp.x+m_buttonXOffset;
