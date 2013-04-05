@@ -32,8 +32,7 @@ public class AttackController : MonoBehaviour
 	{
 		DoAttack (tar);
 		int realDmg = GetComponent<UnitController>().m_damage;
-		/*
-		tar.GetComponent<UnitController>().LoseHealthBy(realDmg);*/
+		tar.GetComponent<BuildingController>().LoseHealthBy(realDmg);
 		GetComponent<UnitController>().AttackFinished();
 		return realDmg;
 	}

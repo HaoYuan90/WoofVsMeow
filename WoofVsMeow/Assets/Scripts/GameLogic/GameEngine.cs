@@ -21,10 +21,10 @@ public class GameEngine : MonoBehaviour
 	private GameObject m_currUnit;
 	private bool m_inTurn;
 	
+	private int m_sleepStepLeft;
 	private bool m_isReadyToMove;
 	private bool m_isReadyToAttack;
 	private bool m_isReadyToProduce;
-	//temp?
 	public List<int> playerGold = new List<int>();
 
 	void Start () 
@@ -44,6 +44,7 @@ public class GameEngine : MonoBehaviour
 		m_currUnit = null;
 		m_inTurn = false;
 		
+		m_sleepStepLeft = -1;
 		m_isReadyToMove = false;
 		m_isReadyToAttack = false;
 		
@@ -150,12 +151,15 @@ public class GameEngine : MonoBehaviour
 				}
 			}
 			else if(m_currUnit.tag == "Building"){
-				if (m_currUnit.GetComponent<BuildingController>().m_canProduceGold)
-        		    m_currUnit.GetComponent<BuildingController>().ProduceGold();
 				m_inTurn = true;
-				int thisControl = m_currUnit.GetComponent<BuildingController>().m_control;
-				if(thisControl == m_control){
-					m_currUnit.GetComponent<BuildingController>().Activate();
+				if (m_currUnit.GetComponent<BuildingController>().m_producibleUnitPriceList.Count == 0) {
+        		    m_currUnit.GetComponent<BuildingController>().ProduceGold();
+					m_sleepStepLeft = 120;
+				} else {	
+					int thisControl = m_currUnit.GetComponent<BuildingController>().m_control;
+					if(thisControl == m_control){
+						m_currUnit.GetComponent<BuildingController>().Activate();
+					}
 				}
 			}
 			else{
@@ -209,6 +213,13 @@ public class GameEngine : MonoBehaviour
 			m_gridLogic.ClearAllMasks();
 			m_currUnit = m_apController.OnTurnBegin();
 			ProcessTurnBegin();
+		}
+		if (m_sleepStepLeft > 0)
+			m_sleepStepLeft--;
+		else if (m_sleepStepLeft == 0) {
+			m_sleepStepLeft = -1;
+			m_currUnit.GetComponent<APController>().ReplenishAP(1);
+			UnitTurnEnded();
 		}
 		//actual move
 		if(m_isReadyToMove){

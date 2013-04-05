@@ -4,24 +4,26 @@ using System.Collections.Generic;
 
 public class BuildingController : MonoBehaviour 
 {
-	private GameObject m_producibleUnitPrefab;
-	public GameObject m_producibleUnitPrefab0, m_producibleUnitPrefab1;
-	private List<GameObject> m_producibleUnitPrefabList = new List<GameObject>();
+	private int m_producibleUnitNo;
+	public List<GameObject> m_producibleUnitPrefabList;
+	public List<int> m_producibleUnitPriceList;
 	private GameEngine m_engine;
 	public GameObject m_currentGrid;
 	public int m_control;
 	private bool m_active;
 	private bool m_hideGUI;
-	private bool m_hasProduced;
-
-	public int m_buttonWidth = 100;
-	public int m_buttonHeight = 30;
-	public int m_buttonXOffset = 20;
-	public int m_buttonYOffset = 2;
-	public int m_firstButtonOffset = 80;
-
+	
+	public int m_maxHealth;
+	[SerializeField]
+	private int m_health;
+	public ArmorType m_armorType;
 	public int m_maxAP;
-	public bool m_canProduceGold;
+	
+	private int m_buttonWidth = 100;
+	private int m_buttonHeight = 30;
+	private int m_buttonXOffset = 20;
+	private int m_buttonYOffset = 2;
+	private int m_firstButtonOffset = 80;
 
 	private int m_floatingTextLife;
 	private string m_floatingText;
@@ -37,44 +39,50 @@ public class BuildingController : MonoBehaviour
 		m_currentGrid = currentGrid;
 		m_active = false;
 		m_hideGUI = false;
-		m_hasProduced = false;
 
 		m_floatingTextLife = 0;
 		m_floatingText = null;
 		m_textPos = new Rect();
 		
-		/*
-		m_producibleUnitPrefabList.Add(m_producibleUnitPrefab0);
-		m_producibleUnitPrefabList.Add(m_producibleUnitPrefab1);*/
-
-		gameObject.GetComponent<APController>().Initialise(m_maxAP);
+		m_health = m_maxHealth;
+		
+		GetComponent<APController>().Initialise(m_maxAP);
+		GetComponent<GUIController>().Initialise(m_health, m_maxHealth);
 	}
 
 	public void Activate() {
 		m_active = true;
 		m_hideGUI = false;
-		m_hasProduced = false;
 	}
 
 	public bool IsEnemyOf(int currControl) {
 		return !(m_control == currControl);
 	}
-
+	
+	public void LoseHealthBy(int amount)
+	{
+		m_health -= amount;
+		GetComponent<GUIController>().OnHealthLostBy(amount);
+		if(m_health <= 0){
+			m_currentGrid.GetComponent<TnGAttribute>().m_unit = null;
+			//death animation?
+			m_engine.OnUnitDeath(gameObject);
+		}
+	}
+	
 	public void Produce(GameObject tar) {
 		m_hideGUI = true;
 
-		m_engine.GetComponent<GameEngine>().playerGold[m_control] -= 100;
-		DisplayFloatingText(m_currentGrid, "-100 Gold");
-
-		GameObject newUnit = (GameObject)Instantiate(m_producibleUnitPrefab);
+		m_engine.GetComponent<GameEngine>().playerGold[m_control] -= m_producibleUnitPriceList[m_producibleUnitNo];
+		DisplayFloatingText(m_currentGrid, "-"+m_producibleUnitPriceList[m_producibleUnitNo].ToString()+" Gold");
+		GameObject newUnit = (GameObject)Instantiate(m_producibleUnitPrefabList[m_producibleUnitNo]);
 		newUnit.transform.position = new Vector3(tar.transform.position.x,tar.renderer.bounds.max.y,tar.transform.position.z);
 		newUnit.transform.parent = GameObject.Find("Units").transform;
-		newUnit.GetComponent<UnitController>().m_control = m_control; //for testing purpose only, to be deleted later
+		//newUnit.GetComponent<UnitController>().m_control = m_control; //for testing purpose only, to be deleted later
 		tar.GetComponent<TnGAttribute>().m_unit = newUnit;
 		newUnit.GetComponent<UnitController>().InitialiseUnit(m_engine, tar);
 		m_engine.GetComponent<APSequenceController>().AddNewUnit(newUnit);
 
-		m_hasProduced = true;
 		m_hideGUI = false;
 	}
 
@@ -104,12 +112,11 @@ public class BuildingController : MonoBehaviour
 			Vector3 temp = Camera.main.WorldToScreenPoint(gameObject.transform.position);
 			float buttonX = temp.x+m_buttonXOffset;
 			float buttonY = Screen.height - temp.y-m_firstButtonOffset;
-			bool canProduce = (m_engine.GetComponent<GameEngine>().playerGold[m_control] >= 100);
-			GUI.enabled = !m_hasProduced && canProduce; //enable if building has not produced
-				for (int i=0; i < m_producibleUnitPrefabList.Count; i++) {
+			for (int i=0; i < m_producibleUnitPriceList.Count; i++) {
+				GUI.enabled = (m_engine.GetComponent<GameEngine>().playerGold[m_control] >= m_producibleUnitPriceList[i]);
 				if(GUI.Button(new Rect(buttonX,buttonY,m_buttonWidth,m_buttonHeight),m_producibleUnitPrefabList[i].name))
 				{
-					m_producibleUnitPrefab = m_producibleUnitPrefabList[i];
+					m_producibleUnitNo = i;
 					m_hideGUI = true;
 					m_engine.ProcessProductionRange(gameObject);
 				}
