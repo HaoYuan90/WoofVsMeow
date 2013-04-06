@@ -13,6 +13,10 @@ public enum AttackType{
 	strafe
 }
 
+[RequireComponent (typeof (MovementController))]
+[RequireComponent (typeof (APController))]
+[RequireComponent (typeof (AttackController))]
+[RequireComponent (typeof (UnitGUIController))]
 public class UnitController : MonoBehaviour 
 {
 	private GameEngine m_engine;
@@ -24,15 +28,8 @@ public class UnitController : MonoBehaviour
 	//control states
 	public int m_control; //which player owns this unit
 	private bool m_active;
-	private bool m_hideGUI;
 	private bool m_hasMoved;
 	private bool m_hasAttacked;
-	
-	readonly private int m_buttonWidth = 100;
-	readonly private int m_buttonHeight = 30;
-	readonly private int m_buttonXOffset = 20;
-	readonly private int m_buttonYOffset = 2;
-	readonly private int m_firstButtonOffset = 80;
 	
 	//unit stats
 	public int m_maxHealth;
@@ -50,7 +47,6 @@ public class UnitController : MonoBehaviour
 		m_engine = engine;
 		m_currentGrid = currentGrid;
 		m_active = false;
-		m_hideGUI = true;
 		m_hasMoved = false;
 		m_hasAttacked = false;
 		
@@ -59,15 +55,16 @@ public class UnitController : MonoBehaviour
 		GetComponent<MovementController>().Initialise();
 		GetComponent<APController>().Initialise(m_maxAP);
 		GetComponent<AttackController>().Initialise();
-		GetComponent<GUIController>().Initialise(m_health,m_maxHealth);
+		GetComponent<UnitGUIController>().Initialise(m_health,m_maxHealth);
 	}
 	
 	public void Activate()
 	{
 		m_active = true;
-		m_hideGUI = false;
 		m_hasMoved = false;
 		m_hasAttacked = false;
+		UpdateButtonStatus();
+		GetComponent<UnitGUIController>().EnableGUI();
 	}
 	
 	public IntVector2 GetPositionOnMap()
@@ -83,7 +80,7 @@ public class UnitController : MonoBehaviour
 	
 	public void Move(GameObject dest)
 	{
-		m_hideGUI = true;
+		GetComponent<UnitGUIController>().DisableGUI();
 		//valid movement, give control to destination
 		if(GetComponent<MovementController>().Move(dest))
 		{
@@ -96,28 +93,34 @@ public class UnitController : MonoBehaviour
 	
 	public void MoveFinished()
 	{
-		m_hideGUI = false;
 		m_hasMoved = true;
+		UpdateButtonStatus();
+		GetComponent<UnitGUIController>().EnableGUI();
 	}
 	
 	//return damage of this attack
 	public int Attack(GameObject tar)
 	{
-		m_hideGUI = true;
-		//attacking unit
-		if(tar.GetComponent<UnitController>()!= null){
-			return GetComponent<AttackController>().AttackUnit(tar);
-		}
-		//attacking building
-		else{
-			return GetComponent<AttackController>().AttackBuilding(tar);
+		if(m_active){
+			GetComponent<UnitGUIController>().DisableGUI();
+			//attacking unit
+			if(tar.GetComponent<UnitController>()!= null){
+				return GetComponent<AttackController>().AttackUnit(tar);
+			}
+			//attacking building
+			else{
+				return GetComponent<AttackController>().AttackBuilding(tar);
+			}
+		} else {
+			Debug.LogWarning("Inactive unit should not be initiating an attack");
+			return 0;
 		}
 	}
 	
 	public void LoseHealthBy(int amount)
 	{
 		m_health -= amount;
-		GetComponent<GUIController>().OnHealthLostBy(amount);
+		GetComponent<UnitGUIController>().OnHealthLostBy(amount);
 		if(m_health <= 0){
 			m_currentGrid.GetComponent<TnGAttribute>().m_unit = null;
 			//death animation?
@@ -127,45 +130,37 @@ public class UnitController : MonoBehaviour
 	
 	public void AttackFinished()
 	{
-		m_hideGUI = false;
 		m_hasAttacked = true;
 		//DO NOT ALLOW MOVE AFTER ATTACK
 		m_hasMoved = true;
+		UpdateButtonStatus();
+		GetComponent<UnitGUIController>().EnableGUI();
 	}
 	
 	public void CommandCancelled()
 	{
-		m_hideGUI = false;
+		GetComponent<UnitGUIController>().EnableGUI();
 	}
 	
-	void OnGUI()
+	private void UpdateButtonStatus()
 	{
-		GUI.depth = 0;
-		if(m_active == true && !m_hideGUI){
-			Vector3 temp = Camera.main.WorldToScreenPoint(gameObject.transform.position);
-			float buttonX = temp.x+m_buttonXOffset;
-			float buttonY = Screen.height - temp.y-m_firstButtonOffset;
-			GUI.enabled = !m_hasMoved; //enable if unit has not moved
-			if(GUI.Button(new Rect(buttonX,buttonY,m_buttonWidth,m_buttonHeight),"Move"))
-			{
-				m_hideGUI = true;
-				m_engine.ProcessMovementRange(gameObject,false);
-			}
-			buttonY += m_buttonHeight+m_buttonYOffset;
-			GUI.enabled = !m_hasAttacked; //enable if unit has not attacked
-			if(GUI.Button(new Rect(buttonX,buttonY,m_buttonWidth,m_buttonHeight),"Attack"))
-			{
-				m_hideGUI = true;
-				m_engine.ProcessAttackRange(gameObject,false);
-			}
-			buttonY += m_buttonHeight+m_buttonYOffset;
-			GUI.enabled = true;
-			if(GUI.Button(new Rect(buttonX,buttonY,m_buttonWidth,m_buttonHeight),"End"))
-			{
-				m_active = false;
-				GetComponent<APController>().ReplenishAP(1);
-				m_engine.UnitTurnEnded();
-			}
-		}
+		GetComponent<UnitGUIController>().UpdateButtonStatus(m_hasMoved,m_hasAttacked);
+	}
+	public void MoveButtonAction()
+	{
+		GetComponent<UnitGUIController>().DisableGUI();
+		m_engine.ProcessMovementRange(gameObject,false);
+	}
+	public void AttackButtonAction()
+	{
+		GetComponent<UnitGUIController>().DisableGUI();
+		m_engine.ProcessAttackRange(gameObject,false);
+	}
+	public void EndButtonAction()
+	{
+		m_active = false;
+		GetComponent<UnitGUIController>().DisableGUI();
+		GetComponent<APController>().ReplenishAP(1);
+		m_engine.UnitTurnEnded();
 	}
 }

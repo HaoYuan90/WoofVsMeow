@@ -1,9 +1,23 @@
 using UnityEngine;
 using System.Collections;
 
-//display health or floating text
-public class GUIController : MonoBehaviour 
-{	
+[RequireComponent (typeof (UnitController))]
+public class UnitGUIController : MonoBehaviour 
+{
+	//control buttons
+	public Texture2D m_movementTex;
+	public Texture2D m_attackTex;
+	public Texture2D m_cancelTex;
+	public GUIStyle m_buttonStyle;
+	public GUIStyle m_tooltipStyle;
+	
+	private float fixedWidth = 1366.0f;
+	private float fixedHeight = 598.0f;
+	
+	private bool m_guiEnabled;
+	private bool m_hasMoved;
+	private bool m_hasAttacked;
+	
 	//health bar
 	private Rect m_rectangle;
 	readonly private Vector2 m_offset = new Vector2(-15, 0);
@@ -28,6 +42,7 @@ public class GUIController : MonoBehaviour
 	readonly private float m_initHeight = 100;
 	readonly private Rect m_textBox = new Rect(0,0,100,100);
 	
+	
 	public void Initialise (int hp, int max)
 	{
 		//hp bar
@@ -47,6 +62,14 @@ public class GUIController : MonoBehaviour
 		m_maxHealth = max;
 		//floating text
 		//nothing to init;
+		//control buttons
+		m_guiEnabled = false;
+	}
+	
+	public void UpdateButtonStatus(bool hasMoved, bool hasAttacked)
+	{
+		m_hasMoved = hasMoved;
+		m_hasAttacked = hasAttacked;
 	}
 	
 	private void DisplayFloatingText(string msg)
@@ -67,10 +90,9 @@ public class GUIController : MonoBehaviour
 		if(m_health <0)
 			m_health = 0;
 	}
-	
+
 	void OnGUI()
 	{
-		GUI.depth = 1;
 		//display floating text
 		if(m_textCurrentTimer > 0)
 		{
@@ -101,5 +123,41 @@ public class GUIController : MonoBehaviour
 		Rect partialRect = m_rectangle;
 		partialRect.width = m_rectangle.width * (float)m_health/m_maxHealth;
 		GUI.DrawTexture(partialRect, m_foreground);
+		
+		//Draw buttons
+		float widthRatio = Screen.width / fixedWidth;
+		float heightRatio = Screen.height / fixedHeight;
+		Vector3 btnSpawnPt = Camera.main.WorldToScreenPoint(transform.position);
+		if(m_guiEnabled)
+		{
+			GUI.enabled = !m_hasMoved;
+			if(GUI.Button(new Rect(btnSpawnPt.x-24.0f*widthRatio, btnSpawnPt.y-42.0f*heightRatio, 64.0f*widthRatio,64.0f*heightRatio),new GUIContent(m_movementTex,"Move"),m_buttonStyle))
+			{
+				GetComponent<UnitController>().MoveButtonAction();
+			}
+			GUI.enabled = !m_hasAttacked;
+			//GUI.Label(new Rect(btnSpawnPt.x-16.0f*widthRatio, btnSpawnPt.y-0.0f*heightRatio, 32.0f*widthRatio,32.0f*heightRatio), GUI.tooltip);
+			if(GUI.Button(new Rect(btnSpawnPt.x+48.0f*widthRatio, btnSpawnPt.y+35.0f*heightRatio, 56.0f*widthRatio,56.0f*heightRatio),new GUIContent(m_attackTex, "Attack"),m_buttonStyle))
+			{
+				GetComponent<UnitController>().AttackButtonAction();
+			}
+			GUI.enabled = true;
+			//GUI.Label(new Rect(btnSpawnPt.x-64.0f*widthRatio, btnSpawnPt.y+48.0f*heightRatio, 32.0f*widthRatio,32.0f*heightRatio), GUI.tooltip);
+			if(GUI.Button(new Rect(btnSpawnPt.x-24.0f*widthRatio, btnSpawnPt.y+112.0f*heightRatio, 64.0f*widthRatio,64.0f*heightRatio),new GUIContent(m_cancelTex,"Cancel"),m_buttonStyle))
+			{
+				GetComponent<UnitController>().EndButtonAction();
+			}
+			GUI.color = Color.black;
+			GUI.Label(new Rect(Input.mousePosition.x + 20.0f*widthRatio, Screen.height-Input.mousePosition.y, 256.0f*widthRatio,32.0f*heightRatio),GUI.tooltip, m_tooltipStyle);
+		}
+	}
+	
+	public void EnableGUI()
+	{
+		m_guiEnabled = true;
+	}
+	public void DisableGUI()
+	{
+		m_guiEnabled = false;
 	}
 }

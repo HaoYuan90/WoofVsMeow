@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+[RequireComponent (typeof(GUIAPList))]
 public class APSequenceController : MonoBehaviour
 {
 	//private class used to compare AP of gameobjects
@@ -25,11 +26,17 @@ public class APSequenceController : MonoBehaviour
 	{
 		m_gameUnits = new List<GameObject>();
 		m_APComparer = new APComparer();
+		GetComponent<GUIAPList>().Initialise();
 		
 		if(m_debug){
 			gameObject.AddComponent("FixedTestDriver");
-			gameObject.GetComponent<FixedTestDriver>().RunTest();
+			GetComponent<FixedTestDriver>().RunTest();
 		}
+	}
+	
+	public List<GameObject> GetUnits()
+	{
+		return m_gameUnits;
 	}
 
 	private void InsertUnit(GameObject unit)
@@ -84,7 +91,7 @@ public class APSequenceController : MonoBehaviour
 	{
 		int apModAmt;
 		GameObject unit;
-		
+		GetComponent<GUIAPList>().OnTurnBegin();
 		if(m_gameUnits.Count > 0){
 			unit = m_gameUnits[0];
 			apModAmt = unit.GetComponent<APController>().currentAP;
@@ -99,11 +106,6 @@ public class APSequenceController : MonoBehaviour
 		else 
 			return null;
 	}
-	
-	/*
-	 * Implement!!!
-	 * Unit deactivation and stuff
-	 */
 	
 	public void OnTurnEnd()
 	{
@@ -152,3 +154,4 @@ public class APSequenceController : MonoBehaviour
 		return result;
 	}
 }
+

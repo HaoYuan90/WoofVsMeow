@@ -55,14 +55,18 @@
      <Compile Include="Assets\Scripts\HexGridControllers\MaskManager.cs" />
      <Compile Include="Assets\Scripts\HexGridControllers\TestAttribute.cs" />
      <Compile Include="Assets\Scripts\HexGridControllers\TnGAttribute.cs" />
+     <Compile Include="Assets\Scripts\MainscreenGUI\GUIAPList.cs" />
+     <Compile Include="Assets\Scripts\MainscreenGUI\GUIBtmPanel.cs" />
+     <Compile Include="Assets\Scripts\MenuGUI\StartingPageGUI.cs" />
      <Compile Include="Assets\Scripts\Network\NetworkController.cs" />
      <Compile Include="Assets\Scripts\Network\RPCScript.cs" />
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\APController.cs" />
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\AttackController.cs" />
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\BuildingController.cs" />
-     <Compile Include="Assets\Scripts\UnitAndBuildingControllers\GUIController.cs" />
+     <Compile Include="Assets\Scripts\UnitAndBuildingControllers\BuildingGUIController.cs" />
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\MovementController.cs" />
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\UnitController.cs" />
+     <Compile Include="Assets\Scripts\UnitAndBuildingControllers\UnitGUIController.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
