@@ -95,7 +95,8 @@ public class UnitController : MonoBehaviour
 	{
 		m_hasMoved = true;
 		UpdateButtonStatus();
-		GetComponent<UnitGUIController>().EnableGUI();
+		if(m_active)
+			GetComponent<UnitGUIController>().EnableGUI();
 	}
 	
 	//return damage of this attack
@@ -134,7 +135,8 @@ public class UnitController : MonoBehaviour
 		//DO NOT ALLOW MOVE AFTER ATTACK
 		m_hasMoved = true;
 		UpdateButtonStatus();
-		GetComponent<UnitGUIController>().EnableGUI();
+		if(m_active)
+			GetComponent<UnitGUIController>().EnableGUI();
 	}
 	
 	public void CommandCancelled()

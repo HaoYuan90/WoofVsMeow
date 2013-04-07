@@ -31,10 +31,21 @@ public class AttackController : MonoBehaviour
 	public int AttackBuilding (GameObject tar)
 	{
 		DoAttack (tar);
-		int realDmg = GetComponent<UnitController>().m_damage;
-		tar.GetComponent<BuildingController>().LoseHealthBy(realDmg);
+		int dmg;
+		//neutral building, it only takes 2 hits to occupy
+		if(tar.GetComponent<BuildingController>().m_control == -1){
+			dmg = 50;
+		}
+		else{
+			if(GetComponent<UnitController>().m_attackType == AttackType.normal)
+				dmg = 20;
+			else
+				dmg = 10;
+		}
+		int attackerControl = GetComponent<UnitController>().m_control;
+		tar.GetComponent<BuildingController>().LoseHealthBy(dmg,GetComponent<UnitController>().m_control);
 		GetComponent<UnitController>().AttackFinished();
-		return realDmg;
+		return dmg;
 	}
 	
 	private double ComputeDmgModifier (GameObject tar)

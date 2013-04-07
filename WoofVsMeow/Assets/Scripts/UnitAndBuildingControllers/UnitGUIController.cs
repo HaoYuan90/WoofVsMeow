@@ -127,28 +127,33 @@ public class UnitGUIController : MonoBehaviour
 		//Draw buttons
 		float widthRatio = Screen.width / fixedWidth;
 		float heightRatio = Screen.height / fixedHeight;
-		Vector3 btnSpawnPt = Camera.main.WorldToScreenPoint(transform.position);
+		Vector3 midPos = new Vector3(transform.position.x,transform.position.y+5f,transform.position.z);
+		Vector3 btnSpawnPt = Camera.main.WorldToScreenPoint(midPos);
 		if(m_guiEnabled)
 		{
 			GUI.enabled = !m_hasMoved;
-			if(GUI.Button(new Rect(btnSpawnPt.x-24.0f*widthRatio, btnSpawnPt.y-42.0f*heightRatio, 64.0f*widthRatio,64.0f*heightRatio),new GUIContent(m_movementTex,"Move"),m_buttonStyle))
+			if(GUI.Button(new Rect(btnSpawnPt.x-24.0f*widthRatio, Screen.height-btnSpawnPt.y-42.0f*heightRatio, 
+				64.0f*widthRatio,64.0f*heightRatio),new GUIContent(m_movementTex,"Move"),m_buttonStyle))
 			{
 				GetComponent<UnitController>().MoveButtonAction();
 			}
 			GUI.enabled = !m_hasAttacked;
 			//GUI.Label(new Rect(btnSpawnPt.x-16.0f*widthRatio, btnSpawnPt.y-0.0f*heightRatio, 32.0f*widthRatio,32.0f*heightRatio), GUI.tooltip);
-			if(GUI.Button(new Rect(btnSpawnPt.x+48.0f*widthRatio, btnSpawnPt.y+35.0f*heightRatio, 56.0f*widthRatio,56.0f*heightRatio),new GUIContent(m_attackTex, "Attack"),m_buttonStyle))
+			if(GUI.Button(new Rect(btnSpawnPt.x+48.0f*widthRatio, Screen.height-btnSpawnPt.y+35.0f*heightRatio, 
+				64.0f*widthRatio,64.0f*heightRatio),new GUIContent(m_attackTex, "Attack"),m_buttonStyle))
 			{
 				GetComponent<UnitController>().AttackButtonAction();
 			}
 			GUI.enabled = true;
 			//GUI.Label(new Rect(btnSpawnPt.x-64.0f*widthRatio, btnSpawnPt.y+48.0f*heightRatio, 32.0f*widthRatio,32.0f*heightRatio), GUI.tooltip);
-			if(GUI.Button(new Rect(btnSpawnPt.x-24.0f*widthRatio, btnSpawnPt.y+112.0f*heightRatio, 64.0f*widthRatio,64.0f*heightRatio),new GUIContent(m_cancelTex,"Cancel"),m_buttonStyle))
+			if(GUI.Button(new Rect(btnSpawnPt.x-24.0f*widthRatio, Screen.height-btnSpawnPt.y+112.0f*heightRatio, 
+				64.0f*widthRatio,64.0f*heightRatio),new GUIContent(m_cancelTex,"End"),m_buttonStyle))
 			{
 				GetComponent<UnitController>().EndButtonAction();
 			}
 			GUI.color = Color.black;
-			GUI.Label(new Rect(Input.mousePosition.x + 20.0f*widthRatio, Screen.height-Input.mousePosition.y, 256.0f*widthRatio,32.0f*heightRatio),GUI.tooltip, m_tooltipStyle);
+			GUI.Label(new Rect(Input.mousePosition.x + 20.0f*widthRatio, Screen.height-Input.mousePosition.y, 
+				256.0f*widthRatio,32.0f*heightRatio),GUI.tooltip, m_tooltipStyle);
 		}
 	}
 	
