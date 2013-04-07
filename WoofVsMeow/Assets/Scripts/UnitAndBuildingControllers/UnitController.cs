@@ -13,10 +13,6 @@ public enum AttackType{
 	strafe
 }
 
-[RequireComponent (typeof (MovementController))]
-[RequireComponent (typeof (APController))]
-[RequireComponent (typeof (AttackController))]
-[RequireComponent (typeof (UnitGUIController))]
 public class UnitController : MonoBehaviour 
 {
 	private GameEngine m_engine;

@@ -2,7 +2,6 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-[RequireComponent (typeof(APSequenceController))]
 public class GUIAPList : MonoBehaviour 
 {
 	public Texture2D apPanelTex;

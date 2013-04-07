@@ -2,7 +2,6 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-[RequireComponent (typeof(GUIAPList))]
 public class APSequenceController : MonoBehaviour
 {
 	//private class used to compare AP of gameobjects

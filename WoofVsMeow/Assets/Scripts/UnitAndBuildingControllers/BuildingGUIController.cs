@@ -2,7 +2,6 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-[RequireComponent (typeof (BuildingController))]
 public class BuildingGUIController : MonoBehaviour 
 {
 	//control buttons

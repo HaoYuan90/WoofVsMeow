@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections;
 
-[RequireComponent (typeof (UnitController))]
 public class UnitGUIController : MonoBehaviour 
 {
 	//control buttons
