@@ -3,7 +3,7 @@ using System.Collections;
 
 public class NetworkController : MonoBehaviour 
 {
-	private string m_gameName = "WoofVsMeow";
+	readonly private string m_gameName = "WoofVsMeow";
 	
 	private int m_refreshing = 0; //refresh timer
 	readonly private int m_refreshTimer = 300;
@@ -23,9 +23,8 @@ public class NetworkController : MonoBehaviour
 	//refresh host list
 	void Start()
 	{
-		PlayerPrefs.SetInt("control",-1);
-		PlayerPrefs.SetInt("clientcontrol",-1);
-		PlayerPrefs.SetString("gamename","HY's game");
+		PlayerPrefs.SetInt("control",0);
+		PlayerPrefs.SetInt("clientcontrol",1);
 	}
 	
 	void Update () 
@@ -106,7 +105,7 @@ public class NetworkController : MonoBehaviour
 	{
 		m_isInitialisingServer = true;
 		Network.InitializeServer(1,25001, !Network.HavePublicAddress());
-		MasterServer.RegisterHost(m_gameName,PlayerPrefs.GetString("gamename"));
+		MasterServer.RegisterHost(m_gameName,PlayerPrefs.GetString("playername")+"'s game");
 	}
 	
 	void OnMasterServerEvent( MasterServerEvent mse)

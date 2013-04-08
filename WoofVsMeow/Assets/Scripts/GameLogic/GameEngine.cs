@@ -115,10 +115,18 @@ public class GameEngine : MonoBehaviour
 		StartCoroutine(DestroyUnit(unit));
 	}
 	
-	IEnumerator DestroyUnit(GameObject unit) {
+	IEnumerator DestroyUnit(GameObject unit) 
+	{
         yield return new WaitForSeconds(1.0f);
        	Destroy(unit);
     }
+	
+	public void OnGameEnds(int winnerControl)
+	{
+		if(winnerControl == m_control){
+			networkView.RPC("VictoryClaimedBy",RPCMode.AllBuffered,PlayerPrefs.GetString("playername"));
+		}
+	}
 	
 	public void ProcessMovementRange(GameObject unit, bool isRPC)
 	{
@@ -372,13 +380,24 @@ public class GameEngine : MonoBehaviour
 		m_isReadyToProduce = false;
 	}
 	
+	[RPC]
+	private void VictoryClaimedBy(string name)
+	{
+		m_apController.Initialise();
+		GetComponent<GUIBtmPanelAndMsgs>().GameWonBy(name);
+	}
+	
 	void OnPlayerDisconnected()
 	{
-		//return to menu, disconnected player
+		m_apController.Initialise();
+		GetComponent<GUIBtmPanelAndMsgs>().ConnectionError("Player has disconnected from hosted game");
+
+		MasterServer.UnregisterHost();
 	}
 	
 	void OnDisconnectedFromServer()
 	{
-		//return to menu, disconnected player
+		m_apController.Initialise();
+		GetComponent<GUIBtmPanelAndMsgs>().ConnectionError("You have disconnected from server");
 	}
 }

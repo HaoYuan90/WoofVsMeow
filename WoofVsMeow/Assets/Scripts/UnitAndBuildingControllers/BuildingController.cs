@@ -13,6 +13,7 @@ public class BuildingController : MonoBehaviour
 	public int m_control;
 	private bool m_active;
 	
+	public bool m_isBase;
 	private int m_unitToProduce;
 	public List<GameObject> m_unitList;
 	public List<int> m_unitCostList;
@@ -56,16 +57,21 @@ public class BuildingController : MonoBehaviour
 		GetComponent<BuildingGUIController>().OnHealthLostBy(amount);
 		//building is occupied
 		if(m_health <= 0){
-			m_health = m_maxHealth;
-			m_control = attackerControl;
-			GetComponent<BuildingGUIController>().ResetHealth();
-			GetComponent<APController>().ReplenishAP(1);
+			if(!m_isBase){
+				m_health = m_maxHealth;
+				m_control = attackerControl;
+				GetComponent<BuildingGUIController>().ResetHealth();
+				GetComponent<APController>().ReplenishAP(1);
+			}else //if this building is a base, game ends, this player loses
+			{
+				m_engine.OnGameEnds(attackerControl);
+			}
 		}
 	}
 	
 	public int ProduceUnitAt(GameObject tar) 
 	{
-		m_engine.GetComponent<GameEngine>().playerGold[m_control] -= m_unitCostList[m_unitToProduce];
+		m_engine.m_playerGold[m_control] -= m_unitCostList[m_unitToProduce];
 		GetComponent<BuildingGUIController>().OnGoldChangeBy(-m_unitCostList[m_unitToProduce]);
 		GameObject newUnit = (GameObject)Instantiate(m_unitList[m_unitToProduce]);
 		newUnit.transform.position = new Vector3(tar.transform.position.x,tar.renderer.bounds.max.y,tar.transform.position.z);
@@ -75,6 +81,7 @@ public class BuildingController : MonoBehaviour
 		newUnit.GetComponent<UnitController>().InitialiseUnit(m_engine, tar);
 		//add unit to aplist
 		m_engine.GetComponent<APSequenceController>().AddNewUnit(newUnit);
+		m_engine.OnGoldChange();
 		
 		if(m_active)
 			GetComponent<BuildingGUIController>().EnableGUI();
@@ -92,9 +99,10 @@ public class BuildingController : MonoBehaviour
 	{
 		if (m_control != -1) //Will display "+100 Gold" text
 		{
-			m_engine.GetComponent<GameEngine>().playerGold[m_control] += 100;
+			m_engine.m_playerGold[m_control] += 100;
 			GetComponent<BuildingGUIController>().OnGoldChangeBy(100);
 		}
+		m_engine.OnGoldChange();
 	}
 
 	public void CommandCancelled()
@@ -106,7 +114,7 @@ public class BuildingController : MonoBehaviour
 	{
 		List<bool> status = new List<bool>();
 		for (int i=0; i < m_unitCostList.Count; i++) {
-			bool temp = (m_engine.GetComponent<GameEngine>().playerGold[m_control] >= m_unitCostList[i]);
+			bool temp = (m_engine.GetComponent<GameEngine>().m_playerGold[m_control] >= m_unitCostList[i]);
 			status.Add (temp);
 		}
 		return status;
