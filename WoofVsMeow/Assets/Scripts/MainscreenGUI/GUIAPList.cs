@@ -19,8 +19,9 @@ public class GUIAPList : MonoBehaviour
 	private float fixedWidth = 1366.0f;
 	private float fixedHeight = 598.0f;
 	
-	private float widthRatio;
+	private float combinedRatio;
 	private float heightRatio;
+	private float widthRatio;
 	
 	private float portraitHeight = 80.0f;
 	private float portraitWidth = 80.0f;
@@ -70,11 +71,15 @@ public class GUIAPList : MonoBehaviour
 	{
 		widthRatio = Screen.width / fixedWidth;
 		heightRatio = Screen.height / fixedHeight;
+		
+		if (widthRatio<heightRatio){combinedRatio = widthRatio;}
+		else{combinedRatio = heightRatio;}
+		
 		//GUI.color = Color.green;
 		GUI.backgroundColor = Color.grey;
-		GUI.Box (new Rect(0,-5*heightRatio,140*widthRatio,500*heightRatio),apPanelTex, panelStyle);
+		GUI.Box (new Rect(0,-5*combinedRatio,140*combinedRatio,500*combinedRatio),apPanelTex, panelStyle);
 		GUI.backgroundColor = Color.blue;
-		GUI.Box (new Rect(140*widthRatio,15*heightRatio,120*widthRatio,120*heightRatio),unitToMoveTex, unitToMoveStyle);
+		GUI.Box (new Rect(140*combinedRatio,15*combinedRatio,120*combinedRatio,120*combinedRatio),unitToMoveTex, unitToMoveStyle);
 		
 		List<GameObject> units = apsc.GetUnits();
 		
@@ -87,9 +92,9 @@ public class GUIAPList : MonoBehaviour
 				if (firstItem)
 				{
 					GUI.backgroundColor = new Color(0.2f,0.8f,0.8f, 1-alpha);
-					GUI.Box(new Rect(portraitX*widthRatio, portraitY*heightRatio, portraitWidth*widthRatio, portraitHeight*heightRatio), e.GetComponent<APController>().ToString());
+					GUI.Box(new Rect(portraitX*combinedRatio, portraitY*combinedRatio, portraitWidth*combinedRatio, portraitHeight*combinedRatio), e.GetComponent<APController>().ToString());
 					GUI.backgroundColor = new Color(0.2f,0.8f,0.8f,alpha);
-					GUI.Box(new Rect(160.0f*widthRatio, (portraitY+0.0f)*heightRatio, portraitWidth*widthRatio, portraitHeight*heightRatio), e.GetComponent<APController>().ToString());
+					GUI.Box(new Rect(160.0f*combinedRatio, (portraitY+0.0f)*combinedRatio, portraitWidth*combinedRatio, portraitHeight*combinedRatio), e.GetComponent<APController>().ToString());
 					portraitY = (120.0f - alpha*80.0f);
 					if (alpha < 1.0f)
 					{
@@ -105,7 +110,7 @@ public class GUIAPList : MonoBehaviour
 				else
 				{
 					GUI.backgroundColor = new Color(0.2f,0.8f,0.8f,1.0f);
-					GUI.Box(new Rect(portraitX*widthRatio, portraitY*heightRatio, portraitWidth*widthRatio, portraitHeight*heightRatio), e.GetComponent<APController>().ToString());
+					GUI.Box(new Rect(portraitX*combinedRatio, portraitY*combinedRatio, portraitWidth*combinedRatio, portraitHeight*combinedRatio), e.GetComponent<APController>().ToString());
 					portraitY += 90.0f;
 				}
 			
@@ -121,13 +126,13 @@ public class GUIAPList : MonoBehaviour
 					if (firstItem)
 					{
 						GUI.backgroundColor = new Color(0.2f,0.8f,0.8f,1.0f);
-						GUI.Box(new Rect(160.0f*widthRatio, (portraitY+0.0f)*heightRatio, portraitWidth*widthRatio, portraitHeight*heightRatio), e.GetComponent<APController>().ToString());
+						GUI.Box(new Rect(160.0f*combinedRatio, (portraitY+0.0f)*combinedRatio, portraitWidth*combinedRatio, portraitHeight*combinedRatio), e.GetComponent<APController>().ToString());
 						firstItem = false;
 					}
 					else
 					{
 						GUI.backgroundColor = new Color(0.2f,0.8f,0.8f,1.0f);
-						GUI.Box(new Rect(portraitX*widthRatio, portraitY*heightRatio, portraitWidth*widthRatio, portraitHeight*heightRatio), e.GetComponent<APController>().ToString());
+						GUI.Box(new Rect(portraitX*combinedRatio, portraitY*combinedRatio, portraitWidth*combinedRatio, portraitHeight*combinedRatio), e.GetComponent<APController>().ToString());
 						portraitY += 90.0f;
 					}
 				
@@ -139,7 +144,7 @@ public class GUIAPList : MonoBehaviour
 				else
 				{
 					GUI.backgroundColor = new Color(0.2f,0.8f,0.8f,1.0f);
-					GUI.Box(new Rect(portraitX*widthRatio, portraitY*heightRatio, portraitWidth*widthRatio, portraitHeight*heightRatio), e.GetComponent<APController>().ToString());
+					GUI.Box(new Rect(portraitX*combinedRatio, portraitY*combinedRatio, portraitWidth*combinedRatio, portraitHeight*combinedRatio), e.GetComponent<APController>().ToString());
 					portraitY += 90.0f;
 				
 					if (portraitY > fixedHeight - 190)
@@ -150,7 +155,7 @@ public class GUIAPList : MonoBehaviour
 			}
 		}
 		
-		GUI.Label(new Rect(0,0,126*widthRatio,50*heightRatio), "AP", labelStyle);
-		GUI.Label(new Rect(138*widthRatio,0,126*widthRatio,50*heightRatio), "Unit to Move", labelStyle);
+		GUI.Label(new Rect(0,0,126*combinedRatio,50*combinedRatio), "AP", labelStyle);
+		GUI.Label(new Rect(138*combinedRatio,0,126*combinedRatio,50*combinedRatio), "Unit to Move", labelStyle);
 	}
 }
