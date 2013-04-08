@@ -8,6 +8,7 @@ public class StartingPageGUI : MonoBehaviour
 	
 	private float widthRatio;
 	private float heightRatio;
+	private float combinedRatio;
 
 	void Start () 
 	{
@@ -18,16 +19,18 @@ public class StartingPageGUI : MonoBehaviour
 	{
 		widthRatio = Screen.width/fixedWidth;
 		heightRatio = Screen.height/fixedHeight;
+		if (widthRatio<heightRatio){combinedRatio = widthRatio;}
+		else{combinedRatio = heightRatio;}
 	}
 	
 	void OnGUI()
 	{
-		if (GUI.Button(new Rect(433.0f*widthRatio, 250.0f*heightRatio, 500.0f*widthRatio, 100.0f*heightRatio),new GUIContent("Start")))
+		if (GUI.Button(new Rect(433.0f*combinedRatio, 250.0f*combinedRatio, 500.0f*combinedRatio, 100.0f*combinedRatio),new GUIContent("Start")))
 		{
 			Application.LoadLevel("NetworkMenu");
 		}
 		
-		if (GUI.Button(new Rect(533.0f*widthRatio, 400.0f*heightRatio, 300.0f*widthRatio, 75.0f*heightRatio),new GUIContent("Exit")))
+		if (GUI.Button(new Rect(533.0f*combinedRatio, 400.0f*combinedRatio, 300.0f*combinedRatio, 75.0f*combinedRatio),new GUIContent("Exit")))
 		{
 			Debug.Log ("NO! YOU CANNOT EXIT THIS GAME!");
 		}
