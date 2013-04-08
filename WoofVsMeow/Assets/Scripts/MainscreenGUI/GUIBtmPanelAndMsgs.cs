@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class GUIBtmPanel : MonoBehaviour 
+public class GUIBtmPanelAndMsgs : MonoBehaviour 
 {
 	private float fixedHeight = 598.0f;
 	private float fixedWidth = 1366.0f;
@@ -23,7 +23,7 @@ public class GUIBtmPanel : MonoBehaviour
 	// Use this for initialization
 	void Start () 
 	{
-		playerName = "Some name";
+		playerName = PlayerPrefs.GetString("playername");
 		money = 0;
 		commanderName = "Joker";
 	}
