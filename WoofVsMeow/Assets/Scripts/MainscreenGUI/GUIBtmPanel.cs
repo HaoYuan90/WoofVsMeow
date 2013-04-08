@@ -8,6 +8,7 @@ public class GUIBtmPanel : MonoBehaviour
 	
 	private float widthRatio;
 	private float heightRatio;
+	private float combinedRatio;
 	
 	public Texture2D money_Tex;
 	public Texture2D commander_Tex;
@@ -32,6 +33,8 @@ public class GUIBtmPanel : MonoBehaviour
 	{
 		widthRatio = Screen.width/fixedWidth;
 		heightRatio = Screen.height/fixedHeight;
+		if (widthRatio<heightRatio){combinedRatio = widthRatio;}
+		else{combinedRatio = heightRatio;}
 	}
 	
 	public void SetPlayerName(string name)
@@ -51,11 +54,11 @@ public class GUIBtmPanel : MonoBehaviour
 	
 	void OnGUI()
 	{
-		GUI.Box(new Rect(0, Screen.height-110.0f*heightRatio, Screen.width, 110.0f*heightRatio),"");
-		GUI.Label(new Rect(150.0f*widthRatio, Screen.height-75.0f*heightRatio, 300.0f*widthRatio, 40.0f*heightRatio), "Name : " + playerName, labelStyle);
-		GUI.Box (new Rect(750.0f*widthRatio, Screen.height-94.0f*heightRatio, 66.0f*widthRatio, 66.0f*heightRatio), money_Tex, boxStyle);
-		GUI.Label(new Rect(820.0f*widthRatio, Screen.height-75.0f*heightRatio, 200.0f*widthRatio, 40.0f*heightRatio), "Money : $" + money.ToString(), labelStyle);
-		GUI.Box (new Rect(1050.0f*widthRatio, Screen.height-94.0f*heightRatio, 66.0f*widthRatio, 66.0f*heightRatio), commander_Tex, boxStyle);
-		GUI.Label(new Rect(1120.0f*widthRatio, Screen.height-75.0f*heightRatio, 200.0f*widthRatio, 40.0f*heightRatio), "Commander : " + commanderName, labelStyle);
+		GUI.Box(new Rect(0, Screen.height-110.0f*combinedRatio, Screen.width, 110.0f*combinedRatio),"");
+		GUI.Label(new Rect(150.0f*combinedRatio, Screen.height-75.0f*combinedRatio, 300.0f*combinedRatio, 40.0f*combinedRatio), "Name : " + playerName, labelStyle);
+		GUI.Box (new Rect(750.0f*combinedRatio, Screen.height-94.0f*combinedRatio, 66.0f*combinedRatio, 66.0f*combinedRatio), money_Tex, boxStyle);
+		GUI.Label(new Rect(820.0f*combinedRatio, Screen.height-75.0f*combinedRatio, 200.0f*combinedRatio, 40.0f*combinedRatio), "Money : $" + money.ToString(), labelStyle);
+		GUI.Box (new Rect(1050.0f*combinedRatio, Screen.height-94.0f*combinedRatio, 66.0f*combinedRatio, 66.0f*combinedRatio), commander_Tex, boxStyle);
+		GUI.Label(new Rect(1120.0f*combinedRatio, Screen.height-75.0f*combinedRatio, 200.0f*combinedRatio, 40.0f*combinedRatio), "Commander : " + commanderName, labelStyle);
 	}
 }
