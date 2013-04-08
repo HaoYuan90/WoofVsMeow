@@ -17,14 +17,14 @@ public class GUIBtmPanelAndMsgs : MonoBehaviour
 	public GUIStyle labelStyle;
 	
 	private string playerName;
-	private double money;
+	private double m_money;
 	private string commanderName;
 
 	// Use this for initialization
-	void Start () 
+	public void Initialise (int money) 
 	{
 		playerName = PlayerPrefs.GetString("playername");
-		money = 0;
+		m_money = money;
 		commanderName = "Joker";
 	}
 	
@@ -37,19 +37,9 @@ public class GUIBtmPanelAndMsgs : MonoBehaviour
 		else{combinedRatio = heightRatio;}
 	}
 	
-	public void SetPlayerName(string name)
+	public void SetMoney (int money)
 	{
-		playerName = name;
-	}
-	
-	public void SetMoney(double money)
-	{
-		this.money = money;
-	}
-	
-	public void SetCommanderName(string name)
-	{
-		commanderName = name;
+		m_money = money;
 	}
 	
 	void OnGUI()
@@ -57,7 +47,7 @@ public class GUIBtmPanelAndMsgs : MonoBehaviour
 		GUI.Box(new Rect(0, Screen.height-110.0f*combinedRatio, Screen.width, 110.0f*combinedRatio),"");
 		GUI.Label(new Rect(150.0f*combinedRatio, Screen.height-75.0f*combinedRatio, 300.0f*combinedRatio, 40.0f*combinedRatio), "Name : " + playerName, labelStyle);
 		GUI.Box (new Rect(750.0f*combinedRatio, Screen.height-94.0f*combinedRatio, 66.0f*combinedRatio, 66.0f*combinedRatio), money_Tex, boxStyle);
-		GUI.Label(new Rect(820.0f*combinedRatio, Screen.height-75.0f*combinedRatio, 200.0f*combinedRatio, 40.0f*combinedRatio), "Money : $" + money.ToString(), labelStyle);
+		GUI.Label(new Rect(820.0f*combinedRatio, Screen.height-75.0f*combinedRatio, 200.0f*combinedRatio, 40.0f*combinedRatio), "m_money : $" + m_money.ToString(), labelStyle);
 		GUI.Box (new Rect(1050.0f*combinedRatio, Screen.height-94.0f*combinedRatio, 66.0f*combinedRatio, 66.0f*combinedRatio), commander_Tex, boxStyle);
 		GUI.Label(new Rect(1120.0f*combinedRatio, Screen.height-75.0f*combinedRatio, 200.0f*combinedRatio, 40.0f*combinedRatio), "Commander : " + commanderName, labelStyle);
 	}

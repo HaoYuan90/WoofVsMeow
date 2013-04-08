@@ -361,7 +361,6 @@ public class GridLogic : MonoBehaviour {
 		}
 	}
 	
-	
 	public void InitUnitsAndBuildings(GameEngine engine)
 	{
 		foreach(List<GameObject> l in m_grids){

@@ -25,7 +25,6 @@ public class APSequenceController : MonoBehaviour
 	{
 		m_gameUnits = new List<GameObject>();
 		m_APComparer = new APComparer();
-		GetComponent<GUIAPList>().Initialise();
 		
 		if(m_debug){
 			gameObject.AddComponent("FixedTestDriver");

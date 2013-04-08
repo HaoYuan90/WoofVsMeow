@@ -25,7 +25,7 @@ public class GameEngine : MonoBehaviour
 	private bool m_isReadyToMove;
 	private bool m_isReadyToAttack;
 	private bool m_isReadyToProduce;
-	public List<int> playerGold = new List<int>();
+	public List<int> m_playerGold = new List<int>();
 
 	void Start () 
 	{
@@ -48,8 +48,12 @@ public class GameEngine : MonoBehaviour
 		m_isReadyToMove = false;
 		m_isReadyToAttack = false;
 		
-		playerGold.Add(1000);
-		playerGold.Add(1000);
+		//2 players
+		m_playerGold.Add(1000);
+		m_playerGold.Add(1000);
+		
+		GetComponent<GUIAPList>().Initialise();
+		GetComponent<GUIBtmPanelAndMsgs>().Initialise(m_playerGold[m_control]);
 	}
 	
 	private void InitialiseCamera()
@@ -95,6 +99,13 @@ public class GameEngine : MonoBehaviour
 		m_apController.OnTurnEnd();
 		m_inTurn = false;
 		m_currUnit = null;
+	}
+	
+	//called when someone's gold has changed, may not be the player using this client
+	//change the gui displaying gold amount
+	public void OnGoldChange()
+	{
+		GetComponent<GUIBtmPanelAndMsgs>().SetMoney(m_playerGold[m_control]);
 	}
 	
 	//remove unit from ap list and destroy it
