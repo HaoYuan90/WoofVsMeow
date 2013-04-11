@@ -74,15 +74,9 @@ public class BuildingController : MonoBehaviour
 		m_engine.m_playerGold[m_control] -= m_unitCostList[m_unitToProduce];
 		GetComponent<BuildingGUIController>().OnGoldChangeBy(-m_unitCostList[m_unitToProduce]);
 		GameObject newUnit = (GameObject)Instantiate(m_unitList[m_unitToProduce]);
-		newUnit.transform.position = new Vector3(tar.transform.position.x,tar.renderer.bounds.max.y,tar.transform.position.z);
-		newUnit.transform.parent = GameObject.Find("Units").transform;
 		newUnit.name = m_unitList[m_unitToProduce].name;
-		//set grid attributes
-		tar.GetComponent<TnGAttribute>().m_unit = newUnit;
-		newUnit.GetComponent<UnitController>().InitialiseUnit(m_engine, tar);
-		//add unit to aplist
-		m_engine.GetComponent<APSequenceController>().AddNewUnit(newUnit);
-		m_engine.OnGoldChange();
+		//moved to game engine, too much coupling
+		m_engine.PlaceUnitAt(newUnit, tar);
 		
 		if(m_active)
 			GetComponent<BuildingGUIController>().EnableGUI();

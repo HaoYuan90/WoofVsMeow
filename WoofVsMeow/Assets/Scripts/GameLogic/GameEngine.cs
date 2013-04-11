@@ -142,9 +142,22 @@ public class GameEngine : MonoBehaviour
 		m_isReadyToAttack = true;
 	}
 
-	public void ProcessProductionRange(GameObject unit) {
+	public void ProcessProductionRange(GameObject unit) 
+	{
 		m_gridLogic.ProcessProductionRange(unit.GetComponent<BuildingController>().currentGrid);
 		m_isReadyToProduce = true;
+	}
+	
+	public void PlaceUnitAt(GameObject unit, GameObject grid)
+	{
+		unit.transform.position = new Vector3(grid.transform.position.x,grid.renderer.bounds.max.y,grid.transform.position.z);
+		unit.transform.parent = GameObject.Find("Units").transform;
+		//set grid attributes
+		grid.GetComponent<TnGAttribute>().m_unit = unit;
+		unit.GetComponent<UnitController>().InitialiseUnit(this, grid);
+		//add unit to aplist
+		m_apController.AddNewUnit(unit);
+		OnGoldChange();
 	}
 	
 	public void CameraLookAt(GameObject unit)
@@ -206,7 +219,6 @@ public class GameEngine : MonoBehaviour
 			int currentControl = m_currUnit.GetComponent<UnitController>().m_control;
 			//check if there is unit on that grid
 			if(unit!=null){
-				int tarControl = unit.GetComponent<UnitController>().m_control;
 				m_gridLogic.ClearAllMasks();
 				tar.GetComponent<MaskManager>().RedMaskOn();
 				int dmg = m_currUnit.GetComponent<UnitController>().Attack(unit);
@@ -218,7 +230,6 @@ public class GameEngine : MonoBehaviour
 				m_isReadyToAttack = false;
 			}
 			if(building!=null){
-				int tarControl = building.GetComponent<BuildingController>().m_control;
 				m_gridLogic.ClearAllMasks();
 				tar.GetComponent<MaskManager>().RedMaskOn();
 				int dmg = m_currUnit.GetComponent<UnitController>().Attack(building);
@@ -254,14 +265,16 @@ public class GameEngine : MonoBehaviour
 	
 	private void ProcessBuildingProduction(GameObject tar)
 	{
-		m_gridLogic.ClearAllMasks();
-		int unitIndex = m_currUnit.GetComponent<BuildingController>().ProduceUnitAt(tar);
-		m_isReadyToProduce = false;
-		if(Network.isClient || Network.isServer){
-			IntVector2 temp1 = m_currUnit.GetComponent<BuildingController>().GetPositionOnMap();
-			IntVector2 temp2 = tar.GetComponent<HexGridModel>().GetPositionOnMap();
-			networkView.RPC("BuildingProduceUnitAt",RPCMode.OthersBuffered,
-				temp1.x,temp1.y,temp2.x,temp2.y, unitIndex);
+		if (tar.GetComponent<HexGridModel>().m_prevNode != null) {
+			m_gridLogic.ClearAllMasks();
+			int unitIndex = m_currUnit.GetComponent<BuildingController>().ProduceUnitAt(tar);
+			m_isReadyToProduce = false;
+			if(Network.isClient || Network.isServer){
+				IntVector2 temp1 = m_currUnit.GetComponent<BuildingController>().GetPositionOnMap();
+				IntVector2 temp2 = tar.GetComponent<HexGridModel>().GetPositionOnMap();
+				networkView.RPC("BuildingProduceUnitAt",RPCMode.OthersBuffered,
+					temp1.x,temp1.y,temp2.x,temp2.y, unitIndex);
+			}
 		}
 	}
 	
@@ -302,9 +315,7 @@ public class GameEngine : MonoBehaviour
 				if (Physics.Raycast(selection,out grid)){				
 					GameObject tar = grid.collider.gameObject;
 					//make sure target is within production range and it does not hold a unit
-					if (tar.GetComponent<HexGridModel>().m_prevNode != null) {
-						ProcessBuildingProduction(tar);
-					}
+					ProcessBuildingProduction(tar);
 				}
 			}
 		}
