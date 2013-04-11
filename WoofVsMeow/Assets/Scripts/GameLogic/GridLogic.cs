@@ -258,15 +258,17 @@ public class GridLogic : MonoBehaviour {
 	
 	public void ProcessAttackRange(GameObject src, int range, bool isRPC)
 	{
+		//raycast based attack range processing
         //clear state variables
         ResetAllGraphStateVars(false);
-        //list of nodes to check sorted from highest movementleft to lowest
-        List<GameObject> openList = new List<GameObject>();
-        //list of nodes already checked
-        List<GameObject> closedList = new List<GameObject>();
+		 //all nodes that are potentially in range of attack
+        List<GameObject> nodeList = new List<GameObject>();
+		//use this to get the node list
+		List<GameObject> openList = new List<GameObject>();
+        //list of nodes that can be reached via attack
+        List<GameObject> validList = new List<GameObject>();
 		
 		GameObject currentNode = src;
-		int srcHeight = currentNode.GetComponentInChildren<TnGAttribute>().m_height;
 		//the player this unit belong to
 		int thisControl = currentNode.GetComponent<TnGAttribute>().
 			m_unit.GetComponent<UnitController>().m_control;
@@ -276,61 +278,67 @@ public class GridLogic : MonoBehaviour {
         //run BFS
         while (openList.Count != 0)
         {
-			openList.Sort(
-                delegate(GameObject a, GameObject b)
-                {
-                    int mla = a.GetComponent<HexGridModel>().m_movementLeft;
-                    int mlb = b.GetComponent<HexGridModel>().m_movementLeft;
-                    return mlb.CompareTo(mla); //order matters
-                }
-            );
             currentNode = openList[0];
             openList.RemoveAt(0);
             int rangeLeft = currentNode.GetComponent<HexGridModel>().m_movementLeft;
-            if (!closedList.Contains(currentNode) && rangeLeft >= 0)
-            {
-                closedList.Add(currentNode);
-                //turn on this hexgrid
-				//if is RPC, should not add any masks
-				if(!isRPC){
-					if(currentNode.GetComponent<TnGAttribute>().m_unit == null
-						&&currentNode.GetComponent<TnGAttribute>().m_building == null){
-						currentNode.GetComponent<MaskManager>().RedMaskOn();
-					}
-					else if(currentNode.GetComponent<TnGAttribute>().m_unit != null)
-					{
-						GameObject tarUnit = currentNode.GetComponent<TnGAttribute>().m_unit;
-						if(thisControl != tarUnit.GetComponent<UnitController>().m_control){
-							currentNode.GetComponent<MaskManager>().DarkRedMaskOn();
-						}
-					}
-					else if(currentNode.GetComponent<TnGAttribute>().m_building != null)
-					{
-						GameObject tarBuilding = currentNode.GetComponent<TnGAttribute>().m_building;
-						if(thisControl != tarBuilding.GetComponent<BuildingController>().m_control){
-							currentNode.GetComponent<MaskManager>().DarkRedMaskOn();
-						}
-					}
-				}
-				
-                //if movement is 0, stop here
+			
+            if (!nodeList.Contains(currentNode) && rangeLeft >= 0)
+            {	
+                nodeList.Add(currentNode);
+                //if range left is 0, stop here
                 if (rangeLeft > 0)
                 {
                     List<GameObject> currentNeighbours = GetNeighbours(currentNode);
                     foreach (GameObject n in currentNeighbours)
                     {
-						int destHeight = n.GetComponent<TnGAttribute>().m_height;
-						
-						if(destHeight - srcHeight >= 5) //dest a lot higher than src, hard to shoot up
-                        	n.GetComponent<HexGridModel>().UpdateRangeLeft(currentNode,rangeLeft-2);
-						else
-							n.GetComponent<HexGridModel>().UpdateRangeLeft(currentNode,rangeLeft-1);
+						n.GetComponent<HexGridModel>().UpdateRangeLeft(currentNode,rangeLeft-1);
                         if (!openList.Contains(n))
                             openList.Add(n);
                     }
                 }
 			}
         }
+		//remove itself
+		nodeList.Remove (src);
+		//run a ray cast from src to all nodes in node list, if not intersected, then node is valid
+		//the following determines how high is considered to be an obstacle (tngattribute.m_height is related to this)
+		float rayHeight = 4.5f+src.renderer.bounds.max.y; 
+		Vector3 rayOrigin = new Vector3(src.transform.position.x, rayHeight,src.transform.position.z);
+		foreach(GameObject node in nodeList)
+		{
+			Vector3 rayDest = new Vector3(node.transform.position.x, rayHeight,node.transform.position.z);
+			float rayLen = (rayOrigin-rayDest).magnitude;
+			Vector3 rayDir = rayDest-rayOrigin;
+			Debug.DrawRay(rayOrigin,rayDir,Color.red);
+			if(!Physics.Raycast(rayOrigin,rayDir,rayLen)){
+				validList.Add(node);
+			}
+		}
+		foreach(GameObject node in validList)
+		{
+			if(!isRPC){
+				if(node.GetComponent<TnGAttribute>().m_unit == null
+					&&node.GetComponent<TnGAttribute>().m_building == null){
+					node.GetComponent<MaskManager>().RedMaskOn();
+				}
+				else if(node.GetComponent<TnGAttribute>().m_unit != null)
+				{
+					GameObject tarUnit = node.GetComponent<TnGAttribute>().m_unit;
+					if(thisControl != tarUnit.GetComponent<UnitController>().m_control){
+						node.GetComponent<MaskManager>().DarkRedMaskOn();
+						node.GetComponent<HexGridModel>().m_prevNode = src;
+					}
+				}
+				else if(node.GetComponent<TnGAttribute>().m_building != null)
+				{
+					GameObject tarBuilding = node.GetComponent<TnGAttribute>().m_building;
+					if(thisControl != tarBuilding.GetComponent<BuildingController>().m_control){
+						node.GetComponent<MaskManager>().DarkRedMaskOn();
+						node.GetComponent<HexGridModel>().m_prevNode = src;
+					}
+				}
+			}
+		}
 	}
 	
 	//return a Grid list from source to destination

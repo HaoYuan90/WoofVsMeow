@@ -76,6 +76,7 @@ public class BuildingController : MonoBehaviour
 		GameObject newUnit = (GameObject)Instantiate(m_unitList[m_unitToProduce]);
 		newUnit.transform.position = new Vector3(tar.transform.position.x,tar.renderer.bounds.max.y,tar.transform.position.z);
 		newUnit.transform.parent = GameObject.Find("Units").transform;
+		newUnit.name = m_unitList[m_unitToProduce].name;
 		//set grid attributes
 		tar.GetComponent<TnGAttribute>().m_unit = newUnit;
 		newUnit.GetComponent<UnitController>().InitialiseUnit(m_engine, tar);

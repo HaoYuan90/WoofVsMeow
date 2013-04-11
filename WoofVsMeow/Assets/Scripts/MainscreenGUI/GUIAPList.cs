@@ -2,160 +2,106 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+//this GUI is controlled by APSequenceController
 public class GUIAPList : MonoBehaviour 
 {
-	public Texture2D apPanelTex;
-	public Texture2D unitToMoveTex;
+	public List<Texture2D> m_unitPortraits;
 	
-	public GUIStyle panelStyle;
-	public GUIStyle unitToMoveStyle;
-	public GUIStyle labelStyle;
+	private bool m_isAnimating = false;
+	private float m_alpha;
 	
-	private APSequenceController apsc;
-	
-	private float portraitX = 22.0f;
-	private float portraitY = 18.0f;
-	
-	private float fixedWidth = 1366.0f;
-	private float fixedHeight = 598.0f;
-	
-	private float combinedRatio;
-	private float heightRatio;
-	private float widthRatio;
-	
-	private float portraitHeight = 80.0f;
-	private float portraitWidth = 80.0f;
-	private bool onTurnBegin = false;
-	private bool onIdle = true;
-	private bool firstItem = true;
-	private bool canTurnEnd = false;
-	//When we perform OnTurnBegin
-	private float alpha;
+	private float m_portraitX;
+	private float m_portraitY;
+	private float m_portraitSize;
+	private float m_firstPortraitSize;
+	private float m_portraitYOffset;
+	//gui runs optimally in 16:9
+	readonly private float m_optimalWidth = 1600.0f;
+	readonly private float m_optimalHeight = 900.0f;
 	
 	public void Initialise () 
 	{
-		apsc = GetComponent<APSequenceController>();
+		m_portraitSize = 100.0f*Screen.width/m_optimalWidth;
+		m_firstPortraitSize = 120.0f*Screen.width/m_optimalWidth;
+		m_portraitX = 20.0f*Screen.width/m_optimalWidth;
+		m_portraitY = 20.0f*Screen.width/m_optimalWidth;
+		m_portraitYOffset = 5.0f*Screen.width/m_optimalWidth;
 	}
 	
+	//display GUI for a new turn, called in APSequenceController
+	//start animation
 	public void OnTurnBegin()
 	{
-		alpha = 0.0f;
-		onTurnBegin = true;
-		onIdle = false;
-		canTurnEnd = false;
+		m_alpha = 0.0f;
+		m_isAnimating = true;
 	}
 	
-	public void OnTurnEnd()
+	private void AnimationFinished()
 	{
-		canTurnEnd = false;
+		m_isAnimating = false;
 	}
-	public void OnIdle()
-	{
-		onTurnBegin = false;
-		onIdle = true;
-		canTurnEnd = false;
-	}
-	public bool HasTurnBegun()
-	{
-		return onTurnBegin;
-	}
-	public bool IsIdling()
-	{
-		return onIdle;
-	}
-	public bool CanTurnEnd()
-	{
-		return canTurnEnd;
-	}
+	
 	void OnGUI()
-	{
-		widthRatio = Screen.width / fixedWidth;
-		heightRatio = Screen.height / fixedHeight;
+	{	
+		List<GameObject> units = GetComponent<APSequenceController>().GetUnits();
+		int limit = 0; //only show top 8 units in aplist
 		
-		if (widthRatio<heightRatio){combinedRatio = widthRatio;}
-		else{combinedRatio = heightRatio;}
-		
-		//GUI.color = Color.green;
-		GUI.backgroundColor = Color.grey;
-		GUI.Box (new Rect(0,-5*combinedRatio,140*combinedRatio,500*combinedRatio),apPanelTex, panelStyle);
-		GUI.backgroundColor = Color.blue;
-		GUI.Box (new Rect(140*combinedRatio,15*combinedRatio,120*combinedRatio,120*combinedRatio),unitToMoveTex, unitToMoveStyle);
-		
-		List<GameObject> units = apsc.GetUnits();
-		
-		portraitY = 38.0f;
-		firstItem = true;
+		float currentY = m_portraitY;
 		foreach(GameObject e in units)
 		{
-			if (onTurnBegin)
+			if(limit >= 7)
+				break;
+			Texture2D portrait = m_unitPortraits[0]; //assign this to pacify the compiler...
+			//locate the portrait
+			foreach(Texture2D text in m_unitPortraits){
+				if(e.name == text.name){
+					portrait = text;
+					break;
+				}
+			}
+			
+			if (m_isAnimating)
 			{
-				if (firstItem)
+				if (limit == 0)
 				{
-					GUI.backgroundColor = new Color(0.2f,0.8f,0.8f, 1-alpha);
-					GUI.Box(new Rect(portraitX*combinedRatio, portraitY*combinedRatio, portraitWidth*combinedRatio, portraitHeight*combinedRatio), e.GetComponent<APController>().ToString());
-					GUI.backgroundColor = new Color(0.2f,0.8f,0.8f,alpha);
-					GUI.Box(new Rect(160.0f*combinedRatio, (portraitY+0.0f)*combinedRatio, portraitWidth*combinedRatio, portraitHeight*combinedRatio), e.GetComponent<APController>().ToString());
-					portraitY = (120.0f - alpha*80.0f);
-					if (alpha < 1.0f)
+					GUI.contentColor = new Color(1.0f,1.0f,1.0f, m_alpha);
+					GUI.Box(new Rect(m_portraitX , currentY, m_firstPortraitSize, m_firstPortraitSize), portrait);
+					currentY += (m_firstPortraitSize+m_portraitYOffset);
+					GUI.contentColor = new Color(1.0f,1.0f,1.0f, 1-m_alpha);
+					GUI.Box(new Rect(m_portraitX, currentY, m_portraitSize , m_portraitSize ), portrait);
+					currentY += (1-m_alpha)*m_portraitSize;
+					if (m_alpha < 1.0f)
 					{
-						alpha += 0.01f;
+						m_alpha += 0.01f;
 					}
 					else
 					{
-						OnIdle();
-						canTurnEnd = true;
+						AnimationFinished();
 					}
-					firstItem =false;
 				}
 				else
 				{
-					GUI.backgroundColor = new Color(0.2f,0.8f,0.8f,1.0f);
-					GUI.Box(new Rect(portraitX*combinedRatio, portraitY*combinedRatio, portraitWidth*combinedRatio, portraitHeight*combinedRatio), e.GetComponent<APController>().ToString());
-					portraitY += 90.0f;
-				}
-			
-				if (portraitY > fixedHeight - 190)
-				{
-					break;
+					GUI.contentColor = new Color(1.0f,1.0f,1.0f, 1.0f);
+					GUI.Box(new Rect(m_portraitX , currentY , m_portraitSize , m_portraitSize ), portrait);
+					currentY += (m_portraitSize+m_portraitYOffset);
 				}
 			}
 			else
 			{
-				if (canTurnEnd)
-				{	
-					if (firstItem)
-					{
-						GUI.backgroundColor = new Color(0.2f,0.8f,0.8f,1.0f);
-						GUI.Box(new Rect(160.0f*combinedRatio, (portraitY+0.0f)*combinedRatio, portraitWidth*combinedRatio, portraitHeight*combinedRatio), e.GetComponent<APController>().ToString());
-						firstItem = false;
-					}
-					else
-					{
-						GUI.backgroundColor = new Color(0.2f,0.8f,0.8f,1.0f);
-						GUI.Box(new Rect(portraitX*combinedRatio, portraitY*combinedRatio, portraitWidth*combinedRatio, portraitHeight*combinedRatio), e.GetComponent<APController>().ToString());
-						portraitY += 90.0f;
-					}
-				
-					if (portraitY > fixedHeight - 190)
-					{
-						break;
-					}
+				GUI.contentColor = new Color(1.0f,1.0f,1.0f, 1.0f);
+				if (limit == 0)
+				{
+					GUI.Box(new Rect(m_portraitX , currentY, m_firstPortraitSize, m_firstPortraitSize), portrait);
+					currentY += (m_firstPortraitSize+m_portraitYOffset);
 				}
 				else
 				{
-					GUI.backgroundColor = new Color(0.2f,0.8f,0.8f,1.0f);
-					GUI.Box(new Rect(portraitX*combinedRatio, portraitY*combinedRatio, portraitWidth*combinedRatio, portraitHeight*combinedRatio), e.GetComponent<APController>().ToString());
-					portraitY += 90.0f;
-				
-					if (portraitY > fixedHeight - 190)
-					{
-						break;
-					}
+					GUI.Box(new Rect(m_portraitX , currentY , m_portraitSize , m_portraitSize ), portrait);
+					currentY += (m_portraitSize+m_portraitYOffset);
 				}
+
 			}
+			limit ++;
 		}
-		
-		GUI.Label(new Rect(0,0,126*combinedRatio,50*combinedRatio), "AP", labelStyle);
-		GUI.Label(new Rect(138*combinedRatio,0,126*combinedRatio,50*combinedRatio), "Unit to Move", labelStyle);
 	}
 }

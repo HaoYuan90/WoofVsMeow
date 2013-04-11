@@ -196,14 +196,14 @@ public class GameEngine : MonoBehaviour
 	
 	private void ProcessUnitAttack(GameObject tar)
 	{
-		GameObject unit = tar.GetComponent<TnGAttribute>().m_unit;
-		GameObject building = tar.GetComponent<TnGAttribute>().m_building;
-		int currentControl = m_currUnit.GetComponent<UnitController>().m_control;
-		//check if there is unit on that grid
-		if(unit!=null){
-			int tarControl = unit.GetComponent<UnitController>().m_control;
-			//if it is enemy
-			if(currentControl != tarControl){
+		//make sure selected node is in range
+		if(tar.GetComponent<HexGridModel>().m_prevNode != null){
+			GameObject unit = tar.GetComponent<TnGAttribute>().m_unit;
+			GameObject building = tar.GetComponent<TnGAttribute>().m_building;
+			int currentControl = m_currUnit.GetComponent<UnitController>().m_control;
+			//check if there is unit on that grid
+			if(unit!=null){
+				int tarControl = unit.GetComponent<UnitController>().m_control;
 				m_gridLogic.ClearAllMasks();
 				tar.GetComponent<MaskManager>().RedMaskOn();
 				int dmg = m_currUnit.GetComponent<UnitController>().Attack(unit);
@@ -214,11 +214,8 @@ public class GameEngine : MonoBehaviour
 				}
 				m_isReadyToAttack = false;
 			}
-		}
-		if(building!=null){
-			int tarControl = building.GetComponent<BuildingController>().m_control;
-			//if it is enemy
-			if(currentControl != tarControl){
+			if(building!=null){
+				int tarControl = building.GetComponent<BuildingController>().m_control;
 				m_gridLogic.ClearAllMasks();
 				tar.GetComponent<MaskManager>().RedMaskOn();
 				int dmg = m_currUnit.GetComponent<UnitController>().Attack(building);
@@ -235,17 +232,20 @@ public class GameEngine : MonoBehaviour
 	
 	private void ProcessUnitMove(GameObject dest)
 	{
-		//check if the dest grid is empty
-		if (dest.GetComponent<TnGAttribute>().m_unit == null
-			&&dest.GetComponent<TnGAttribute>().m_building == null){
-			m_gridLogic.ClearAllMasks();
-			if(Network.isClient || Network.isServer){
-				IntVector2 temp1 = m_currUnit.GetComponent<UnitController>().GetPositionOnMap();
-				IntVector2 temp2 = dest.GetComponent<HexGridModel>().GetPositionOnMap();
-				networkView.RPC("MoveUnitToDest",RPCMode.OthersBuffered,temp1.x,temp1.y,temp2.x,temp2.y);
+		//make sure selected node is in range
+		if (dest.GetComponent<HexGridModel>().m_prevNode != null){
+			//check if the dest grid is empty
+			if (dest.GetComponent<TnGAttribute>().m_unit == null
+				&&dest.GetComponent<TnGAttribute>().m_building == null){
+				m_gridLogic.ClearAllMasks();
+				if(Network.isClient || Network.isServer){
+					IntVector2 temp1 = m_currUnit.GetComponent<UnitController>().GetPositionOnMap();
+					IntVector2 temp2 = dest.GetComponent<HexGridModel>().GetPositionOnMap();
+					networkView.RPC("MoveUnitToDest",RPCMode.OthersBuffered,temp1.x,temp1.y,temp2.x,temp2.y);
+				}
+				m_currUnit.GetComponent<UnitController>().Move(dest);
+				m_isReadyToMove = false;
 			}
-			m_currUnit.GetComponent<UnitController>().Move(dest);
-			m_isReadyToMove = false;
 		}
 	}
 	
@@ -276,10 +276,7 @@ public class GameEngine : MonoBehaviour
 				Ray selection = Camera.main.ScreenPointToRay(Input.mousePosition);
 				if (Physics.Raycast(selection,out grid)){				
 					GameObject dest = grid.collider.gameObject;
-					//make sure selected node is in range
-					if (dest.GetComponent<HexGridModel>().m_prevNode != null){
-						ProcessUnitMove(dest);
-					}
+					ProcessUnitMove(dest);
 				}
 			}
 		}
@@ -290,11 +287,7 @@ public class GameEngine : MonoBehaviour
 				Ray selection = Camera.main.ScreenPointToRay(Input.mousePosition);
 				if (Physics.Raycast(selection,out grid)){				
 					GameObject tar = grid.collider.gameObject;
-					//make sure target is within attack range
-					if(tar.GetComponent<HexGridModel>().m_prevNode != null)
-					{
-						ProcessUnitAttack(tar);
-					}
+					ProcessUnitAttack(tar);
 				}
 			}
 		}
