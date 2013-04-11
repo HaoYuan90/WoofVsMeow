@@ -295,24 +295,20 @@ public class GridLogic : MonoBehaviour {
 				if(!isRPC){
 					if(currentNode.GetComponent<TnGAttribute>().m_unit == null
 						&&currentNode.GetComponent<TnGAttribute>().m_building == null){
-						//lighter redmask to indicate valid range but no one to attack
-						//TO CHANGE
-						currentNode.GetComponent<MaskManager>().BlueMaskOn();
+						currentNode.GetComponent<MaskManager>().RedMaskOn();
 					}
 					else if(currentNode.GetComponent<TnGAttribute>().m_unit != null)
 					{
 						GameObject tarUnit = currentNode.GetComponent<TnGAttribute>().m_unit;
 						if(thisControl != tarUnit.GetComponent<UnitController>().m_control){
-							//darker redmask to indicate can attack enemy
-							currentNode.GetComponent<MaskManager>().RedMaskOn();
+							currentNode.GetComponent<MaskManager>().DarkRedMaskOn();
 						}
 					}
 					else if(currentNode.GetComponent<TnGAttribute>().m_building != null)
 					{
 						GameObject tarBuilding = currentNode.GetComponent<TnGAttribute>().m_building;
 						if(thisControl != tarBuilding.GetComponent<BuildingController>().m_control){
-							//darker redmask to indicate can attack enemy
-							currentNode.GetComponent<MaskManager>().RedMaskOn();
+							currentNode.GetComponent<MaskManager>().DarkRedMaskOn();
 						}
 					}
 				}

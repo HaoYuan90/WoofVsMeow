@@ -10,6 +10,8 @@ public class MaskManager : MonoBehaviour {
 	[SerializeField]
 	private Material m_redMat;
 	[SerializeField]
+	private Material m_darkRedMat;
+	[SerializeField]
 	private Material m_blueMat;
 	[SerializeField]
 	private Material m_greenMat;
@@ -18,13 +20,14 @@ public class MaskManager : MonoBehaviour {
 	
 	public float m_maskYOffset = 0.05f;
 	
-	public void InitMasks (GameObject mask, Material r, Material g, Material b, Material ol)
+	public void InitMasks (GameObject mask, Material r, Material dr, Material g, Material b, Material ol)
 	{
 		m_mask = mask;
 		//put mask under grid
 		m_mask.transform.parent = transform;
 		//init material
 		m_redMat = r;
+		m_darkRedMat = dr;
 		m_blueMat = b;
 		m_greenMat = g;
 		m_outlineMat = ol;
@@ -50,6 +53,11 @@ public class MaskManager : MonoBehaviour {
 	public void RedMaskOn()
 	{
 		m_mask.renderer.material = m_redMat;
+	}
+	
+	public void DarkRedMaskOn()
+	{
+		m_mask.renderer.material = m_darkRedMat;
 	}
 	
 	public void BlueMaskOn()

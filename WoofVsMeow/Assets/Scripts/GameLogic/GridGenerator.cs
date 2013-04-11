@@ -24,6 +24,7 @@ public class GridGenerator: MonoBehaviour
 	public GameObject m_hexMaskPrefab;
 	public Material m_hexBlueMaskMat;
 	public Material m_hexRedMaskMat;
+	public Material m_hexDarkRedMaskMat;
 	public Material m_hexGreenMaskMat;
 	public Material m_hexOutlineMaskMat;
 	
@@ -144,7 +145,7 @@ public class GridGenerator: MonoBehaviour
 					//add mask to the grid as children
 					GameObject mask = (GameObject)Instantiate(m_hexMaskPrefab);
 					mask.name = "mask";
-					hex.GetComponent<MaskManager>().InitMasks(mask,m_hexRedMaskMat,m_hexGreenMaskMat,m_hexBlueMaskMat,m_hexOutlineMaskMat);
+					hex.GetComponent<MaskManager>().InitMasks(mask,m_hexRedMaskMat,m_hexDarkRedMaskMat,m_hexGreenMaskMat,m_hexBlueMaskMat,m_hexOutlineMaskMat);
 					
 					//set the test bit in terrain component of hexmap to test reference
 					int testInt = testIntGenerator.Next(0,m_gridNumHor);
