@@ -164,9 +164,12 @@ public class GameEngine : MonoBehaviour
 				int thisControl = m_currUnit.GetComponent<UnitController>().m_control;
 				if(thisControl == m_control){
 					//only activate the object if it is yours
+					GetComponent<GUIBtmPanelAndMsgs>().OnMyTurn();
 					m_currUnit.GetComponent<UnitController>().Activate();
 					//set camera
 					CameraLookAt(m_currUnit);
+				}else{
+					GetComponent<GUIBtmPanelAndMsgs>().OnOthersTurn();
 				}
 			}
 			else if(m_currUnit.tag == "Building"){

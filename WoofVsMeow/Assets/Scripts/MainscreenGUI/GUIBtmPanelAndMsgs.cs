@@ -24,6 +24,7 @@ public class GUIBtmPanelAndMsgs : MonoBehaviour
 	private string m_winner;
 	private bool m_connectionError;
 	private string m_errorMsg;
+	private bool m_waitingForTurn;
 
 	// Use this for initialization
 	public void Initialise (int money) 
@@ -34,6 +35,7 @@ public class GUIBtmPanelAndMsgs : MonoBehaviour
 		
 		m_gameOver = false;
 		m_connectionError = false;
+		m_waitingForTurn = false;
 	}
 	
 	// Update is called once per frame
@@ -60,6 +62,15 @@ public class GUIBtmPanelAndMsgs : MonoBehaviour
 	public void SetMoney (int money)
 	{
 		m_money = money;
+	}
+	
+	public void OnMyTurn()
+	{
+		m_waitingForTurn = false;
+	}
+	public void OnOthersTurn()
+	{
+		m_waitingForTurn = true;
 	}
 	
 	void OnGUI()
@@ -96,6 +107,10 @@ public class GUIBtmPanelAndMsgs : MonoBehaviour
 			{
 				Application.LoadLevel("NetworkMenu");
 			}
+		}
+		else if(m_waitingForTurn){
+			GUI.Label(new Rect(0, 0, 200.0f*combinedRatio, 40.0f*combinedRatio), 
+			"Waiting for opponent's move...", labelStyle);
 		}
 	}
 }
