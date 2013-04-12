@@ -44,6 +44,7 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\BackgroundMusicController.cs" />
      <Compile Include="Assets\Scripts\CameraController.cs" />
      <Compile Include="Assets\Scripts\GameLogic\APSequenceController.cs" />
      <Compile Include="Assets\Scripts\GameLogic\APSequenceTests\FixedTestDriver.cs" />
@@ -59,6 +60,7 @@
      <Compile Include="Assets\Scripts\MainscreenGUI\GUIBtmPanelAndMsgs.cs" />
      <Compile Include="Assets\Scripts\MenuGUI\StartingPageGUI.cs" />
      <Compile Include="Assets\Scripts\Network\NetworkController.cs" />
+     <Compile Include="Assets\Scripts\SoundEffectController.cs" />
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\APController.cs" />
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\AttackController.cs" />
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\BuildingController.cs" />
