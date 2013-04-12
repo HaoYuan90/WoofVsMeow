@@ -6,8 +6,8 @@ public class StartingPageGUI : MonoBehaviour
 	public GUIStyle m_playerNameStyle;
 	public GUIStyle m_textStyle;
 	
-	private float fixedHeight = 598.0f;
-	private float fixedWidth = 1366.0f;
+	private float fixedHeight = 598.0f; //height of screen in free aspect ratio
+	private float fixedWidth = 1366.0f; //width of screen in free aspect ratio
 	
 	private float widthRatio;
 	private float heightRatio;
@@ -16,18 +16,18 @@ public class StartingPageGUI : MonoBehaviour
 	private string m_playerName;
 	private string m_namePrefix;
 	
-	private Rect m_playerNameRect = new Rect(0,50,120,28);
-	private Rect m_namePrefixRect = new Rect(0,50,70,28);
-	private Rect m_buttonRect = new Rect(0,50,150,28);
+	private Rect m_fixedPlayerNameRect = new Rect(0,50,160,60); //Fixed position of the player name for 16:9 aspect ratio
+	private Rect m_fixedNamePrefixRect = new Rect(0,50,70,60); //Fixed position of the player name label for 16:9 aspect ratio
+	private Rect m_fixedButtonRect = new Rect(0,50,150,60); //Fixed position of the player name button for 16:9 aspect ratio
+	
+	private Rect m_playerNameRect = new Rect(0,50,120,40);
+	private Rect m_namePrefixRect = new Rect(0,50,70,40);
+	private Rect m_buttonRect = new Rect(0,50,150,40);
 	
 	void Start()
 	{
 		m_playerName = PlayerPrefs.GetString("playername");
 		m_namePrefix = "Player: ";
-		
-		m_playerNameRect = new Rect(Screen.width/2 - m_playerNameRect.width/2, m_playerNameRect.yMax, m_playerNameRect.width, m_playerNameRect.height);
-		m_namePrefixRect = new Rect(m_playerNameRect.xMin - m_namePrefixRect.width -5, m_namePrefixRect.yMax, m_namePrefixRect.width, m_namePrefixRect.height);
-		m_buttonRect = new Rect(m_playerNameRect.xMax+5, m_buttonRect.yMax,m_buttonRect.width,m_buttonRect.height);
 	}
 	
 	void Update () 
@@ -36,6 +36,10 @@ public class StartingPageGUI : MonoBehaviour
 		heightRatio = Screen.height/fixedHeight;
 		if (widthRatio<heightRatio){combinedRatio = widthRatio;}
 		else{combinedRatio = heightRatio;}
+		
+		m_playerNameRect = new Rect(Screen.width/2 - (m_fixedPlayerNameRect.width/2)*combinedRatio, m_fixedPlayerNameRect.yMax*combinedRatio, m_fixedPlayerNameRect.width*combinedRatio, m_fixedPlayerNameRect.height*combinedRatio);
+		m_namePrefixRect = new Rect((m_fixedPlayerNameRect.xMin - m_fixedNamePrefixRect.width -5)*combinedRatio, m_fixedNamePrefixRect.yMax*combinedRatio, m_fixedNamePrefixRect.width*combinedRatio, m_fixedNamePrefixRect.height*combinedRatio);
+		m_buttonRect = new Rect(m_playerNameRect.xMax+5, (m_fixedButtonRect.yMax)*combinedRatio, (m_fixedButtonRect.width)*combinedRatio, m_fixedButtonRect.height*combinedRatio);
 	}
 	
 	void OnGUI()
