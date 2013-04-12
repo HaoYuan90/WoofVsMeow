@@ -89,6 +89,7 @@ public class UnitController : MonoBehaviour
 	
 	public void MoveFinished()
 	{
+		m_engine.CameraLookAt(gameObject);
 		m_hasMoved = true;
 		UpdateButtonStatus();
 		if(m_active)

@@ -314,6 +314,8 @@ public class GridLogic : MonoBehaviour {
 				validList.Add(node);
 			}
 		}
+        //clear state variables
+        ResetAllGraphStateVars(false);
 		foreach(GameObject node in validList)
 		{
 			if(!isRPC){

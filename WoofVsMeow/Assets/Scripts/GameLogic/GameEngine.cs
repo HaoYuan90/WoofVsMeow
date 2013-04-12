@@ -191,6 +191,8 @@ public class GameEngine : MonoBehaviour
         		    m_currUnit.GetComponent<BuildingController>().ProduceGold();
 					StartCoroutine("WaitForTurnEnd",3f);
 				} else {	
+					if (m_currUnit.GetComponent<BuildingController>().m_isBase)
+        		    	m_currUnit.GetComponent<BuildingController>().ProduceGold();
 					int thisControl = m_currUnit.GetComponent<BuildingController>().m_control;
 					if(thisControl == m_control){
 						m_currUnit.GetComponent<BuildingController>().Activate();
@@ -214,6 +216,7 @@ public class GameEngine : MonoBehaviour
 	{
 		//make sure selected node is in range
 		if(tar.GetComponent<HexGridModel>().m_prevNode != null){
+			Debug.Log("Not Null");
 			GameObject unit = tar.GetComponent<TnGAttribute>().m_unit;
 			GameObject building = tar.GetComponent<TnGAttribute>().m_building;
 			int currentControl = m_currUnit.GetComponent<UnitController>().m_control;
