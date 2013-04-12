@@ -60,14 +60,12 @@
      <Compile Include="Assets\Scripts\MainscreenGUI\GUIBtmPanelAndMsgs.cs" />
      <Compile Include="Assets\Scripts\MenuGUI\StartingPageGUI.cs" />
      <Compile Include="Assets\Scripts\Network\NetworkController.cs" />
-     <Compile Include="Assets\Scripts\SoundEffectController.cs" />
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\APController.cs" />
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\AttackController.cs" />
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\BuildingController.cs" />
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\BuildingGUIController.cs" />
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\FlyerAttackController.cs" />
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\FlyerMovementController.cs" />
-     <Compile Include="Assets\Scripts\UnitAndBuildingControllers\FlyerUnitController.cs" />
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\MovementController.cs" />
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\UnitController.cs" />
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\UnitGUIController.cs" />

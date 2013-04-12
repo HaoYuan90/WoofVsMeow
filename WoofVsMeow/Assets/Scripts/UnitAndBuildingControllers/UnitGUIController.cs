@@ -6,7 +6,7 @@ public class UnitGUIController : MonoBehaviour
 	//control buttons
 	public Texture2D m_movementTex;
 	public Texture2D m_attackTex;
-	public Texture2D m_cancelTex;
+	public Texture2D m_endTex;
 	public GUIStyle m_buttonStyle;
 	public GUIStyle m_tooltipStyle;
 	
@@ -146,7 +146,7 @@ public class UnitGUIController : MonoBehaviour
 			GUI.enabled = true;
 			//GUI.Label(new Rect(btnSpawnPt.x-64.0f*widthRatio, btnSpawnPt.y+48.0f*heightRatio, 32.0f*widthRatio,32.0f*heightRatio), GUI.tooltip);
 			if(GUI.Button(new Rect(btnSpawnPt.x-24.0f*widthRatio, Screen.height-btnSpawnPt.y+112.0f*heightRatio, 
-				64.0f*widthRatio,64.0f*heightRatio),new GUIContent(m_cancelTex,"End"),m_buttonStyle))
+				64.0f*widthRatio,64.0f*heightRatio),new GUIContent(m_endTex,"End"),m_buttonStyle))
 			{
 				GetComponent<UnitController>().EndButtonAction();
 			}
