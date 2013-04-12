@@ -37,13 +37,12 @@ public class FlyerMovementController : MovementController {
 			dest.y = m_pathList[0].renderer.bounds.max.y;
 			Vector3 nextPosition = Vector3.Lerp(src,dest,(float)1/m_movementStepLeft);
 			if(Mathf.Abs(lastGrid.renderer.bounds.max.y-m_pathList[0].renderer.bounds.max.y) > 0.01){ //jumping
-				float maxJumpHeight = (float)3 + Math.Max(lastGrid.renderer.bounds.max.y, m_pathList[0].renderer.bounds.max.y);
+				float maxJumpHeight = Math.Max(lastGrid.renderer.bounds.max.y, m_pathList[0].renderer.bounds.max.y);
 				if (m_movementStepLeft > m_movementSpeed/2) { //jumping up
 					float deltaY = maxJumpHeight - lastGrid.renderer.bounds.max.y;
 					float coeff = (float)(m_movementStepLeft - m_movementSpeed/2)/(m_movementSpeed/2);
 					deltaY = deltaY * (1-coeff*coeff);
 					nextPosition.y = lastGrid.renderer.bounds.max.y + deltaY;
-					//Debug.Log(m_movementStepLeft.ToString()+", "+(1-coeff*coeff).ToString());
 				}
 				else { //jumping down
 					float deltaY = maxJumpHeight - m_pathList[0].renderer.bounds.max.y;
