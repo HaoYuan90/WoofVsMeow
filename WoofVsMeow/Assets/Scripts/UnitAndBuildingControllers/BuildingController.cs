@@ -4,22 +4,22 @@ using System.Collections.Generic;
 
 public class BuildingController : MonoBehaviour 
 {
-	private GameEngine m_engine;
-	private GameObject m_currentGrid;
+	protected GameEngine m_engine;
+	protected GameObject m_currentGrid;
 	public GameObject currentGrid
 	{
 		get{return m_currentGrid;}
 	}
 	public int m_control;
-	private bool m_active;
+	protected bool m_active;
 	
 	public bool m_isBase;
-	private int m_unitToProduce;
+	protected int m_unitToProduce;
 	public List<GameObject> m_unitList;
 	public List<int> m_unitCostList;
 	public int m_maxHealth;
 	[SerializeField]
-	private int m_health;
+	protected int m_health;
 	public int m_maxAP;
 
 	public void InitialiseBuilding(GameEngine engine, GameObject currentGrid) 
@@ -51,7 +51,7 @@ public class BuildingController : MonoBehaviour
 		return !(m_control == currControl);
 	}
 	
-	public void LoseHealthBy(int amount, int attackerControl)
+	public virtual void LoseHealthBy(int amount, int attackerControl)
 	{
 		m_health -= amount;
 		GetComponent<BuildingGUIController>().OnHealthLostBy(amount);
@@ -59,19 +59,11 @@ public class BuildingController : MonoBehaviour
 		if(m_health <= 0){
 			if(!m_isBase){
 				m_health = m_maxHealth;
-				GetComponent<BuildingGUIController>().ResetHealth();
-				if (m_control == -1) {
-					GameObject flag = gameObject.transform.FindChild("flag1").gameObject;
-					if (attackerControl == 0)
-						flag.renderer.material.color = Color.red;
-					else
-						flag.renderer.material.color = Color.blue;
-					m_engine.GetComponent<APSequenceController>().AddNewUnit(gameObject);
-				}
-				else
-					GetComponent<APController>().ReplenishAP(1);
 				m_control = attackerControl;
-			}else //if this building is a base, game ends, this player loses
+        		GetComponent<BuildingGUIController>().ResetHealth();
+				GetComponent<APController>().ReplenishAP(1);
+			}
+			else //if this building is a base, game ends, this player loses
 			{
 				m_engine.OnGameEnds(attackerControl);
 			}

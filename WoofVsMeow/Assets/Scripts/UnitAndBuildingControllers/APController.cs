@@ -21,8 +21,10 @@ public class APController : MonoBehaviour
 	public void DecreaseAP(int ap)
 	{
 		m_currentAP -= ap;
-		if(m_currentAP < 0)
+		if(m_currentAP < 0){
 			Debug.LogError("ap is less than 0, should not happen");
+			m_currentAP= 0;
+		}
 	}
 	public void ReplenishAP(double percentage)
 	{

@@ -110,6 +110,12 @@ public class GameEngine : MonoBehaviour
 		GetComponent<GUIBtmPanelAndMsgs>().SetMoney(m_playerGold[m_control]);
 	}
 	
+	//add building to aplist
+	public void OnNeutralBuildingCaptured(GameObject building)
+	{
+		m_apController.AddNewUnit(building);
+	}
+	
 	//remove unit from ap list and destroy it
 	public void OnUnitDeath(GameObject unit)
 	{
@@ -189,18 +195,19 @@ public class GameEngine : MonoBehaviour
 			}
 			else if(m_currUnit.tag == "Building"){
 				m_inTurn = true;
-				if (m_currUnit.GetComponent<BuildingController>().m_unitCostList.Count == 0) {
-					CameraLookAt(m_currUnit);
+				int thisControl = m_currUnit.GetComponent<BuildingController>().m_control;
+				if (m_currUnit.GetComponent<BuildingController>().m_unitCostList.Count == 0){
+					if(thisControl == m_control){
+						CameraLookAt(m_currUnit);
+						StartCoroutine("WaitForTurnEnd",3f);
+					}
         		    m_currUnit.GetComponent<BuildingController>().ProduceGold();
-					StartCoroutine("WaitForTurnEnd",3f);
 				} else {	
-					if (m_currUnit.GetComponent<BuildingController>().m_isBase)
-        		    	m_currUnit.GetComponent<BuildingController>().ProduceGold();
-					int thisControl = m_currUnit.GetComponent<BuildingController>().m_control;
 					if(thisControl == m_control){
 						m_currUnit.GetComponent<BuildingController>().Activate();
 						CameraLookAt(m_currUnit);
 					}
+        		    m_currUnit.GetComponent<BuildingController>().ProduceGold();
 				}
 			}
 			else{

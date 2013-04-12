@@ -92,6 +92,10 @@ public class GUIBtmPanelAndMsgs : MonoBehaviour
 			m_errorMsg, messageStyle);
 			if(GUI.Button(new Rect(199*ratio, 558*ratio, 250.0f*ratio, 200.0f*ratio),"Return to menu"))
 			{
+				Network.Disconnect();
+				if(Network.isServer){
+					MasterServer.UnregisterHost();
+				}
 				Application.LoadLevel("NetworkMenu");
 			}
 		}
