@@ -21,7 +21,6 @@ public class GameEngine : MonoBehaviour
 	private GameObject m_currUnit;
 	private bool m_inTurn;
 	
-	private int m_sleepStepLeft;
 	private bool m_isReadyToMove;
 	private bool m_isReadyToAttack;
 	private bool m_isReadyToProduce;
@@ -44,7 +43,6 @@ public class GameEngine : MonoBehaviour
 		m_currUnit = null;
 		m_inTurn = false;
 		
-		m_sleepStepLeft = -1;
 		m_isReadyToMove = false;
 		m_isReadyToAttack = false;
 		
@@ -140,6 +138,13 @@ public class GameEngine : MonoBehaviour
 	{
 		UnitController temp = unit.GetComponent<UnitController>();
 		m_gridLogic.ProcessMovementRange(temp.currentGrid,temp.m_movementRange, isRPC);
+		m_isReadyToMove = true;
+	}
+	
+	public void ProcessFlyingRange(GameObject unit, bool isRPC)
+	{
+		UnitController temp = unit.GetComponent<UnitController>();
+		m_gridLogic.ProcessFlyingRange(temp.currentGrid,temp.m_movementRange, isRPC);
 		m_isReadyToMove = true;
 	}
 	

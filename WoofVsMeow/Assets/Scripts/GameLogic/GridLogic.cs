@@ -256,6 +256,82 @@ public class GridLogic : MonoBehaviour {
         }
 	}
 	
+	//flying range ignores terrains
+	public void ProcessFlyingRange(GameObject src, int movement, bool isRPC)
+	{
+        //clear state variables
+        ResetAllGraphStateVars(false);
+		SetMovementCostAroundEnemies(src);
+        //list of nodes to check sorted from highest movementleft to lowest
+        List<GameObject> openList = new List<GameObject>();
+        //list of nodes already checked
+        List<GameObject> closedList = new List<GameObject>();
+		
+		GameObject currentNode = src;
+        currentNode.GetComponent<HexGridModel>().m_movementLeft = movement;
+		//the player this unit belong to
+		int thisControl = currentNode.GetComponent<TnGAttribute>().
+			m_unit.GetComponent<UnitController>().m_control;
+        openList.Add(currentNode);
+
+        //run BFS
+        while (openList.Count != 0)
+        {
+            //sort from largest movement left to smallest movementleft
+            openList.Sort(
+                delegate(GameObject a, GameObject b)
+                {
+                    int mla = a.GetComponent<HexGridModel>().m_movementLeft;
+                    int mlb = b.GetComponent<HexGridModel>().m_movementLeft;
+                    return mlb.CompareTo(mla); //order matters
+                }
+            );
+            currentNode = openList[0];
+            openList.RemoveAt(0);
+            int movementLeft = currentNode.GetComponent<HexGridModel>().m_movementLeft;
+			
+            if (!closedList.Contains(currentNode) && movementLeft >= 0)
+			{	
+				closedList.Add(currentNode);
+				//turn on this hexgrid if there is no unit occupying it
+				//if function is RPC, then no masks should be added
+				if(!isRPC){
+					if(currentNode.GetComponent<TnGAttribute>().m_unit == null
+						&&currentNode.GetComponent<TnGAttribute>().m_building == null){
+						currentNode.GetComponent<MaskManager>().GreenMaskOn();
+					}
+				}
+				if(movementLeft > 0)
+				{
+					int costToPass = currentNode.GetComponent<HexGridModel>().m_movementCost;
+					List<GameObject> currentNeighbours = GetNeighbours(currentNode);
+					foreach(GameObject n in currentNeighbours)
+					{
+						int costToReach = costToPass;
+						//if closed list has n then
+						//cannot move past n (enemy unit on or itself is an obstacle
+						//or n has already been processed
+						if(!closedList.Contains(n)){
+							//n has already passed check, so do not have to check again
+							if(openList.Contains (n)){
+								n.GetComponent<HexGridModel>().UpdateMovementLeft(currentNode,costToReach);
+							}
+							else{
+								if(n.GetComponent<HexGridModel>().CanPass(thisControl,false)){
+									n.GetComponent<HexGridModel>().UpdateMovementLeft(currentNode,costToReach);
+									openList.Add(n);
+								}
+								else{
+									closedList.Add(n);
+								}
+							}
+						}
+					}
+				}
+			}
+        }
+	}
+	
 	public void ProcessAttackRange(GameObject src, int range, bool isRPC)
 	{
 		//raycast based attack range processing

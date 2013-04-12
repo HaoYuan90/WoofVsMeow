@@ -15,17 +15,17 @@ public enum AttackType{
 
 public class UnitController : MonoBehaviour 
 {
-	private GameEngine m_engine;
-	private GameObject m_currentGrid;
+	protected GameEngine m_engine;
+	protected GameObject m_currentGrid;
 	public GameObject currentGrid
 	{
 		get{return m_currentGrid;}
 	}
 	//control states
 	public int m_control; //which player owns this unit
-	private bool m_active;
-	private bool m_hasMoved;
-	private bool m_hasAttacked;
+	protected bool m_active;
+	protected bool m_hasMoved;
+	protected bool m_hasAttacked;
 	
 	//unit stats
 	public int m_maxHealth;
@@ -145,7 +145,7 @@ public class UnitController : MonoBehaviour
 	{
 		GetComponent<UnitGUIController>().UpdateButtonStatus(m_hasMoved,m_hasAttacked);
 	}
-	public void MoveButtonAction()
+	public virtual void MoveButtonAction()
 	{
 		GetComponent<UnitGUIController>().DisableGUI();
 		m_engine.ProcessMovementRange(gameObject,false);

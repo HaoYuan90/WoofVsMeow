@@ -5,7 +5,6 @@ using System.Collections.Generic;
 public class BuildingGUIController : MonoBehaviour 
 {
 	//control buttons
-	public Texture2D m_commanderTex;
 	public Texture2D m_upgradeTex;
 	public Texture2D m_addUnitTex;
 	public Texture2D m_cancelTex;
@@ -19,7 +18,6 @@ public class BuildingGUIController : MonoBehaviour
 	
 	private bool m_guiEnabled;
 	private bool m_showUnitList;
-	private bool m_showCommanderList;
 	
 	//health bar
 	private Rect m_rectangle;
@@ -68,7 +66,6 @@ public class BuildingGUIController : MonoBehaviour
 		//control buttons
 		m_guiEnabled = false;
 		m_showUnitList = false;
-		m_showCommanderList = false;
 	}
 
 	private void DisplayFloatingText(string msg)
@@ -167,12 +164,6 @@ public class BuildingGUIController : MonoBehaviour
 			{
 				m_showUnitList = true;
 			}
-			//GUI.Label(new Rect(btnSpawnPt.x+48.0f*widthRatio, btnSpawnPt.y+48.0f*heightRatio, 32.0f*widthRatio,32.0f*heightRatio), GUI.tooltip);
-			if(GUI.Button(new Rect(btnSpawnPt.x-100.0f*widthRatio, Screen.height-btnSpawnPt.y+35.0f*heightRatio, 
-				64.0f*widthRatio,64.0f*heightRatio),new GUIContent(m_commanderTex, "Commander"),m_buttonStyle))
-			{
-				m_showCommanderList = true;
-			}
 			//GUI.Label(new Rect(btnSpawnPt.x-64.0f*widthRatio, btnSpawnPt.y+48.0f*heightRatio, 32.0f*widthRatio,32.0f*heightRatio), GUI.tooltip);
 			if(GUI.Button(new Rect(btnSpawnPt.x-24.0f*widthRatio, Screen.height-btnSpawnPt.y+112.0f*heightRatio, 
 				64.0f*widthRatio,64.0f*heightRatio),new GUIContent(m_cancelTex,"End"),m_buttonStyle))
@@ -189,7 +180,6 @@ public class BuildingGUIController : MonoBehaviour
 	{
 		m_guiEnabled = true;
 		m_showUnitList = false;
-		m_showCommanderList = false;
 	}
 	
 	public void EnableGUI()

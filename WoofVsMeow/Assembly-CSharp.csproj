@@ -67,6 +67,7 @@
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\FarmController.cs" />
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\FlyerAttackController.cs" />
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\FlyerMovementController.cs" />
+     <Compile Include="Assets\Scripts\UnitAndBuildingControllers\FlyerUnitController.cs" />
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\MovementController.cs" />
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\UnitController.cs" />
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\UnitGUIController.cs" />

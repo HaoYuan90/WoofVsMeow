@@ -115,7 +115,6 @@ public class NetworkController : MonoBehaviour
 
 		if (m_hostdata != null)
 		{
-			int j=0;
 			if(m_hostdata.Length == 0)
 			{
 				//If no hosts can be detected, send this message

@@ -43,7 +43,6 @@ public class AttackController : MonoBehaviour
 			else
 				dmg = 10;
 		}
-		int attackerControl = GetComponent<UnitController>().m_control;
 		tar.GetComponent<BuildingController>().LoseHealthBy(dmg,GetComponent<UnitController>().m_control);
 		GetComponent<UnitController>().AttackFinished();
 		return dmg;
