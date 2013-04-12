@@ -16,6 +16,7 @@ public class AttackController : MonoBehaviour
 		transform.rotation = Quaternion.LookRotation(new Vector3(dir.x,0,dir.z));
 		animation.Play("attack");
 		animation.PlayQueued("still");
+		GameObject.Find("SoundEffectController").GetComponent<SoundEffectController>().PlayAttackSoundEffect(gameObject);
 	}
 	
 	public int AttackUnit (GameObject tar)
