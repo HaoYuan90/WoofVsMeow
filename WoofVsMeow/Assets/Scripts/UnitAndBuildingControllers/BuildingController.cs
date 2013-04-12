@@ -59,9 +59,18 @@ public class BuildingController : MonoBehaviour
 		if(m_health <= 0){
 			if(!m_isBase){
 				m_health = m_maxHealth;
-				m_control = attackerControl;
 				GetComponent<BuildingGUIController>().ResetHealth();
-				GetComponent<APController>().ReplenishAP(1);
+				if (m_control == -1) {
+					GameObject flag = gameObject.transform.FindChild("flag1").gameObject;
+					if (attackerControl == 0)
+						flag.renderer.material.color = Color.red;
+					else
+						flag.renderer.material.color = Color.blue;
+					m_engine.GetComponent<APSequenceController>().AddNewUnit(gameObject);
+				}
+				else
+					GetComponent<APController>().ReplenishAP(1);
+				m_control = attackerControl;
 			}else //if this building is a base, game ends, this player loses
 			{
 				m_engine.OnGameEnds(attackerControl);

@@ -85,7 +85,9 @@ public class GameEngine : MonoBehaviour
 		//add buildings to ap list
 		if(GameObject.Find ("Buildings")!= null){
 			foreach (Transform child in GameObject.Find ("Buildings").transform){
-				m_apController.AddNewUnit(child.gameObject);
+				//Only Add non-neutral buildings into AP Sequence
+				if (child.gameObject.GetComponent<BuildingController>().m_control != -1)
+					m_apController.AddNewUnit(child.gameObject);
 			}
 		}
 	}
@@ -188,6 +190,7 @@ public class GameEngine : MonoBehaviour
 			else if(m_currUnit.tag == "Building"){
 				m_inTurn = true;
 				if (m_currUnit.GetComponent<BuildingController>().m_unitCostList.Count == 0) {
+					CameraLookAt(m_currUnit);
         		    m_currUnit.GetComponent<BuildingController>().ProduceGold();
 					StartCoroutine("WaitForTurnEnd",3f);
 				} else {	
@@ -216,7 +219,6 @@ public class GameEngine : MonoBehaviour
 	{
 		//make sure selected node is in range
 		if(tar.GetComponent<HexGridModel>().m_prevNode != null){
-			Debug.Log("Not Null");
 			GameObject unit = tar.GetComponent<TnGAttribute>().m_unit;
 			GameObject building = tar.GetComponent<TnGAttribute>().m_building;
 			int currentControl = m_currUnit.GetComponent<UnitController>().m_control;

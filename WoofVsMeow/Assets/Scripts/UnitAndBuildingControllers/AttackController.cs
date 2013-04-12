@@ -3,6 +3,8 @@ using System.Collections;
 
 public class AttackController : MonoBehaviour 
 {
+	public AudioClip m_AttackSound;
+	
 	public void Initialise ()
 	{
 		//do nothing it seems....
@@ -16,7 +18,7 @@ public class AttackController : MonoBehaviour
 		transform.rotation = Quaternion.LookRotation(new Vector3(dir.x,0,dir.z));
 		animation.Play("attack");
 		animation.PlayQueued("still");
-		GameObject.Find("SoundEffectController").GetComponent<SoundEffectController>().PlayAttackSoundEffect(gameObject);
+		audio.PlayOneShot(m_AttackSound);
 	}
 	
 	public int AttackUnit (GameObject tar)
