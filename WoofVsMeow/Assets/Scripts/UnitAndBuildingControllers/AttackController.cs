@@ -9,7 +9,7 @@ public class AttackController : MonoBehaviour
 	}
 	
 	//perform the animation related to attack
-	public void DoAttack (GameObject tar)
+	public virtual void DoAttack (GameObject tar)
 	{
 		//face the right direction and play animation
 		Vector3 dir = tar.transform.position-transform.position;

@@ -6,12 +6,12 @@ using System.Collections.Generic;
 public class MovementController : MonoBehaviour 
 {
 	//A list of grids that a unit needs to walk onto
-	private List<GameObject> m_pathList;
+	protected List<GameObject> m_pathList;
 	
 	//for update purposes
-	private GameObject lastGrid;
-	private int m_movementSpeed;       //frames required to walk from a grid to another
-	private int m_movementStepLeft;         //frames left to reach the next node
+	protected GameObject lastGrid;
+	protected int m_movementSpeed;       //frames required to walk from a grid to another
+	protected int m_movementStepLeft;         //frames left to reach the next node
 
 	// Use this for initialization
 	public void Initialise ()
@@ -44,7 +44,7 @@ public class MovementController : MonoBehaviour
 		}
 	}
 	
-	void FixedUpdate () {
+	public virtual void FixedUpdate () {
 		if(m_pathList.Count > 0)
 		{
 			if(!animation.IsPlaying("run"))
