@@ -185,6 +185,8 @@ public class GameEngine : MonoBehaviour
 	private void ProcessTurnBegin ()
 	{
 		if(m_currUnit != null){
+			//set camera
+			CameraLookAt(m_currUnit);
 			if(m_currUnit.tag == "Unit"){
 				m_inTurn = true;
 				int thisControl = m_currUnit.GetComponent<UnitController>().m_control;
@@ -192,8 +194,6 @@ public class GameEngine : MonoBehaviour
 					//only activate the object if it is yours
 					GetComponent<GUIBtmPanelAndMsgs>().OnMyTurn();
 					m_currUnit.GetComponent<UnitController>().Activate();
-					//set camera
-					CameraLookAt(m_currUnit);
 				}else{
 					GetComponent<GUIBtmPanelAndMsgs>().OnOthersTurn();
 				}
@@ -203,14 +203,12 @@ public class GameEngine : MonoBehaviour
 				int thisControl = m_currUnit.GetComponent<BuildingController>().m_control;
 				if (m_currUnit.GetComponent<BuildingController>().m_unitCostList.Count == 0){
 					if(thisControl == m_control){
-						CameraLookAt(m_currUnit);
 						StartCoroutine("WaitForTurnEnd",3f);
 					}
         		    m_currUnit.GetComponent<BuildingController>().ProduceGold();
 				} else {	
 					if(thisControl == m_control){
 						m_currUnit.GetComponent<BuildingController>().Activate();
-						CameraLookAt(m_currUnit);
 					}
         		    m_currUnit.GetComponent<BuildingController>().ProduceGold();
 				}
