@@ -359,7 +359,11 @@ public class GameEngine : MonoBehaviour
 	private void MoveUnitToDest(int unitX, int unitY, int destX, int destY)
 	{
 		GameObject unit = m_gridLogic.GetUnitAt(unitX,unitY);
-		ProcessMovementRange(unit,true);
+		//flying range is processed differently
+		if(unit.GetComponent<FlyerMovementController>()!= null)
+			ProcessFlyingRange(unit,true);
+		else
+			ProcessMovementRange(unit,true);
 		m_isReadyToMove = false;
 		unit.GetComponent<UnitController>().Move(m_gridLogic.GetGridAt(destX,destY));
 	}

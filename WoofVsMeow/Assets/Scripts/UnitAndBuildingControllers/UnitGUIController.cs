@@ -131,21 +131,21 @@ public class UnitGUIController : MonoBehaviour
 		if(m_guiEnabled)
 		{
 			GUI.enabled = !m_hasMoved;
-			if(GUI.Button(new Rect(btnSpawnPt.x-24.0f*widthRatio, Screen.height-btnSpawnPt.y-42.0f*heightRatio, 
+			if(GUI.Button(new Rect(btnSpawnPt.x-96.0f*widthRatio, Screen.height-btnSpawnPt.y+15.0f*heightRatio, 
 				64.0f*widthRatio,64.0f*heightRatio),new GUIContent(m_movementTex,"Move"),m_buttonStyle))
 			{
 				GetComponent<UnitController>().MoveButtonAction();
 			}
 			GUI.enabled = !m_hasAttacked;
 			//GUI.Label(new Rect(btnSpawnPt.x-16.0f*widthRatio, btnSpawnPt.y-0.0f*heightRatio, 32.0f*widthRatio,32.0f*heightRatio), GUI.tooltip);
-			if(GUI.Button(new Rect(btnSpawnPt.x+48.0f*widthRatio, Screen.height-btnSpawnPt.y+35.0f*heightRatio, 
+			if(GUI.Button(new Rect(btnSpawnPt.x+48.0f*widthRatio, Screen.height-btnSpawnPt.y+15.0f*heightRatio, 
 				64.0f*widthRatio,64.0f*heightRatio),new GUIContent(m_attackTex, "Attack"),m_buttonStyle))
 			{
 				GetComponent<UnitController>().AttackButtonAction();
 			}
 			GUI.enabled = true;
 			//GUI.Label(new Rect(btnSpawnPt.x-64.0f*widthRatio, btnSpawnPt.y+48.0f*heightRatio, 32.0f*widthRatio,32.0f*heightRatio), GUI.tooltip);
-			if(GUI.Button(new Rect(btnSpawnPt.x-24.0f*widthRatio, Screen.height-btnSpawnPt.y+112.0f*heightRatio, 
+			if(GUI.Button(new Rect(btnSpawnPt.x-24.0f*widthRatio, Screen.height-btnSpawnPt.y+92.0f*heightRatio, 
 				64.0f*widthRatio,64.0f*heightRatio),new GUIContent(m_endTex,"End"),m_buttonStyle))
 			{
 				GetComponent<UnitController>().EndButtonAction();

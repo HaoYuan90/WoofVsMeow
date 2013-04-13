@@ -33,6 +33,8 @@ public class NetworkController : MonoBehaviour
 	{
 		PlayerPrefs.SetInt("control",0);
 		PlayerPrefs.SetInt("clientcontrol",1);
+		//MasterServer.ipAddress = "172.24.204.54";
+		//MasterServer.port = 23466;
 	}
 
 	void Update () 

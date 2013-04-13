@@ -7,7 +7,8 @@ public class GUIBtmPanelAndMsgs : MonoBehaviour
 	private float m_optimalWidth = 1600.0f; //width of screen in free aspect ratio
 	
 	public Texture2D money_Tex;
-	public Texture2D commander_Tex;
+	public Texture2D m_btmBarTex;
+	
 	
 	public GUIStyle boxStyle;//For the boxes carrying textures
 	public GUIStyle labelStyle;//For the labels in the bottom panel
@@ -63,7 +64,7 @@ public class GUIBtmPanelAndMsgs : MonoBehaviour
 	{
 		float ratio = Screen.width/m_optimalWidth;
 		//Bottom panel
-		GUI.Box(new Rect(0, Screen.height-110.0f*ratio, Screen.width, 110.0f*ratio),"");
+		GUI.DrawTexture(new Rect(0, Screen.height-110.0f*ratio, Screen.width, 110.0f*ratio),m_btmBarTex);
 		//Name Label
 		GUI.Label(new Rect(150.0f*ratio, Screen.height-75.0f*ratio, 300.0f*ratio, 40.0f*ratio), 
 			"Name : " + m_playerName, labelStyle);
