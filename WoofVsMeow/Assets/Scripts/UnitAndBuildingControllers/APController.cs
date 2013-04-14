@@ -23,6 +23,15 @@ public class APController : MonoBehaviour
 		m_currentAP -= ap;
 		if(m_currentAP < 0){
 			Debug.LogError("ap is less than 0, should not happen");
+			Debug.LogError(gameObject.name);
+			if(gameObject.tag == "Unit"){
+				IntVector2 temp = GetComponent<UnitController>().GetPositionOnMap();
+				Debug.Log("position is at"+temp.x+" "+temp.y);
+			}
+			if(gameObject.tag == "Building"){
+				IntVector2 temp = GetComponent<BuildingController>().GetPositionOnMap();
+				Debug.Log("position is at"+temp.x+" "+temp.y);
+			}
 			m_currentAP= 0;
 		}
 	}
@@ -64,7 +73,7 @@ public class APController : MonoBehaviour
 
 	public override string ToString()
 	{
-		return m_debugID.ToString() + "-" + m_currentAP.ToString() + "-" + m_maxAP.ToString();
+		return gameObject.name + "-" + m_currentAP.ToString() + "-" + m_maxAP.ToString();
 	}
 
 }

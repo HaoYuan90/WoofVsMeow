@@ -218,7 +218,7 @@ public class NetworkController : MonoBehaviour
 		m_control ++;
 		if(Network.connections.Length == Network.maxConnections)
 		{
-			networkView.RPC("LoadHostedLevel",RPCMode.AllBuffered, "HYTestScene");
+			networkView.RPC("LoadHostedLevel",RPCMode.AllBuffered, "map1");
 		}
 	}
 	

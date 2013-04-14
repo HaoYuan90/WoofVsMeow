@@ -26,8 +26,7 @@ public class FarmController : BuildingController {
 				roof.renderer.material.color = Color.blue;
 			}
 			
-			if(prevControl == -1)
-				m_engine.OnNeutralBuildingCaptured(gameObject);
+			m_engine.OnNeutralBuildingCaptured(gameObject, prevControl);
 		}
 	} 
 }

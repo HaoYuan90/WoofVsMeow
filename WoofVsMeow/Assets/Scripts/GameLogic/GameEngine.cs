@@ -109,9 +109,13 @@ public class GameEngine : MonoBehaviour
 	}
 	
 	//add building to aplist
-	public void OnNeutralBuildingCaptured(GameObject building)
+	public void OnNeutralBuildingCaptured(GameObject building, int prevControl)
 	{
-		m_apController.AddNewUnit(building);
+		if(prevControl == -1)
+			m_apController.AddNewUnit(building);
+		else{
+			m_apController.ArrangeUnit(building);
+		}
 	}
 	
 	//remove unit from ap list and destroy it
