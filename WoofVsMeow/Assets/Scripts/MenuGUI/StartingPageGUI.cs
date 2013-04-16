@@ -10,7 +10,7 @@ public class StartingPageGUI : MonoBehaviour
 	private string m_namePrefix;
 	
 	private Rect m_playerNameRect = new Rect(0,80,120,40);
-	private Rect m_namePrefixRect = new Rect(0,80,70,40);
+	private Rect m_namePrefixRect = new Rect(0,80,120,40);
 	private Rect m_saveButtonRect = new Rect(0,80,150,40);
 	private Rect m_mainButtonRect = new Rect(0,0,500,80);
 	
@@ -20,7 +20,7 @@ public class StartingPageGUI : MonoBehaviour
 	void Start()
 	{
 		m_playerName = PlayerPrefs.GetString("playername");
-		m_namePrefix = "Player: ";
+		m_namePrefix = "Your name: ";
 		
 		float ratio = Screen.width/m_optimalWidth;
 		m_playerNameRect = new Rect(Screen.width/2 - m_playerNameRect.width/2, m_playerNameRect.yMax*ratio, 
@@ -40,6 +40,7 @@ public class StartingPageGUI : MonoBehaviour
 			buttonRect.width*ratio, buttonRect.height*ratio);
 		if (GUI.Button(buttonRect,"Start"))
 		{
+			PlayerPrefs.SetString ("playername",m_playerName);
 			Application.LoadLevel("NetworkMenu");
 		}
 		buttonRect = new Rect(buttonRect.x, buttonRect.y+buttonRect.height+20 , buttonRect.width, buttonRect.height);
@@ -50,8 +51,5 @@ public class StartingPageGUI : MonoBehaviour
 		
 		GUI.Label(m_namePrefixRect,m_namePrefix,m_textStyle);
         m_playerName = GUI.TextField(m_playerNameRect, m_playerName, 10 ,m_playerNameStyle);
-		if(GUI.Button(m_saveButtonRect,"save name")){
-			PlayerPrefs.SetString ("playername",m_playerName);
-		}
 	}
 }
