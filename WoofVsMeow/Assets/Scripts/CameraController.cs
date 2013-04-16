@@ -9,6 +9,8 @@ public class CameraController : MonoBehaviour {
 	public int m_rotationSpeed;
 	
 	private float m_zoom = 1f;
+	readonly float m_maxZoom = 2f;
+	readonly float m_minZoom = 0.5f;
 	private float m_distToUnit = 20f;
 	private GameObject m_current;
 	
@@ -56,17 +58,21 @@ public class CameraController : MonoBehaviour {
 			//transform.RotateAroundLocal(Vector3.up, -m_rotationSpeed * Time.deltaTime);
 			return;
 		}
-		//zoom out
+		//zoom in
 		if (Input.GetAxis("Mouse ScrollWheel")>0){
 			float oldZoom = m_zoom;
 			m_zoom -= m_zoomSpeed*Time.deltaTime;
+			if(m_zoom < m_minZoom)
+				m_zoom = m_minZoom;
 			LookAt(oldZoom);
 			return;
 		}
-		//zoom in
+		//zoom out
 		if (Input.GetAxis("Mouse ScrollWheel")<0){
 			float oldZoom = m_zoom;
 			m_zoom += m_zoomSpeed*Time.deltaTime;
+			if(m_zoom > m_maxZoom)
+				m_zoom = m_maxZoom;
 			LookAt(oldZoom);
 			return;
 		}
