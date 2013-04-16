@@ -51,24 +51,40 @@ public class BuildingController : MonoBehaviour
 		return !(m_control == currControl);
 	}
 	
-	public virtual void LoseHealthBy(int amount, int attackerControl)
+	public void LoseHealthBy(int amount, int attackerControl, float delay)
 	{
 		m_health -= amount;
-		GetComponent<BuildingGUIController>().OnHealthLostBy(amount);
+		StartCoroutine(DelayedHPBarUpdate(amount,delay));
 		//building is occupied
 		if(m_health <= 0){
-			if(!m_isBase){
-				m_health = m_maxHealth;
-				m_control = attackerControl;
-        		GetComponent<BuildingGUIController>().ResetHealth();
-				GetComponent<APController>().ReplenishAP(1);
-			}
-			else //if this building is a base, game ends, this player loses
-			{
-				m_engine.OnGameEnds(attackerControl);
-			}
+			OnBuildingDestroyed(attackerControl,delay*3);
 		}
 	}
+	
+	public virtual void OnBuildingDestroyed(int attackerControl, float delay)
+	{
+		if(!m_isBase){
+			m_health = m_maxHealth;
+			m_control = attackerControl;
+    		StartCoroutine(DelayedHPBarReset(delay));
+			GetComponent<APController>().ReplenishAP(1);
+		}
+		else //if this building is a base, game ends, this player loses
+		{
+			m_engine.OnGameEnds(attackerControl);
+		}
+	}
+	
+	private IEnumerator DelayedHPBarUpdate (int amount, float delay) 
+	{
+       	yield return new WaitForSeconds(delay);
+      	GetComponent<BuildingGUIController>().OnHealthLostBy(amount);
+    }
+	protected IEnumerator DelayedHPBarReset (float delay) 
+	{
+       	yield return new WaitForSeconds(delay);
+      	GetComponent<BuildingGUIController>().ResetHealth();
+    }
 	
 	public int ProduceUnitAt(GameObject tar) 
 	{

@@ -378,7 +378,11 @@ public class GameEngine : MonoBehaviour
 		ProcessAttackRange(unit,true);
 		m_isReadyToAttack = false;
 		unit.GetComponent<AttackController>().DoAttack(tar);
-		tar.GetComponent<UnitController>().LoseHealthBy(dmg);
+		AnimationClip temp = unit.animation.GetClip("attack");
+		float delay = 0.5f;
+		if(temp != null)
+			delay = temp.length/2;
+		tar.GetComponent<UnitController>().LoseHealthBy(dmg,delay);
 	}
 	
 	[RPC]
@@ -389,7 +393,11 @@ public class GameEngine : MonoBehaviour
 		ProcessAttackRange(unit,true);
 		m_isReadyToAttack = false;
 		unit.GetComponent<AttackController>().DoAttack(tar);
-		tar.GetComponent<BuildingController>().LoseHealthBy(dmg, control);
+		AnimationClip temp = unit.animation.GetClip("attack");
+		float delay = 0.5f;
+		if(temp != null)
+			delay = temp.length/2;
+		tar.GetComponent<BuildingController>().LoseHealthBy(dmg, control,delay);
 	}
 	
 	[RPC]

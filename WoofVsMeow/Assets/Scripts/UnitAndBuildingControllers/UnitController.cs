@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 
 public enum ArmorType{
@@ -115,16 +116,22 @@ public class UnitController : MonoBehaviour
 		}
 	}
 	
-	public void LoseHealthBy(int amount)
+	public void LoseHealthBy(int amount,float delay)
 	{
 		m_health -= amount;
-		GetComponent<UnitGUIController>().OnHealthLostBy(amount);
+		StartCoroutine(DelayedHPBarUpdate(amount,delay));
 		if(m_health <= 0){
 			m_currentGrid.GetComponent<TnGAttribute>().m_unit = null;
 			//death animation?
 			m_engine.OnUnitDeath(gameObject);
 		}
 	}
+	
+	IEnumerator DelayedHPBarUpdate (int amount, float delay) 
+	{
+       	yield return new WaitForSeconds(delay);
+      	GetComponent<UnitGUIController>().OnHealthLostBy(amount);
+    }
 	
 	public void AttackFinished()
 	{

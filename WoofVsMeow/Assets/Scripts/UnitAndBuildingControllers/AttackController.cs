@@ -24,7 +24,12 @@ public class AttackController : MonoBehaviour
 		DoAttack (tar);
 		int dmg = GetComponent<UnitController>().m_damage;
 		int realDmg = (int)(dmg*ComputeDmgModifier(tar));
-		tar.GetComponent<UnitController>().LoseHealthBy(realDmg);
+		//try to get the animation and determine delay in health bar update
+		AnimationClip temp = animation.GetClip("attack");
+		float delay = 0.5f;
+		if(temp != null)
+			delay = temp.length/2;
+		tar.GetComponent<UnitController>().LoseHealthBy(realDmg,delay);
 		GetComponent<UnitController>().AttackFinished();
 		return realDmg;
 	}
@@ -43,7 +48,11 @@ public class AttackController : MonoBehaviour
 			else
 				dmg = 10;
 		}
-		tar.GetComponent<BuildingController>().LoseHealthBy(dmg,GetComponent<UnitController>().m_control);
+		AnimationClip temp = animation.GetClip("attack");
+		float delay = 0.5f;
+		if(temp != null)
+			delay = temp.length/2;
+		tar.GetComponent<BuildingController>().LoseHealthBy(dmg,GetComponent<UnitController>().m_control,delay);
 		GetComponent<UnitController>().AttackFinished();
 		return dmg;
 	}

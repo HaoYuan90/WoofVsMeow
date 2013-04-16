@@ -64,11 +64,13 @@
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\AttackController.cs" />
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\BuildingController.cs" />
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\BuildingGUIController.cs" />
-     <Compile Include="Assets\Scripts\UnitAndBuildingControllers\FarmController.cs" />
-     <Compile Include="Assets\Scripts\UnitAndBuildingControllers\FlyerAttackController.cs" />
-     <Compile Include="Assets\Scripts\UnitAndBuildingControllers\FlyerMovementController.cs" />
-     <Compile Include="Assets\Scripts\UnitAndBuildingControllers\FlyerUnitController.cs" />
+     <Compile Include="Assets\Scripts\UnitAndBuildingControllers\ChildScripts\FarmController.cs" />
+     <Compile Include="Assets\Scripts\UnitAndBuildingControllers\ChildScripts\FlyerMovementController.cs" />
+     <Compile Include="Assets\Scripts\UnitAndBuildingControllers\ChildScripts\FlyerUnitController.cs" />
+     <Compile Include="Assets\Scripts\UnitAndBuildingControllers\ChildScripts\Tier2RangeUnitAC.cs" />
+     <Compile Include="Assets\Scripts\UnitAndBuildingControllers\ChildScripts\Tier3FlyerAC.cs" />
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\MovementController.cs" />
+     <Compile Include="Assets\Scripts\UnitAndBuildingControllers\ProjectileController.cs" />
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\UnitController.cs" />
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\UnitGUIController.cs" />
   </ItemGroup>

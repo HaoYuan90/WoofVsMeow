@@ -1,11 +1,6 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\UnitAndBuildingControllers\FlyerAttackController.cs">
-    <Files>
-      <File FileName="Assets\Scripts\UnitAndBuildingControllers\AttackController.cs" Line="42" Column="13" />
-      <File FileName="Assets\Scripts\UnitAndBuildingControllers\FlyerAttackController.cs" Line="11" Column="52" />
-    </Files>
-  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
