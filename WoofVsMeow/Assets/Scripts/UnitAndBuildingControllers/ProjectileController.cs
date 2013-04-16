@@ -19,6 +19,6 @@ public class ProjectileController : MonoBehaviour
 		transform.position = Vector3.Lerp(transform.position, m_tar, 1f/m_steps);
 		m_steps --;
 		if(m_steps == 0)
-			GameObject.Destroy(gameObject);
+			Destroy(gameObject);
 	}
 }

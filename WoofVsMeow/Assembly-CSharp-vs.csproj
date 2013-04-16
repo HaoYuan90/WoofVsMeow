@@ -60,6 +60,7 @@
      <Compile Include="Assets\Scripts\MainscreenGUI\GUIBtmPanelAndMsgs.cs" />
      <Compile Include="Assets\Scripts\MenuGUI\StartingPageGUI.cs" />
      <Compile Include="Assets\Scripts\Network\NetworkController.cs" />
+     <Compile Include="Assets\Scripts\ParticleEffectController.cs" />
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\APController.cs" />
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\AttackController.cs" />
      <Compile Include="Assets\Scripts\UnitAndBuildingControllers\BuildingController.cs" />

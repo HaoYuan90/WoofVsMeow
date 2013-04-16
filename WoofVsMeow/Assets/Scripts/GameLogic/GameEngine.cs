@@ -25,6 +25,9 @@ public class GameEngine : MonoBehaviour
 	private bool m_isReadyToAttack;
 	private bool m_isReadyToProduce;
 	public List<int> m_playerGold = new List<int>();
+	//particle effects
+	public GameObject m_spawnPE;
+	public GameObject m_deathPE;
 
 	void Start () 
 	{
@@ -116,11 +119,16 @@ public class GameEngine : MonoBehaviour
 		else{
 			m_apController.ArrangeUnit(building);
 		}
+		GameObject pe = (GameObject)GameObject.Instantiate(m_spawnPE);
+		pe.transform.position = building.transform.position;
 	}
 	
 	//remove unit from ap list and destroy it
 	public void OnUnitDeath(GameObject unit)
 	{
+		//particle effect
+		GameObject pe = (GameObject)GameObject.Instantiate(m_deathPE);
+		pe.transform.position = unit.transform.position;
 		m_apController.RemoveUnit(unit);
 		StartCoroutine(DestroyUnit(unit));
 	}
@@ -167,6 +175,9 @@ public class GameEngine : MonoBehaviour
 	
 	public void PlaceUnitAt(GameObject unit, GameObject grid)
 	{
+		GameObject pe = (GameObject)GameObject.Instantiate(m_spawnPE);
+		pe.transform.position = unit.transform.position;
+		
 		unit.transform.position = new Vector3(grid.transform.position.x,grid.renderer.bounds.max.y,grid.transform.position.z);
 		unit.transform.parent = GameObject.Find("Units").transform;
 		//set grid attributes
@@ -179,11 +190,7 @@ public class GameEngine : MonoBehaviour
 	
 	public void CameraLookAt(GameObject unit)
 	{
-		float tempX = unit.transform.position.x;
-		float tempY = unit.transform.position.y + 20f;
-		float tempZ = unit.transform.position.z + 20f;
-		m_camera.transform.position = new Vector3(tempX,tempY,tempZ);
-		m_camera.transform.LookAt(unit.transform);
+		m_camera.GetComponent<CameraController>().LookAt(unit);
 	}
 	
 	private void ProcessTurnBegin ()
