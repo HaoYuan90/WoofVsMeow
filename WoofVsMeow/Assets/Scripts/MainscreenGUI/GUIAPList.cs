@@ -17,7 +17,7 @@ public class GUIAPList : MonoBehaviour
 	private float m_portraitYOffset;
 	//gui runs optimally in 16:9
 	readonly private float m_optimalWidth = 1600.0f;
-	readonly private float m_optimalHeight = 900.0f;
+	//readonly private float m_optimalHeight = 900.0f;
 	
 	public void Initialise () 
 	{
