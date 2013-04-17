@@ -79,7 +79,7 @@ public class GUIBtmPanelAndMsgs : MonoBehaviour
 		GUI.Label(new Rect(950.0f*ratio, Screen.height-75.0f*ratio, 200.0f*ratio, 40.0f*ratio), 
 			"$$$ : " + m_money.ToString(), m_labelStyle);
 		
-		if(!m_gameOver){
+		if(m_gameOver){
 			GUI.Label(m_msgRect, m_winner + " has won!", m_messageStyle);
 			if(GUI.Button(m_buttonRect,"Return to menu",m_buttonStyle))
 			{

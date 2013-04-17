@@ -7,7 +7,7 @@ public class BuildingGUIController : MonoBehaviour
 	//control buttons
 	public Texture2D m_upgradeTex;
 	public Texture2D m_addUnitTex;
-	public Texture2D m_cancelTex;
+	public Texture2D m_endTex;
 	public List<Texture2D> m_unitIcons;
 	public List<string> m_unitNames;
 	public GUIStyle m_buttonStyle;
@@ -140,8 +140,8 @@ public class BuildingGUIController : MonoBehaviour
 		{
 			if(m_showUnitList){
 				List<bool> status = GetComponent<BuildingController>().GetUnitListStatus();
-				float buttonX = btnSpawnPt.x+100.0f*widthRatio+5f;
-				float buttonY = Screen.height-btnSpawnPt.y+35.0f*heightRatio;
+				float buttonX = btnSpawnPt.x+110.0f*widthRatio+5f;
+				float buttonY = Screen.height-btnSpawnPt.y+15.0f*heightRatio;
 				for (int i=0; i < m_unitIcons.Count; i++) {
 					GUI.enabled = status[i];
 					if(GUI.Button(new Rect(buttonX,buttonY,64.0f*widthRatio,64.0f*heightRatio),
@@ -149,24 +149,22 @@ public class BuildingGUIController : MonoBehaviour
 					{
 						GetComponent<BuildingController>().BuildButtonAction(i);
 					}
-					buttonY += 64.0f*heightRatio+5f;
+					buttonY += 64.0f*widthRatio+5f;
 				}
 			}	
 			GUI.enabled = true;
-			if(GUI.Button(new Rect(btnSpawnPt.x-24.0f*widthRatio, Screen.height-btnSpawnPt.y-42.0f*heightRatio, 
+			if(GUI.Button(new Rect(btnSpawnPt.x-96.0f*widthRatio, Screen.height-btnSpawnPt.y+15.0f*heightRatio, 
 				64.0f*widthRatio,64.0f*heightRatio),new GUIContent(m_upgradeTex,"Upgrade"),m_buttonStyle))
 			{
 				//UpgradeBuilding();
 			}
-			//GUI.Label(new Rect(btnSpawnPt.x-16.0f*widthRatio, btnSpawnPt.y-0.0f*heightRatio, 32.0f*widthRatio,32.0f*heightRatio), GUI.tooltip);
-			if(GUI.Button(new Rect(btnSpawnPt.x+48.0f*widthRatio, Screen.height-btnSpawnPt.y+35.0f*heightRatio, 
+			if(GUI.Button(new Rect(btnSpawnPt.x+48.0f*widthRatio, Screen.height-btnSpawnPt.y+15.0f*heightRatio, 
 				64.0f*widthRatio,64.0f*heightRatio),new GUIContent(m_addUnitTex, "Produce Unit"),m_buttonStyle))
 			{
 				m_showUnitList = true;
 			}
-			//GUI.Label(new Rect(btnSpawnPt.x-64.0f*widthRatio, btnSpawnPt.y+48.0f*heightRatio, 32.0f*widthRatio,32.0f*heightRatio), GUI.tooltip);
-			if(GUI.Button(new Rect(btnSpawnPt.x-24.0f*widthRatio, Screen.height-btnSpawnPt.y+112.0f*heightRatio, 
-				64.0f*widthRatio,64.0f*heightRatio),new GUIContent(m_cancelTex,"End"),m_buttonStyle))
+			if(GUI.Button(new Rect(btnSpawnPt.x-24.0f*widthRatio, Screen.height-btnSpawnPt.y+92.0f*heightRatio, 
+				64.0f*widthRatio,64.0f*heightRatio),new GUIContent(m_endTex,"End"),m_buttonStyle))
 			{
 				GetComponent<BuildingController>().EndButtonAction();
 			}
