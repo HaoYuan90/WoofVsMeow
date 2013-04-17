@@ -99,6 +99,7 @@ public class NetworkController : MonoBehaviour
 
     void OnGUI()
     {
+		bool inAction = false;
 		m_btmMsg = "";
 		float ratio = Screen.width / m_optimalWidth;
 		//draw background
@@ -143,121 +144,123 @@ public class NetworkController : MonoBehaviour
         if (m_refreshing > 0)
         {
             m_btmMsg = "Contacting servers...";
-            return;
+			inAction = true;
         }
         if (m_isInitialisingServer)
         {
             m_btmMsg = "Creating server...";
-            return;
+			inAction = true;
         }
         if (m_isWaitingForPlayers)
         {
             m_btmMsg = "Waiting for players...";
+			inAction = true;
             if (GUI.Button(firstButtonRect, "Cancel", m_buttonStyle))
             {
                 UnregisterServer();
             }
-            return;
         }
         if (m_isConnectingToServer)
         {
             m_btmMsg = "Connecting to server...";
+			inAction = true;
             if (GUI.Button(firstButtonRect, "Cancel", m_buttonStyle))
             {
                 UndoConnectionToServer();
             }
-            return;
-        }
-
-        if (!Network.isServer && !Network.isClient && !m_isSelectingMap)
-        {
-            //The initialize server, refresh hosts and return buttons
-			//Centred to the left of the host list.
-            if (GUI.Button(firstButtonRect, "Initialize Server",m_buttonStyle))
-            {
-				m_selectionIndex = -1;
-                m_isSelectingMap = true;
-            }
-            if (GUI.Button(secButtonRect, "Refresh Host List", m_buttonStyle))
-            {
-				m_selectionIndex = -1;
-                RefreshHostList();
-            }
-            if (GUI.Button(thirdButtonRect, "Return", m_buttonStyle))
-            {
-                Application.LoadLevel("MainMenu");
-            }
         }
 		
-		//If player presses initialize server.
-		if (m_isSelectingMap)
-		{
-			 if (m_mapNames.Count > m_hostListHeight / m_cellHeight - 4)
-            {
-                m_overflow = 1;
-            }
-            else
+		if(!inAction){
+	        if (!Network.isServer && !Network.isClient && !m_isSelectingMap)
+	        {
+	            //The initialize server, refresh hosts and return buttons
+				//Centred to the left of the host list.
+	            if (GUI.Button(firstButtonRect, "Initialize Server",m_buttonStyle))
+	            {
+					m_selectionIndex = -1;
+	                m_isSelectingMap = true;
+	            }
+	            if (GUI.Button(secButtonRect, "Refresh Host List", m_buttonStyle))
+	            {
+					m_selectionIndex = -1;
+	                RefreshHostList();
+	            }
+	            if (GUI.Button(thirdButtonRect, "Return", m_buttonStyle))
+	            {
+	                Application.LoadLevel("MainMenu");
+	            }
+	        }
+			
+			//If player presses initialize server.
+			if (m_isSelectingMap)
 			{
-				m_overflow = 0;
-			}
-            m_scrollPos = GUI.BeginScrollView(m_listRect,m_scrollPos,m_listRect, false, true);
-
-            m_selectionIndex = GUI.SelectionGrid(new Rect(m_listRect.x, m_listRect.y, m_listRect.width, m_mapNames.Count * m_cellHeight), 
-				m_selectionIndex, m_mapNames.ToArray(), 1, m_listStyle);
-
-            GUI.EndScrollView();
-		
-			if (m_selectionIndex >= 0)
-            {
-				//Create a new host on the selected map button
-                if (GUI.Button(fourthButtonRect, "Create Host", m_buttonStyle))
-                {
-					m_isSelectingMap = false;
-					m_hostedMapName = m_mapNames[m_selectionIndex];
-                    InitializeServer(0);
-                }
-            }
-			m_btmMsg = "Please select a map";
-			if (GUI.Button(firstButtonRect, "Cancel", m_buttonStyle))
-            {
-                m_isSelectingMap = false;
-            }
-		} else if (m_hostdata != null){
-            if (m_hostdata.Length == 0)
-            {
-                //If no hosts can be detected, send this message
-                 m_btmMsg = "No available hosts";
-            }
-            else
-            {
-                if (m_hostdata.Length > m_hostListHeight / m_cellHeight - 4)
-                {
-                    m_overflow = 1;
-                }
-                else
-                {
-                    m_overflow = 0;
-                }
-                
-                m_scrollPos = GUI.BeginScrollView(m_listRect,m_scrollPos,m_listRect, false, true);
-
-                m_selectionIndex = GUI.SelectionGrid(new Rect(m_listRect.x, m_listRect.y, m_listRect.width, m_mapNames.Count * m_cellHeight),
-					m_selectionIndex, m_playerNames.ToArray(), 1, m_listStyle);
-
-                GUI.EndScrollView();
-
-                //Only if the selected host still can accept new players
-                if (m_selectionIndex >= 0 && m_hostdata[m_selectionIndex].connectedPlayers < m_hostdata[m_selectionIndex].playerLimit)
-				{	
-					//Connect to the selected host button
-                    if (GUI.Button(fourthButtonRect, "Connect", m_buttonStyle))
-                    {
-                        Network.Connect(m_hostdata[m_selectionIndex]);
-                        m_isConnectingToServer = true;
-                    }
-                }
-            }
-        }
+				 if (m_mapNames.Count > m_hostListHeight / m_cellHeight - 4)
+	            {
+	                m_overflow = 1;
+	            }
+	            else
+				{
+					m_overflow = 0;
+				}
+	            m_scrollPos = GUI.BeginScrollView(m_listRect,m_scrollPos,m_listRect, false, true);
+	
+	            m_selectionIndex = GUI.SelectionGrid(new Rect(m_listRect.x, m_listRect.y, m_listRect.width, m_mapNames.Count * m_cellHeight), 
+					m_selectionIndex, m_mapNames.ToArray(), 1, m_listStyle);
+	
+	            GUI.EndScrollView();
+			
+				if (m_selectionIndex >= 0)
+	            {
+					//Create a new host on the selected map button
+	                if (GUI.Button(fourthButtonRect, "Create Host", m_buttonStyle))
+	                {
+						m_isSelectingMap = false;
+						m_hostedMapName = m_mapNames[m_selectionIndex];
+	                    InitializeServer(0);
+	                }
+	            }
+				m_btmMsg = "Please select a map";
+				if (GUI.Button(firstButtonRect, "Cancel", m_buttonStyle))
+	            {
+	                m_isSelectingMap = false;
+	            }
+			} else if (m_hostdata != null){
+	            if (m_hostdata.Length == 0)
+	            {
+	                //If no hosts can be detected, send this message
+	                 m_btmMsg = "No available hosts";
+	            }
+	            else
+	            {
+	                if (m_hostdata.Length > m_hostListHeight / m_cellHeight - 4)
+	                {
+	                    m_overflow = 1;
+	                }
+	                else
+	                {
+	                    m_overflow = 0;
+	                }
+	                
+	                m_scrollPos = GUI.BeginScrollView(m_listRect,m_scrollPos,m_listRect, false, true);
+	
+	                m_selectionIndex = GUI.SelectionGrid(new Rect(m_listRect.x, m_listRect.y, m_listRect.width, m_mapNames.Count * m_cellHeight),
+						m_selectionIndex, m_playerNames.ToArray(), 1, m_listStyle);
+	
+	                GUI.EndScrollView();
+	
+	                //Only if the selected host still can accept new players
+	                if (m_selectionIndex >= 0 && m_hostdata[m_selectionIndex].connectedPlayers < m_hostdata[m_selectionIndex].playerLimit)
+					{	
+						//Connect to the selected host button
+	                    if (GUI.Button(fourthButtonRect, "Connect", m_buttonStyle))
+	                    {
+	                        Network.Connect(m_hostdata[m_selectionIndex]);
+	                        m_isConnectingToServer = true;
+	                    }
+	                }
+	            }
+	        }
+		}
 		GUI.Label(new Rect(Screen.width/2-300f*ratio, Screen.height-90.0f*ratio, 600.0f*ratio, 40.0f*ratio), 
 			m_btmMsg, m_mesageStyle);
     }			
@@ -289,7 +292,7 @@ public class NetworkController : MonoBehaviour
     {
         m_isInitialisingServer = true;
         Network.InitializeServer(1, 25001, !Network.HavePublicAddress());
-        MasterServer.RegisterHost(m_gameName, PlayerPrefs.GetString("playername") + "'s game", PlayerPrefs.GetInt("map").ToString());
+        MasterServer.RegisterHost(m_gameName, PlayerPrefs.GetString("playername")+" on "+m_hostedMapName);
     }
 
     void OnMasterServerEvent(MasterServerEvent mse)
