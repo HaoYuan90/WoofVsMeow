@@ -174,10 +174,7 @@ public class GameEngine : MonoBehaviour
 	}
 	
 	public void PlaceUnitAt(GameObject unit, GameObject grid)
-	{
-		GameObject pe = (GameObject)GameObject.Instantiate(m_spawnPE);
-		pe.transform.position = unit.transform.position;
-		
+	{	
 		unit.transform.position = new Vector3(grid.transform.position.x,grid.renderer.bounds.max.y,grid.transform.position.z);
 		unit.transform.parent = GameObject.Find("Units").transform;
 		//set grid attributes
@@ -185,6 +182,8 @@ public class GameEngine : MonoBehaviour
 		unit.GetComponent<UnitController>().InitialiseUnit(this, grid);
 		//add unit to aplist
 		m_apController.AddNewUnit(unit);
+		GameObject pe = (GameObject)GameObject.Instantiate(m_spawnPE);
+		pe.transform.position = unit.transform.position;
 		OnGoldChange();
 	}
 	
