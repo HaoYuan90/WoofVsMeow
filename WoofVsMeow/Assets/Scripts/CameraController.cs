@@ -27,13 +27,15 @@ public class CameraController : MonoBehaviour {
 	//look at method to be used by self, preserves transformation
 	private void LookAt(float oldZoom)
 	{
-		float tempX = transform.position.x;
+		Vector3 forward = new Vector3(transform.forward.x,0f,transform.forward.z);
+		forward.Normalize();
+		float tempX = transform.position.x + m_distToUnit*forward.x*oldZoom;
 		float tempY = transform.position.y - m_distToUnit*oldZoom;
-		float tempZ = transform.position.z - m_distToUnit*oldZoom;
+		float tempZ = transform.position.z + m_distToUnit*forward.z*oldZoom;
 		Vector3 virtualTar = new Vector3(tempX,tempY,tempZ);
-		tempX = virtualTar.x;
+		tempX = virtualTar.x - m_distToUnit*forward.x*m_zoom;
 		tempY = virtualTar.y + m_distToUnit*m_zoom;
-		tempZ = virtualTar.z + m_distToUnit*m_zoom;
+		tempZ = virtualTar.z - m_distToUnit*forward.z*m_zoom;
 		transform.position = new Vector3(tempX,tempY,tempZ);
 		transform.LookAt(virtualTar);
 	}
@@ -44,18 +46,27 @@ public class CameraController : MonoBehaviour {
 		LookAt(m_current);
 	}
 	
+	//this function takes the left/right unit vector
+	private void RotateCamera(Vector3 dir)
+	{
+		Vector3 forward = new Vector3(transform.forward.x,0f,transform.forward.z);
+		forward.Normalize();
+		float tempX = transform.position.x + m_distToUnit*forward.x*m_zoom;
+		float tempY = transform.position.y - m_distToUnit*m_zoom;
+		float tempZ = transform.position.z + m_distToUnit*forward.z*m_zoom;
+		Vector3 virtualTar = new Vector3(tempX,tempY,tempZ);
+		transform.Translate(dir*m_rotationSpeed*Time.deltaTime);
+		transform.LookAt(virtualTar);
+	}
+	
 	void Update () 
 	{
 		if (Input.GetButton("RotateRight")){
-			transform.Translate(Vector3.right*m_rotationSpeed*Time.deltaTime);
-			transform.LookAt(m_current.transform);
-			//transform.RotateAroundLocal(Vector3.up, m_rotationSpeed * Time.deltaTime);
+			RotateCamera(Vector3.right);
 			return;
 		}
 		if (Input.GetButton("RotateLeft")){
-			transform.Translate(Vector3.left*m_rotationSpeed*Time.deltaTime);
-			transform.LookAt(m_current.transform);
-			//transform.RotateAroundLocal(Vector3.up, -m_rotationSpeed * Time.deltaTime);
+			RotateCamera(Vector3.left);
 			return;
 		}
 		//zoom in
