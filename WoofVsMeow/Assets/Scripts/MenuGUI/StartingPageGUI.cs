@@ -29,9 +29,9 @@ public class StartingPageGUI : MonoBehaviour
 		m_namePrefix = "Hello: ";
 		
 		float ratio = Screen.width/m_optimalWidth;
-		m_playerNameRect = new Rect(Screen.width/2 - m_playerNameRect.width/2, m_playerNameRect.y*ratio, 
+		m_playerNameRect = new Rect(Screen.width/2 - m_playerNameRect.width*ratio/2, m_playerNameRect.y*ratio, 
 			m_playerNameRect.width*ratio, m_playerNameRect.height*ratio);
-		m_namePrefixRect = new Rect(m_playerNameRect.xMin - m_namePrefixRect.width -10, m_namePrefixRect.y*ratio, 
+		m_namePrefixRect = new Rect(m_playerNameRect.xMin - m_namePrefixRect.width -10*ratio, m_namePrefixRect.y*ratio, 
 			m_namePrefixRect.width*ratio, m_namePrefixRect.height*ratio);
 	}
 	
@@ -55,10 +55,8 @@ public class StartingPageGUI : MonoBehaviour
 			Application.Quit();
 		}
 		//name label
-		GUI.Label(new Rect(m_namePrefixRect.x*ratio,m_namePrefixRect.y*ratio,m_namePrefixRect.width*ratio,
-			m_namePrefixRect.height*ratio),m_namePrefix,m_textStyle);
-        m_playerName = GUI.TextField(new Rect(m_playerNameRect.x*ratio,m_playerNameRect.y*ratio,m_playerNameRect.width*ratio,
-			m_playerNameRect.height*ratio), m_playerName, 10 ,m_playerNameStyle);
+		GUI.Label(m_namePrefixRect,m_namePrefix,m_textStyle);
+        m_playerName = GUI.TextField(m_playerNameRect, m_playerName, 10 ,m_playerNameStyle);
 		
 	}
 }
