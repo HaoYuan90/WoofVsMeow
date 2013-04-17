@@ -1,9 +1,10 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\GameLogic\GameEngine.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\MenuGUI\StartingPageGUI.cs">
     <Files>
-      <File FileName="Assets\Scripts\GameLogic\GameEngine.cs" Line="178" Column="3" />
-      <File FileName="Assets\Scripts\UnitAndBuildingControllers\UnitController.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\MainscreenGUI\GUIAPList.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\CameraController.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\MenuGUI\StartingPageGUI.cs" Line="32" Column="3" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
