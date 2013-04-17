@@ -17,6 +17,7 @@ public class BuildingController : MonoBehaviour
 	protected int m_unitToProduce;
 	public List<GameObject> m_unitList;
 	public List<int> m_unitCostList;
+	public int m_income;
 	public int m_maxHealth;
 	[SerializeField]
 	protected int m_health;
@@ -111,8 +112,8 @@ public class BuildingController : MonoBehaviour
 	{
 		if (m_control != -1) //Will display "+100 Gold" text
 		{
-			m_engine.m_playerGold[m_control] += 100;
-			GetComponent<BuildingGUIController>().OnGoldChangeBy(100);
+			m_engine.m_playerGold[m_control] += m_income;
+			GetComponent<BuildingGUIController>().OnGoldChangeBy(m_income);
 		}
 		m_engine.OnGoldChange();
 	}
