@@ -12,8 +12,8 @@ public class StartingPageGUI : MonoBehaviour
 	private string m_namePrefix;
 	
 	//We store the x,y,height and width of the GUI elements here for easy modification
-	private Rect m_playerNameRect = new Rect(0,72,250,45);
-	private Rect m_namePrefixRect = new Rect(0,60,200,60);
+	private Rect m_playerNameRect = new Rect(0,20,250,100);
+	private Rect m_namePrefixRect = new Rect(0,20,350,100);
 	private Rect m_mainButtonRect = new Rect(0,0,300,80);
 	
 	//Modify this to control the gap between Save and the left of the screen
@@ -26,13 +26,7 @@ public class StartingPageGUI : MonoBehaviour
 	void Start()
 	{
 		m_playerName = PlayerPrefs.GetString("playername");
-		m_namePrefix = "Hello: ";
-		
-		float ratio = Screen.width/m_optimalWidth;
-		m_playerNameRect = new Rect(Screen.width/2 - m_playerNameRect.width*ratio/2, m_playerNameRect.y*ratio, 
-			m_playerNameRect.width*ratio, m_playerNameRect.height*ratio);
-		m_namePrefixRect = new Rect(m_playerNameRect.xMin - m_namePrefixRect.width -10*ratio, m_namePrefixRect.y*ratio, 
-			m_namePrefixRect.width*ratio, m_namePrefixRect.height*ratio);
+		m_namePrefix = "Hello: ";	
 	}
 	
 	void OnGUI()
@@ -55,8 +49,11 @@ public class StartingPageGUI : MonoBehaviour
 			Application.Quit();
 		}
 		//name label
-		GUI.Label(m_namePrefixRect,m_namePrefix,m_textStyle);
-        m_playerName = GUI.TextField(m_playerNameRect, m_playerName, 10 ,m_playerNameStyle);
+		//ratio is applied here so that label and box stay in the right position if the window size is changed
+		GUI.Label(new Rect(Screen.width/2 - m_playerNameRect.width*ratio/2 - (m_namePrefixRect.width + 10)*ratio, m_namePrefixRect.y*ratio, 
+			m_namePrefixRect.width*ratio, m_namePrefixRect.height*ratio),m_namePrefix,m_textStyle);
+        m_playerName = GUI.TextField(new Rect(Screen.width/2 - m_playerNameRect.width*ratio/2, m_playerNameRect.y, 
+			m_playerNameRect.width*ratio, m_playerNameRect.height*ratio), m_playerName, 10 ,m_playerNameStyle);
 		
 	}
 }

@@ -26,7 +26,6 @@ public class NetworkController : MonoBehaviour
     public GUIStyle m_buttonStyle; //Style used for buttons
     public GUIStyle m_mesageStyle; //Style used for the messages
     public GUIStyle m_listStyle; //Style used for selection grid
-	public GUIStyle m_mapNameLabelStyle;
 	
 	private string m_btmMsg;
 	
@@ -36,8 +35,11 @@ public class NetworkController : MonoBehaviour
 
     private float m_buttonX;
     private float m_buttonY;
-	//Height of the cells in the selection grid. (OPTIMAL 50~100)
-    private float m_cellHeight = 50.0f;
+	//Height of the cells in the map selection grid. (OPTIMAL 50~100)
+    private float m_mapCellHeight = 50.0f;
+	
+	//Height of the cells in the host selection grid (OPTIMAL 100~150+)
+	private float m_hostCellHeight = 150.0f;
 
     private int m_overflow; //to modify the selectrion grid if there is an overflow
 	
@@ -65,8 +67,8 @@ public class NetworkController : MonoBehaviour
 		m_hostedMapName = "";
 		
 		float ratio = Screen.width / m_optimalWidth;
-		m_listRect = new Rect(m_listRect.x*ratio, m_listRect.y*ratio,
-			m_listRect.width*ratio, m_listRect.height*ratio);
+		//m_listRect = new Rect(m_listRect.x*ratio, m_listRect.y*ratio,
+			//m_listRect.width*ratio, m_listRect.height*ratio);
 		PlayerPrefs.SetInt("map", -1);
         m_screenLimit = 1200.0f / m_optimalWidth;
 		
@@ -115,14 +117,14 @@ public class NetworkController : MonoBehaviour
         }
 		
 		//m_buttonY is set to be 1/2 button height below the top of the host list.
-        m_buttonY = m_listRect.y+m_hostListHeight/6;
+        m_buttonY = m_listRect.y*ratio;
 		//m_buttonX is set to centre the button between the host list and the left edge of the screen
-        m_buttonX = m_listRect.x/2+m_buttonWidth*ratio-300f;
+        m_buttonX = (m_listRect.x/2 - m_buttonWidth/2)*ratio;
 
         //Background box for the host list (Centered)
-        GUI.Box(m_listRect, "");
+        GUI.Box(new Rect(m_listRect.x*ratio,m_listRect.y*ratio,m_listRect.width*ratio,m_listRect.height*ratio), "");
 		
-		Rect labelRect = new Rect(m_listRect.x,80f*ratio,m_listRect.width,100f*ratio);
+		Rect labelRect = new Rect(m_listRect.x*ratio,(m_listRect.y -100.0f)*ratio,m_listRect.width*ratio,100f*ratio);
         //Label for the host list
 		if (!m_isSelectingMap)
 		{
@@ -133,12 +135,12 @@ public class NetworkController : MonoBehaviour
 			GUI.Label(labelRect, "Available Maps", m_mesageStyle);
 		}
 		
-		Rect firstButtonRect = new Rect(m_buttonX * ratio, m_buttonY, m_buttonWidth * ratio, m_buttonHeight * ratio);
+		Rect firstButtonRect = new Rect(m_buttonX, m_buttonY, m_buttonWidth * ratio, m_buttonHeight * ratio);
 		Rect secButtonRect = new Rect(firstButtonRect.x, firstButtonRect.y + firstButtonRect.height*1.5f*m_listButtonRatio, 
 				firstButtonRect.width, firstButtonRect.height);
 		Rect thirdButtonRect = new Rect(firstButtonRect.x, firstButtonRect.y + firstButtonRect.height*3f*m_listButtonRatio, 
 				firstButtonRect.width, firstButtonRect.height);
-		Rect fourthButtonRect = new Rect(firstButtonRect.x, firstButtonRect.y + firstButtonRect.height*4.5f*m_listButtonRatio, 
+		Rect fourthButtonRect = new Rect(firstButtonRect.x, firstButtonRect.y + firstButtonRect.height*5f*m_listButtonRatio, 
 				firstButtonRect.width, firstButtonRect.height);
         //show messages to players....
         if (m_refreshing > 0)
@@ -194,7 +196,7 @@ public class NetworkController : MonoBehaviour
 			//If player presses initialize server.
 			if (m_isSelectingMap)
 			{
-				 if (m_mapNames.Count > m_hostListHeight / m_cellHeight - 4)
+				 if (m_mapNames.Count > m_hostListHeight / m_mapCellHeight - 4)
 	            {
 	                m_overflow = 1;
 	            }
@@ -202,9 +204,11 @@ public class NetworkController : MonoBehaviour
 				{
 					m_overflow = 0;
 				}
-	            m_scrollPos = GUI.BeginScrollView(m_listRect,m_scrollPos,m_listRect, false, true);
+	            m_scrollPos = GUI.BeginScrollView(new Rect (m_listRect.x*ratio, m_listRect.y*ratio, (m_listRect.width+25)*ratio, m_listRect.height*ratio),m_scrollPos,
+					new Rect (m_listRect.x*ratio, m_listRect.y*ratio, (m_listRect.width)*ratio,
+					(m_listRect.height+(m_overflow * (m_hostListHeight / m_mapCellHeight - 4) * m_mapCellHeight))*ratio), false, true);
 	
-	            m_selectionIndex = GUI.SelectionGrid(new Rect(m_listRect.x, m_listRect.y, m_listRect.width, m_mapNames.Count * m_cellHeight), 
+	            m_selectionIndex = GUI.SelectionGrid(new Rect(m_listRect.x*ratio, m_listRect.y*ratio, m_listRect.width*ratio, m_mapNames.Count * m_mapCellHeight*ratio), 
 					m_selectionIndex, m_mapNames.ToArray(), 1, m_listStyle);
 	
 	            GUI.EndScrollView();
@@ -232,7 +236,7 @@ public class NetworkController : MonoBehaviour
 	            }
 	            else
 	            {
-	                if (m_hostdata.Length > m_hostListHeight / m_cellHeight - 4)
+	                if (m_hostdata.Length > m_hostListHeight / m_hostCellHeight - 4)
 	                {
 	                    m_overflow = 1;
 	                }
@@ -241,9 +245,11 @@ public class NetworkController : MonoBehaviour
 	                    m_overflow = 0;
 	                }
 	                
-	                m_scrollPos = GUI.BeginScrollView(m_listRect,m_scrollPos,m_listRect, false, true);
+	                m_scrollPos = GUI.BeginScrollView(new Rect (m_listRect.x*ratio, m_listRect.y*ratio, (m_listRect.width+25)*ratio, m_listRect.height*ratio),m_scrollPos,
+					new Rect (m_listRect.x*ratio, m_listRect.y*ratio, (m_listRect.width)*ratio,
+					(m_listRect.height+(m_overflow * (m_hostListHeight / m_hostCellHeight - 4) * m_hostCellHeight))*ratio), false, true);
 	
-	                m_selectionIndex = GUI.SelectionGrid(new Rect(m_listRect.x, m_listRect.y, m_listRect.width, m_mapNames.Count * m_cellHeight),
+	                m_selectionIndex = GUI.SelectionGrid(new Rect(m_listRect.x*ratio, m_listRect.y*ratio, m_listRect.width*ratio, m_hostdata.Length * m_hostCellHeight*ratio),
 						m_selectionIndex, m_playerNames.ToArray(), 1, m_listStyle);
 	
 	                GUI.EndScrollView();
@@ -261,7 +267,7 @@ public class NetworkController : MonoBehaviour
 	            }
 	        }
 		}
-		GUI.Label(new Rect(Screen.width/2-300f*ratio, Screen.height-90.0f*ratio, 600.0f*ratio, 40.0f*ratio), 
+		GUI.Label(new Rect(0, Screen.height-110.0f*ratio, Screen.width, 110.0f*ratio), 
 			m_btmMsg, m_mesageStyle);
     }			
 
