@@ -50,8 +50,8 @@ public class GameEngine : MonoBehaviour
 		m_isReadyToAttack = false;
 		
 		//2 players
-		m_playerGold.Add(1000);
-		m_playerGold.Add(1000);
+		m_playerGold.Add(200);
+		m_playerGold.Add(200);
 		
 		GetComponent<GUIAPList>().Initialise();
 		GetComponent<GUIBtmPanelAndMsgs>().Initialise(m_playerGold[m_control]);
@@ -211,8 +211,10 @@ public class GameEngine : MonoBehaviour
 			else if(m_currUnit.tag == "Building"){
 				m_inTurn = true;
 				int thisControl = m_currUnit.GetComponent<BuildingController>().m_control;
-				if(thisControl !=m_control)
+				if(thisControl != m_control)
 					GetComponent<GUIBtmPanelAndMsgs>().OnOthersTurn();
+				else
+					GetComponent<GUIBtmPanelAndMsgs>().OnMyTurn();
 				if (m_currUnit.GetComponent<BuildingController>().m_unitCostList.Count == 0){
 					if(thisControl == m_control){
 						StartCoroutine("WaitForTurnEnd",3f);
