@@ -13,9 +13,6 @@ public class BuildingGUIController : MonoBehaviour
 	public GUIStyle m_buttonStyle;
 	public GUIStyle m_tooltipStyle;
 	
-	private float fixedWidth = 1366.0f;
-	private float fixedHeight = 598.0f;
-	
 	private bool m_guiEnabled;
 	private bool m_showUnitList;
 	
@@ -40,9 +37,11 @@ public class BuildingGUIController : MonoBehaviour
 	private Rect m_textPos;
 	private GUIStyle m_textStyle;
 	
+	readonly private float m_buttonDim = 70f; //size of buttons around unit/building
 	readonly private float m_initHeight = 100;
 	readonly private Rect m_textBox = new Rect(0,0,100,100);
-	
+	readonly private float m_optimalWidth = 1600.0f;
+	//readonly private float m_optimalHeight = 900.0f;
 	
 	public void Initialise (int hp, int max)
 	{
@@ -132,45 +131,44 @@ public class BuildingGUIController : MonoBehaviour
 		GUI.DrawTexture(partialRect, m_foreground);
 		
 		//Draw buttons
-		float widthRatio = Screen.width / fixedWidth;
-		float heightRatio = Screen.height / fixedHeight;
+		float ratio = Screen.width / m_optimalWidth;
 		Vector3 midPos = new Vector3(transform.position.x,transform.position.y+4f,transform.position.z);
 		Vector3 btnSpawnPt = Camera.main.WorldToScreenPoint(midPos);
 		if(m_guiEnabled)
 		{
 			if(m_showUnitList){
 				List<bool> status = GetComponent<BuildingController>().GetUnitListStatus();
-				float buttonX = btnSpawnPt.x+110.0f*widthRatio+5f;
-				float buttonY = Screen.height-btnSpawnPt.y+15.0f*heightRatio;
+				float buttonX = btnSpawnPt.x+110.0f*ratio+5f;
+				float buttonY = Screen.height-btnSpawnPt.y;
 				for (int i=0; i < m_unitIcons.Count; i++) {
 					GUI.enabled = status[i];
-					if(GUI.Button(new Rect(buttonX,buttonY,64.0f*widthRatio,64.0f*heightRatio),
+					if(GUI.Button(new Rect(buttonX,buttonY,m_buttonDim*ratio,m_buttonDim*ratio),
 						new GUIContent(m_unitIcons[i], m_unitNames[i]), m_buttonStyle))
 					{
 						GetComponent<BuildingController>().BuildButtonAction(i);
 					}
-					buttonY += 64.0f*widthRatio+5f;
+					buttonY += (m_buttonDim+5f)*ratio;
 				}
 			}	
 			GUI.enabled = true;
-			if(GUI.Button(new Rect(btnSpawnPt.x-96.0f*widthRatio, Screen.height-btnSpawnPt.y+15.0f*heightRatio, 
-				64.0f*widthRatio,64.0f*heightRatio),new GUIContent(m_upgradeTex,"Upgrade"),m_buttonStyle))
+			if(GUI.Button(new Rect(btnSpawnPt.x-114.0f*ratio, Screen.height-btnSpawnPt.y, 
+				m_buttonDim*ratio,m_buttonDim*ratio),new GUIContent(m_upgradeTex,"Upgrade"),m_buttonStyle))
 			{
 				//UpgradeBuilding();
 			}
-			if(GUI.Button(new Rect(btnSpawnPt.x+48.0f*widthRatio, Screen.height-btnSpawnPt.y+15.0f*heightRatio, 
-				64.0f*widthRatio,64.0f*heightRatio),new GUIContent(m_addUnitTex, "Produce Unit"),m_buttonStyle))
+			if(GUI.Button(new Rect(btnSpawnPt.x+48.0f*ratio, Screen.height-btnSpawnPt.y, 
+				m_buttonDim*ratio,m_buttonDim*ratio),new GUIContent(m_addUnitTex, "Produce Unit"),m_buttonStyle))
 			{
 				m_showUnitList = true;
 			}
-			if(GUI.Button(new Rect(btnSpawnPt.x-24.0f*widthRatio, Screen.height-btnSpawnPt.y+92.0f*heightRatio, 
-				64.0f*widthRatio,64.0f*heightRatio),new GUIContent(m_endTex,"End"),m_buttonStyle))
+			if(GUI.Button(new Rect(btnSpawnPt.x-34.0f*ratio, Screen.height-btnSpawnPt.y+102.0f*ratio, 
+				m_buttonDim*ratio,m_buttonDim*ratio),new GUIContent(m_endTex,"End"),m_buttonStyle))
 			{
 				GetComponent<BuildingController>().EndButtonAction();
 			}
 			GUI.color = Color.black;
-			GUI.Label(new Rect(Input.mousePosition.x + 20.0f*widthRatio, Screen.height-Input.mousePosition.y, 
-				256.0f*widthRatio,32.0f*heightRatio),GUI.tooltip,m_tooltipStyle);
+			GUI.Label(new Rect(Input.mousePosition.x + 20.0f*ratio, Screen.height-Input.mousePosition.y, 
+				256.0f*ratio,32.0f*ratio),GUI.tooltip,m_tooltipStyle);
 		}
 	}
 	
