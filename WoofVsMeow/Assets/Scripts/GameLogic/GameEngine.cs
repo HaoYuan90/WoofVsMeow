@@ -211,6 +211,8 @@ public class GameEngine : MonoBehaviour
 			else if(m_currUnit.tag == "Building"){
 				m_inTurn = true;
 				int thisControl = m_currUnit.GetComponent<BuildingController>().m_control;
+				if(thisControl !=m_control)
+					GetComponent<GUIBtmPanelAndMsgs>().OnOthersTurn();
 				if (m_currUnit.GetComponent<BuildingController>().m_unitCostList.Count == 0){
 					if(thisControl == m_control){
 						StartCoroutine("WaitForTurnEnd",3f);

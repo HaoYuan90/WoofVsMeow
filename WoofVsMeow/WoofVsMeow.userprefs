@@ -1,8 +1,9 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Network\NetworkController.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\GameLogic\GameEngine.cs">
     <Files>
-      <File FileName="Assets\Scripts\Network\NetworkController.cs" Line="194" Column="40" />
+      <File FileName="Assets\Scripts\GameLogic\GameEngine.cs" Line="207" Column="11" />
+      <File FileName="Assets\Scripts\Network\NetworkController.cs" Line="192" Column="11" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
