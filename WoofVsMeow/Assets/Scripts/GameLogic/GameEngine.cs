@@ -28,6 +28,8 @@ public class GameEngine : MonoBehaviour
 	//particle effects
 	public GameObject m_spawnPE;
 	public GameObject m_deathPE;
+	
+	public int m_initialGold;
 
 	void Start () 
 	{
@@ -50,8 +52,8 @@ public class GameEngine : MonoBehaviour
 		m_isReadyToAttack = false;
 		
 		//2 players
-		m_playerGold.Add(200);
-		m_playerGold.Add(200);
+		m_playerGold.Add(m_initialGold);
+		m_playerGold.Add(m_initialGold);
 		
 		GetComponent<GUIAPList>().Initialise();
 		GetComponent<GUIBtmPanelAndMsgs>().Initialise(m_playerGold[m_control]);
