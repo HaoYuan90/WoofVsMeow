@@ -243,7 +243,7 @@ public class NetworkController : MonoBehaviour
 	                
 	                m_scrollPos = GUI.BeginScrollView(m_listRect,m_scrollPos,m_listRect, false, true);
 	
-	                m_selectionIndex = GUI.SelectionGrid(new Rect(m_listRect.x, m_listRect.y, m_listRect.width, m_mapNames.Count * m_cellHeight),
+	                m_selectionIndex = GUI.SelectionGrid(new Rect(m_listRect.x, m_listRect.y, m_listRect.width, m_hostdata.Length * m_cellHeight),
 						m_selectionIndex, m_playerNames.ToArray(), 1, m_listStyle);
 	
 	                GUI.EndScrollView();
