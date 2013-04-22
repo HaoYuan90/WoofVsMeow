@@ -166,7 +166,12 @@ public class UnitController : MonoBehaviour
 	{
 		m_active = false;
 		GetComponent<UnitGUIController>().DisableGUI();
-		GetComponent<APController>().ReplenishAP(1);
-		m_engine.UnitTurnEnded();
+		int replenishedAmt;
+		if(!m_hasAttacked){
+			replenishedAmt = GetComponent<APController>().ReplenishAP(0.4);
+		}else{
+			replenishedAmt = GetComponent<APController>().ReplenishAP(1);
+		}
+		m_engine.UnitTurnEnded(replenishedAmt);
 	}
 }

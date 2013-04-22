@@ -137,8 +137,8 @@ public class BuildingController : MonoBehaviour
 	{
 		m_active = false;
 		GetComponent<BuildingGUIController>().DisableGUI();
-		GetComponent<APController>().ReplenishAP(1);
-		m_engine.UnitTurnEnded();
+		int replenishedAmt = GetComponent<APController>().ReplenishAP(1);
+		m_engine.UnitTurnEnded(replenishedAmt);
 	}
 	
 	public void BuildButtonAction(int index)

@@ -93,11 +93,11 @@ public class GameEngine : MonoBehaviour
 		}
 	}
 	
-	public void UnitTurnEnded()
+	public void UnitTurnEnded(int replenishedAmt)
 	{
 		//determine how much ap to replenish according to type of movement
 		if(Network.isClient || Network.isServer){
-			networkView.RPC("PlayerTurnEnded",RPCMode.OthersBuffered,m_currUnit.GetComponent<APController>().currentAP);
+			networkView.RPC("PlayerTurnEnded",RPCMode.OthersBuffered,replenishedAmt);
 		}
 		m_apController.OnTurnEnd();
 		m_inTurn = false;
@@ -235,8 +235,8 @@ public class GameEngine : MonoBehaviour
 	
 	IEnumerator WaitForTurnEnd (float seconds) {
         yield return new WaitForSeconds(seconds);
-       	m_currUnit.GetComponent<APController>().ReplenishAP(1);
-		UnitTurnEnded();
+       	int replenishedAmt = m_currUnit.GetComponent<APController>().ReplenishAP(1);
+		UnitTurnEnded(replenishedAmt);
     }
 	
 	private void ProcessUnitAttack(GameObject tar)

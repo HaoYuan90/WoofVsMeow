@@ -35,9 +35,10 @@ public class APController : MonoBehaviour
 			m_currentAP= 0;
 		}
 	}
-	public void ReplenishAP(double percentage)
+	public int ReplenishAP(double percentage)
 	{
 		m_currentAP = (int)(percentage*m_maxAP);
+		return m_currentAP;
 	}
 	public void RPCSetAP(int ap)
 	{
