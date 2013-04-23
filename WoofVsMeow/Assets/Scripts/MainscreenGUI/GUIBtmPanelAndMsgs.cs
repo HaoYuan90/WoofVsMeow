@@ -69,6 +69,7 @@ public class GUIBtmPanelAndMsgs : MonoBehaviour
 
 	void OnGUI()
 	{
+		useGUILayout = false;
 		float ratio = Screen.width/m_optimalWidth;
 		//Bottom panel
 		GUI.DrawTexture(new Rect(0, Screen.height-110.0f*ratio, Screen.width, 110.0f*ratio),m_btmBarTex);

@@ -1,15 +1,6 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\GameLogic\GameEngine.cs">
-    <Files>
-      <File FileName="Assets\Scripts\GameLogic\GameEngine.cs" Line="47" Column="3" />
-      <File FileName="Assets\Scripts\UnitAndBuildingControllers\MovementController.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\UnitAndBuildingControllers\UnitGUIController.cs" Line="123" Column="1" />
-      <File FileName="Assets\Scripts\UnitAndBuildingControllers\UnitController.cs" Line="174" Column="4" />
-      <File FileName="Assets\Scripts\UnitAndBuildingControllers\APController.cs" Line="41" Column="22" />
-      <File FileName="Assets\Scripts\UnitAndBuildingControllers\BuildingController.cs" Line="141" Column="40" />
-    </Files>
-  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>

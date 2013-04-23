@@ -91,6 +91,7 @@ public class UnitGUIController : MonoBehaviour
 
 	void OnGUI()
 	{
+		useGUILayout = false;
 		//display floating text
 		if(m_textCurrentTimer > 0)
 		{

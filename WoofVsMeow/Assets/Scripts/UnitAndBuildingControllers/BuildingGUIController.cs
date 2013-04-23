@@ -98,6 +98,7 @@ public class BuildingGUIController : MonoBehaviour
 
 	void OnGUI()
 	{
+		useGUILayout = false;
 		GUI.enabled = true;
 		//display floating text
 		if(m_textCurrentTimer > 0)

@@ -43,6 +43,7 @@ public class GUIAPList : MonoBehaviour
 	
 	void OnGUI()
 	{	
+		useGUILayout = false;
 		List<GameObject> units = GetComponent<APSequenceController>().GetUnits();
 		int limit = 0; //only show top 8 units in aplist
 		
