@@ -245,9 +245,6 @@ public class GridLogic : MonoBehaviour {
 									n.GetComponent<HexGridModel>().UpdateMovementLeft(currentNode,costToReach);
 									openList.Add(n);
 								}
-								else{
-									closedList.Add(n);
-								}
 							}
 						}
 					}
@@ -320,9 +317,6 @@ public class GridLogic : MonoBehaviour {
 								if(n.GetComponent<HexGridModel>().CanPass(thisControl,true)){
 									n.GetComponent<HexGridModel>().UpdateMovementLeft(currentNode,costToReach);
 									openList.Add(n);
-								}
-								else{
-									closedList.Add(n);
 								}
 							}
 						}
